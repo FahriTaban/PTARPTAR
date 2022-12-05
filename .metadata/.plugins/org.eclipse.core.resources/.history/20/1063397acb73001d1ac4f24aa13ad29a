@@ -1,0 +1,83 @@
+package Parsing;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Model_Parser {
+
+	public List<Element> getClocks(List<Element> model){
+		return getElements(model, "KEY_VAR", "KEY_VAR_DECL_CLOCKS");
+	}
+	
+	public List<Element> getParameters(List<Element> model){
+		return getElements(model, "KEY_VAR_DECL_CLOCKS", "KEY_VAR_PARAMETERS");
+	}
+	
+	public List<Element> getActions(List<Element> automaton){
+		return getElements(automaton, "KEY_ACTION", "SEMI");
+	}
+	
+	public List<List<Element>> getAutomata(List<Element> model){
+		return getElemLists(model, "KEY_AUTOMATON", "KEY_END");
+	}
+	
+	public List<List<Element>> getLocations(List<Element> automaton){
+		return getElemLists(automaton, "KEY_LOCATION", "KEY_LOCATION");
+	}
+	
+	public List<Element> getElements(List<Element> tokens, String begin, String end){
+		List<Element> elems = new ArrayList<>();
+		boolean fetch = false;
+		for (Element e : tokens) {
+			if (e.getType() == begin) {
+				fetch = true;
+			}
+			if (fetch && e.getType() == "KEY_VAR_NAME") {
+				elems.add(e);
+			}
+			if(e.getType() == end) {
+				break;
+			}
+		}
+		return elems;
+	}
+	
+	public List<Element> getElements(List<Element> tokens, String begin, String end, String altEnd){
+		List<Element> elems = new ArrayList<>();
+		boolean fetch = false;
+		for (Element e : tokens) {
+			if (e.getType() == begin) {
+				fetch = true;
+			}
+			if (fetch && e.getType() == "KEY_VAR_NAME") {
+				elems.add(e);
+			}
+			if(e.getType() == end || e.getType() == altEnd) {
+				break;
+			}
+		}
+		return elems;
+	}
+	
+	public List<List<Element>> getElemLists(List<Element> elems, String begin, String end){
+		List<List<Element>> lists = new ArrayList<>();
+		boolean fetch = false;
+		List<Element> list = new ArrayList<>();
+		for (Element e : elems) {
+			if (fetch && e.getType() == end) {
+				lists.add(List.copyOf(list));
+				list.clear();
+				fetch = false;
+			}
+			if (e.getType() == begin) {
+				fetch = true;
+			}
+			if (fetch) {
+				list.add(e);
+			}
+		}
+		return lists;
+	}
+
+	
+}

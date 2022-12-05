@@ -1,0 +1,34 @@
+package PTA;
+
+import java.util.List;
+import org.javatuples.Pair;  
+
+/**
+ * Transition from State to State
+ * @author 49173
+ *
+ */
+public class Transition {
+	private final Location prestate;
+	private final List<Constraint> guards;
+	private final Action action;
+	private final Location poststate;
+	
+	public Transition(State pre, State post, List<Constraint> gs) {
+		this.prestate = pre;
+		this.poststate = post;
+		this.guards = List.copyOf(gs);
+	}
+
+	public State getPrestate() {
+		return prestate;
+	}
+
+	public State getPoststate() {
+		return poststate;
+	}
+
+	public List<Constraint> getGuards() {
+		return guards;
+	}
+}

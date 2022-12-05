@@ -1,0 +1,34 @@
+package PTA;
+
+import java.util.List;
+
+/**
+ * Representing a state in a network PTA
+ * @author 49173
+ *
+ */
+public class State {
+	private final List<Clock> clocks;
+	private final List<String> locations;
+	private final List<Transition> transitions;
+	private boolean urgent;
+	
+	public State(List<Clock> clockList, List<String> locs, List<Transition> ts, boolean urg) {
+		this.clocks = List.copyOf(clockList);
+		this.locations  = List.copyOf(locs);
+		this.transitions = List.copyOf(ts);
+		this.urgent = urg;
+	}
+
+	public List<Value> getClocks() {
+		return clocks;
+	}
+
+	public List<String> getLocations() {
+		return locations;
+	}
+
+	public List<Transition> getTransitions() {
+		return transitions;
+	}
+}

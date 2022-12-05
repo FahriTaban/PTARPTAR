@@ -1,0 +1,15 @@
+package PTA;
+
+import java.util.List;
+
+public class Run {
+	private final NetworkPTA pta;
+	private final List<State> states;
+	private final List<List<Transition>> transitions;
+	
+	public Run(NetworkPTA pta, List<State> states, List<List<Transition>> transitions) {
+		this.pta = pta;
+		this.states = states;
+		this.transitions = transitions;
+	}
+}

@@ -1,0 +1,35 @@
+package PTA;
+
+import java.util.List;
+
+public class NetworkPTA {
+	private final List<Automaton> automata;
+	private final List<Clock> clocks;
+	private final List<Parameter> parameter;
+	private final List<Boolean> bools;
+	private final List<Location> initial_Locations;
+	private final List<Constraint> initial_Constraints;
+	
+	public NetworkPTA(List<Automaton> a, List<Clock> c, List<Parameter> p, List<Boolean> b) {
+		this.automata = a;
+		this.clocks = c;
+		this.parameter = p;
+		this.bools = b;
+	}
+
+	public List<Automaton> getAutomata() {
+		return automata;
+	}
+
+	public List<Clock> getClocks() {
+		return clocks;
+	}
+
+	public List<Parameter> getParameter() {
+		return parameter;
+	}
+
+	public List<Boolean> getBools() {
+		return bools;
+	}
+}

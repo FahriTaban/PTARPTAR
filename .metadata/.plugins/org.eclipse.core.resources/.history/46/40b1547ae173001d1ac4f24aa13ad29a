@@ -1,0 +1,132 @@
+package Parsing;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Model_Parser {
+
+	public List<Element> getClocks(List<Element> model){
+		return getElements(model, "KEY_VAR", "KEY_VAR_DECL_CLOCKS");
+	}
+	
+	public List<Element> getParameters(List<Element> model){
+		return getElements(model, "KEY_VAR_DECL_CLOCKS", "KEY_VAR_DECL_PARAMETERS");
+	}
+		
+	public List<List<Element>> getAutomata(List<Element> model){
+		return getElemLists(model, "KEY_AUTOMATON", "KEY_END");
+	}
+	
+	public List<Element> getActions(List<Element> automaton){
+		return getElements(automaton, "KEY_ACTIONS", "SEMI");
+	}
+	
+	public List<List<Element>> getLocations(List<Element> automaton){
+		return getElemLists(automaton, "KEY_LOCATION", "KEY_LOCATION", "KEY_END");
+	}
+	
+	public List<List<Element>> getTransitions(List<Element> location){
+		return getElemLists(location, "KEY_LOCATION_WHEN", "SEMI");
+	}
+	
+	public List<List<Element>> getGuards(List<Element> transition){
+		return getElemLists(transition, "", "KEY_ACTION", "AND");
+	}
+	
+	public Element getAction(List<Element> transition) {
+		return getElements(transition, "KEY_ACTION", "KEY_LOCATION_GOTO").get(0);
+	}
+	
+	public List<List<Element>> getUpdates(List<Element> transition){
+		return getElemLists(transition, "BRACE_L", "COMMA", "BRACE_R");
+	}
+	
+	public Element getPostLoc(List<Element> transition) {
+		return getElements(transition, "KEY_LOCATION_GOTO", "SEMI").get(0);
+	}
+	
+	
+	/**
+	 * Returns a (sub)list of elements given another list of elements.
+	 * @param tokens List of elements
+	 * @param begin Beginning of sublist (Element-type)
+	 * @param end End of sublist (Element-type)
+	 * @return
+	 */
+	public List<Element> getElements(List<Element> tokens, String begin, String end){
+		List<Element> elems = new ArrayList<>();
+		boolean fetch = false;
+		for (Element e : tokens) {
+			if (e.getType() == begin) {
+				fetch = true;
+				continue;
+			}
+			if (fetch && e.getType() == "KEY_VAR_NAME") {
+				elems.add(e);
+			}
+			if(e.getType() == end) {
+				break;
+			}
+		}
+		return elems;
+	}
+	
+	/**
+	 * Returns sublists of a list of elements.
+	 * @param elems List of elements to split.
+	 * @param begin Beginning of each sublist (Element-type)
+	 * @param end End of each sublist (Element-type)
+	 * @return
+	 */
+	public List<List<Element>> getElemLists(List<Element> elems, String begin, String end){
+		List<List<Element>> lists = new ArrayList<>();
+		boolean fetch = false;
+		List<Element> list = new ArrayList<>();
+		for (Element e : elems) {
+			if (fetch && e.getType() == end) {
+				lists.add(List.copyOf(list));
+				list.clear();
+				fetch = false;
+			}
+			if (begin == "" || e.getType() == begin) {
+				fetch = true;
+				continue;
+			}
+			if (fetch) {
+				list.add(e);
+			}
+		}
+		return lists;
+	}
+	
+	/**
+	 * Returns sublists of a list of elements.
+	 * @param elems List of elements to split.
+	 * @param begin Beginning of each sublist (Element-type)
+	 * @param end End of each sublist (Element-type)
+	 * @param altEnd Alternative end of each sublist (Element-type)
+	 * @return
+	 */
+	public List<List<Element>> getElemLists(List<Element> elems, String begin, String end, String altEnd){
+		List<List<Element>> lists = new ArrayList<>();
+		boolean fetch = false;
+		List<Element> list = new ArrayList<>();
+		for (Element e : elems) {
+			if (fetch && (e.getType() == end || e.getType() == altEnd)) {
+				lists.add(List.copyOf(list));
+				list.clear();
+				fetch = false;
+			}
+			if (begin == "" || e.getType() == begin) {
+				fetch = true;
+				continue;
+			}
+			if (fetch) {
+				list.add(e);
+			}
+		}
+		return lists;
+	}
+
+	
+}

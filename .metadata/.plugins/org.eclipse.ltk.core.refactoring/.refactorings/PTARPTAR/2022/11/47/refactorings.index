@@ -1,0 +1,37 @@
+1669017452301	Copy compilation unit
+1669017504690	Infer generic type arguments
+1669017511269	Delete element
+1669017521066	Delete element
+1669017527025	Infer generic type arguments
+1669017542934	Move compilation unit
+1669018104058	Move file
+1669018105819	Move file
+1669018460031	Move file
+1669018469643	Move file
+1669019321213	Rename local variable 'lineNum'
+1669021151353	Delete element
+1669041010091	Encapsulate field 'prestate'
+1669041015401	Encapsulate field 'poststate'
+1669041019784	Encapsulate field 'guards'
+1669041094825	Encapsulate field 'clocks'
+1669041097859	Encapsulate field 'locations'
+1669041101379	Encapsulate field 'transitions'
+1669041117635	Encapsulate field 'invariants'
+1669041120885	Encapsulate field 'name'
+1669041348607	Encapsulate field 'value'
+1669041351504	Encapsulate field 'name'
+1669042797619	Encapsulate field 'clock'
+1669042800973	Encapsulate field 'operator'
+1669044386434	Rename field 'value'
+1669048449374	Rename type 'Clock'
+1669048594110	Move compilation units
+1669048614074	Move compilation unit
+1669048696141	Rename field 'clock'
+1669048702680	Rename local variable 'c'
+1669048717193	Rename field 'var'
+1669048810342	Rename method 'getClock'
+1669051788951	Move compilation unit
+1669056772303	Rename compilation unit 'Z3Test.java'
+1669127732688	Move compilation unit
+1669128464512	Rename type 'Test'
+1669128584206	Move compilation unit
