@@ -29,20 +29,51 @@ public class Parser {
 		return elems;
 	}
 	
-	public ListList<Element> getVariableAndValue(List<Element> tokens, String variableName, String value){
+	
+	/**
+	 * Returns pairs of variable name and its value as elements
+	 * @param tokens
+	 * @param variableName
+	 * @return
+	 */
+	public List<List<Element>> getVariableAndValue(List<Element> tokens, String variableName){
+		List<List<Element>> elemsList = new ArrayList<>();
 		List<Element> elems = new ArrayList<>();
+		boolean fetchNext = false;
+		for (Element e : tokens) {
+			if (e.getType() == variableName && !fetchNext) {
+				fetchNext = true;
+				elems.add(e);
+			}
+			if (fetchNext && (e.getType() == "KEY_VAR_NAME" || e.getType() == "VALUE")) {
+				elems.add(e);
+				elemsList.add(List.copyOf(elems));
+				elems.clear();
+			}
+		}
+		return elemsList;
+	}
+	
+	
+	/**
+	 * Returns the first value found of a given type after a variable-element with the fitting name has been found
+	 * @param tokens
+	 * @param variableName
+	 * @param valueType
+	 * @return
+	 */
+	public Element getValue(List<Element> tokens, String variableName, String valueType){
 		boolean fetchNext = false;
 		for (Element e : tokens) {
 			if (e.getType() == variableName) {
 				fetchNext = true;
-				
 				continue;
 			}
-			if (fetchNext && e.getType() == type) {
-				elems.add(e);
+			if (fetchNext && e.getType() == valueType) {
+				return e;
 			}
 		}
-		return elems;
+		return null;
 	}
 	
 	/**

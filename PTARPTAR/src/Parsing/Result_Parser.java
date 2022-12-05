@@ -125,12 +125,19 @@ public class Result_Parser extends Parser{
 	}
 	
 	
-	public List<Element> getLocations(List<Element> state){
-		return this.getVariableValue(state, "KEY_LOCATION", false);
+	public List<List<Element>> getLocations(List<Element> state) {
+		List<Element> locations = new ArrayList<>();
+		for(Element e : state) {
+			if (e.getType() == "BRACE_R") {
+				break;
+			}
+			locations.add(e);
+		}
+		return this.getVariableAndValue(locations, "KEY_VAR_NAME", "KEY_VAR_NAME");
 	}
 	
 	public Element getDuration(List<Element> transition) {
-		return this.getVariableValue(transition, "KEY_DURATION", false).get(0);
+		return this.getValue(transition, "KEY_DURATION", "VALUE");
 	}
 	
 	
