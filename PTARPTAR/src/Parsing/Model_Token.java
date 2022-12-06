@@ -18,6 +18,7 @@ public enum Model_Token {
 	KEY_END("end"),
 	KEY_AUTOMATON("automaton"),
 	KEY_ACTIONS("synclabs"),
+	KEY_DO("do"),
 	KEY_ACTION("sync"),
 	KEY_LOCATION_ACCESS("loc\\[\\w+\\]"),
 	KEY_LOCATION("loc"),

@@ -17,6 +17,10 @@ public class Model_Parser extends Parser{
 		return getElemLists(model, "KEY_AUTOMATON", "KEY_END");
 	}
 	
+	public String getAutomatonName(List<Element> automaton) {
+		return automaton.get(0).getContent();
+	}
+	
 	public List<Element> getActions(List<Element> automaton){
 		return getVariableNames(automaton, "KEY_ACTIONS", "SEMI");
 	}
@@ -25,12 +29,16 @@ public class Model_Parser extends Parser{
 		return getElemLists(automaton, "KEY_LOCATION", "KEY_LOCATION", "KEY_END");
 	}
 	
+	public List<List<Element>> getInvariants(List<Element> location){
+		return getElemLists(location, "KEY_INVARIANT", "KEY_LOCATION_WHEN", "KEY_END");
+	}
+	
 	public List<List<Element>> getTransitions(List<Element> location){
-		return getElemLists(location, "KEY_LOCATION_WHEN", "SEMI");
+		return getElemLists(location, "KEY_LOCATION_WHEN", "SEMI",true);
 	}
 	
 	public List<List<Element>> getGuards(List<Element> transition){
-		return getElemLists(transition, "", "KEY_ACTION", "AND");
+		return getElemLists(transition, "KEY_LOCATION_WHEN", "KEY_ACTION", "AND");
 	}
 	
 	public Element getAction(List<Element> transition) {

@@ -30,4 +30,8 @@ public class Element {
 				|| this.type == "EQ" || this.type == "GT" 
 				|| this.type == "GEQ";
 	}
+	
+	public boolean isValue() {
+		return this.type == "VALUE" || this.type == "KEY_VAR_BOOL_TRUE" || this.type == "KEY_VAR_BOOL_FALSE";
+	}
 }

@@ -62,7 +62,7 @@ public class Parser {
 				fetchNext = true;
 				elems.add(e);
 			}
-			else if (fetchNext && (e.getType() == "KEY_VAR_NAME" || e.getType() == "VALUE")) {
+			else if (fetchNext && (e.getType() == "KEY_VAR_NAME" || e.isValue())) {
 				elems.add(e);
 				elemsList.add(List.copyOf(elems));
 				elems.clear();
@@ -82,14 +82,12 @@ public class Parser {
 	public Element getValue(List<Element> tokens, String variableName, String valueType){
 		boolean fetchNext = false;
 		for (Element e : tokens) {
-			e.elemInfo();
 			if (e.getType() == variableName) {
 				fetchNext = true;
 				}
 			else if (fetchNext && e.getType() == valueType) {
 				return e;
 			}
-			System.out.println(fetchNext);
 		}
 		return null;
 	}
@@ -112,7 +110,7 @@ public class Parser {
 				list.clear();
 				fetch = false;
 			}
-			if (fetch) {
+			else if (fetch) {
 				list.add(e);
 			}
 			if (e.getType() == begin) {
@@ -123,6 +121,9 @@ public class Parser {
 				fetchedFirst = true;
 				list.add(e);
 			}
+		}
+		if (!list.isEmpty()) {
+			lists.add(list);
 		}
 		return lists;
 	}
@@ -145,8 +146,9 @@ public class Parser {
 				lists.add(List.copyOf(list));
 				list.clear();
 				fetch = false;
+				fetchedFirst = false;
 			}
-			if (fetch) {
+			else if (fetch) {
 				list.add(e);
 			}
 			if (e.getType() == begin) {
@@ -157,6 +159,79 @@ public class Parser {
 				fetchedFirst = true;
 				list.add(e);
 			}
+		}
+		if (!list.isEmpty()) {
+			lists.add(list);
+		}
+		return lists;
+	}
+	
+	/**
+	 * Returns sublists of a list of elements.
+	 * @param elems List of elements to split.
+	 * @param begin Beginning of each sublist (Element-type)
+	 * @param end End of each sublist (Element-type)
+	 * @param altEnd Alternative end of each sublist (Element-type)
+	 * @param include If true, include Element matching the begin parameter Element type
+	 * @return
+	 */
+	public List<List<Element>> getElemLists(List<Element> elems, String begin, String end, String altEnd, boolean include){
+		List<List<Element>> lists = new ArrayList<>();
+		boolean fetch = false;
+		List<Element> list = new ArrayList<>();
+		for (Element e : elems) {
+			if (fetch && (e.getType() == end || e.getType() == altEnd)) {
+				lists.add(List.copyOf(list));
+				list.clear();
+				fetch = false;
+			}
+			else if (fetch) {
+				list.add(e);
+			}
+			if (e.getType() == begin) {
+				fetch = true;
+				if (include) {
+					list.add(e);
+				}
+			}
+		}
+		if (!list.isEmpty()) {
+			lists.add(list);
+		}
+		return lists;
+	}
+	
+	/**
+	 * Returns sublists of a list of elements.
+	 * @param elems List of elements to split.
+	 * @param begin Beginning of each sublist (Element-type)
+	 * @param end End of each sublist (Element-type)
+	 * @param altEnd Alternative end of each sublist (Element-type)
+	 * @param include If true, include Element matching the begin parameter Element type
+	 * @return
+	 */
+	public List<List<Element>> getElemLists(List<Element> elems, String begin, String end, boolean include){
+		List<List<Element>> lists = new ArrayList<>();
+		boolean fetch = false;
+		List<Element> list = new ArrayList<>();
+		for (Element e : elems) {
+			if (fetch && (e.getType() == end)) {
+				lists.add(List.copyOf(list));
+				list.clear();
+				fetch = false;
+			}
+			else if (fetch) {
+				list.add(e);
+			}
+			if (e.getType() == begin) {
+				fetch = true;
+				if (include) {
+					list.add(e);
+				}
+			}
+		}
+		if (!list.isEmpty()) {
+			lists.add(list);
 		}
 		return lists;
 	}

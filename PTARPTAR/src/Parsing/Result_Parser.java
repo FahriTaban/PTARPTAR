@@ -9,17 +9,17 @@ public class Result_Parser extends Parser{
 	
 	/**
 	 * Returns a list of elements making up a valid run
-	 * @param tokens List of elements to be parsed
-	 * @return
+	 * @param model List of elements to be parsed (make up a model file)
+	 * @return List of Elements representing a valid run
 	 */
-	public List<Element> getValidRun(List<Element> tokens){
+	public List<Element> getValidRun(List<Element> model){
 		List<Element> run = new ArrayList<>();
 		boolean fetch = false;
 		boolean valid = false;
 		boolean runJsonFound = false;
 		boolean runFound = false;
 		int braceCount = 0;
-		for (Element e : tokens) {
+		for (Element e : model) {
 			// find new Run Nr declaring new Run
 			if (e.getType() == "KEY_RUN_NR") {
 				fetch = true;
@@ -64,8 +64,8 @@ public class Result_Parser extends Parser{
 	
 	/**
 	 * Returns other parameter valuations with the same run (as a list of elements)
-	 * @param run List of elements to be parsed
-	 * @return
+	 * @param run List of Elements representing a run
+	 * @return List of Elements containing parameter constraints.
 	 */
 	public List<Element> getParameterConstraints(List<Element> run){
 		List<Element> constraints = new ArrayList<>();
@@ -87,16 +87,16 @@ public class Result_Parser extends Parser{
 	
 	/**
 	 * Returns a list of states of the run, which are a list of elements themselves.
-	 * @param tokens
-	 * @return
+	 * @param run List of Elements representing a run
+	 * @return List of List of Elements, each sublist representing a state.
 	 */
-	public List<List<Element>> getStates(List<Element> tokens){
+	public List<List<Element>> getStates(List<Element> run){
 		List<List<Element>> states = new ArrayList<>();
 		int fetch = 0;
 		int braceCount = 0;
 		boolean begin_brace = false;
 		List<Element> state = new ArrayList<>();
-		for (Element e : tokens) {
+		for (Element e : run) {
 			if (fetch == 2) {
 				state.add(e);
 				if (e.getType() == "BRACE_L") {
@@ -124,7 +124,11 @@ public class Result_Parser extends Parser{
 		return states;
 	}
 	
-	
+	/**
+	 * Get locations of a state in a run from result file.
+	 * @param state List of Elements representing a state
+	 * @return List of list of Elements representing locations (made up of tuples <automaton_name,location_name>)
+	 */
 	public List<List<Element>> getLocations(List<Element> state) {
 		List<Element> locations = getSubList(state, "KEY_LOCATION", "BRACE_R");
 		return this.getVariableAndValue(locations, "KEY_VAR_NAME");
@@ -139,8 +143,9 @@ public class Result_Parser extends Parser{
 	/**
 	 * Given a state (which is a list of elements), return all clock and parameter valuations.
 	 * These states contain variable valuations
-	 * @param state
-	 * @return
+	 * @param state List of elements representing a state in the result file.
+	 * @param discrete If true, return discrete variables (continuous else)
+	 * @return Return List of list of Elements representing variable names and their valuation (discrete or continuous)
 	 */
 	public List<List<Element>> getVariables(List<Element> state, boolean discrete) {
 		String begin;
@@ -157,8 +162,8 @@ public class Result_Parser extends Parser{
 	/**
 	 * Given a valid run (as list of elements), return all outer transitions of that run.
 	 * These outer transitions are list of elements with inner runs, guards, updates, etc.
-	 * @param tokens
-	 * @return
+	 * @param tokens List of elements representing run
+	 * @return List of List of Elements representing outer transitions (only duration and action used)
 	 */
 	public List<List<Element>> getOuterTransitions(List<Element> run){
 		List<List<Element>> transitions = new ArrayList<>();
@@ -170,11 +175,13 @@ public class Result_Parser extends Parser{
 			if (fetch == 2) {
 				if (e.getType() == "KEY_TRANSITION_DURATION") {
 					got_duration = true;
-					}
-				if (e.getType() == "KEY_ACTION") {
-					got_action = true;
+					transition.add(e);
 				}
-				if ((got_duration && e.getType() == "VALUE") || (got_action && e.getType() == "KEY_VAR_NAME")) {
+				else if (e.getType() == "KEY_ACTION") {
+					got_action = true;
+					transition.add(e);
+				}
+				else if ((got_duration && e.getType() == "VALUE") || (got_action && e.getType() == "KEY_VAR_NAME")) {
 					transition.add(e);
 				}
 				if (e.getType() == "COMMA" && got_duration && got_action) {
@@ -196,6 +203,11 @@ public class Result_Parser extends Parser{
 		return transitions;
 	}
 	
+	/**
+	 * Return action name used in transition.
+	 * @param transition List of elements
+	 * @return Element representing action
+	 */
 	public Element getAction(List<Element> transition){
 		return this.getValue(transition, "KEY_ACTION", "KEY_VAR_NAME");
 	}

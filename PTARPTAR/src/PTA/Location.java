@@ -19,16 +19,36 @@ public class Location {
 		this.invariants = List.copyOf(inv);
 		this.urgent = urg;
 	}
+	
+	public Location(String n) {
+		this.name = n;
+	}
 
 	public List<Constraint> getInvariants() {
 		return invariants;
+	}
+	
+	public void setInvariants(List<Constraint> inv) {
+		this.invariants = inv;
 	}
 
 	public String getName() {
 		return name;
 	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public boolean isUrgent() {
 		return urgent;
+	}
+
+	public List<Transition> getTransitions() {
+		return transitions;
+	}
+
+	public void setTransitions(List<Transition> transitions) {
+		this.transitions = transitions;
 	}
 }

@@ -20,6 +20,7 @@ public class Value {
 	
 	public Value(int v) {
 		this.setValue(v);
+		this.setName("Integer");
 	}
 
 	public int getValue() {

@@ -23,14 +23,15 @@ public class UnitTestMP {
 			List<List<Element>> locations = parser.getLocations(automaton);
 //			testLocations(parser,automaton);
 			for (List<Element> location : locations) {
-			List<List<Element>> transitions = parser.getTransitions(location);
-//			testTransitions(parser,location);
-			for(List<Element> transition : transitions) {
-			testGuards(parser,transition);
-			testAction(parser,transition);
-			testUpdates(parser,transition);
-			getPostLoc(parser,transition);	
-		}
+//				testInvariants(parser,location);
+				List<List<Element>> transitions = parser.getTransitions(location);
+//				testTransitions(parser,location);
+				for(List<Element> transition : transitions) {
+					testGuards(parser,transition);
+//					testAction(parser,transition);
+//					testUpdates(parser,transition);
+//					getPostLoc(parser,transition);	
+			}
 		}
 		}
 		
@@ -64,6 +65,11 @@ public class UnitTestMP {
 		List<List<Element>> locations = parser.getLocations(automaton);
 		printStructures(locations);
 		return locations;
+	}
+	
+	public static void testInvariants(Model_Parser parser, List<Element> location){
+		System.out.println("INVARIANT OF LOCATION " + location.get(0).getContent());
+		printStructures(parser.getInvariants(location));
 	}
 	
 	public static List<List<Element>> testTransitions(Model_Parser parser, List<Element> location){

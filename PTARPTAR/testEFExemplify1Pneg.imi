@@ -44,6 +44,7 @@ loc l1: invariant x <= 2
 
 loc l2: invariant x <= 4
 	when x > p sync a2 goto lT;
+	when True sync a1 goto lT;	
 
 loc lT: invariant True
 
