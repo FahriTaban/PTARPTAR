@@ -1,0 +1,6 @@
+Questions for Prof. André:
+
+- Kölbl et al. used symbolic runs since the symbolic state space is guaranteed to be finite for TAs
+-> neither symbolic nor concrete state space is guaranteed to be finite for PTAs, so it should not make a difference, which one I use right?
+- Admissibility for PTAs: Constraining parameters always leads to different untimed traces right?
+- Otherwise take a concrete example from set of parameters, use inverse method?
