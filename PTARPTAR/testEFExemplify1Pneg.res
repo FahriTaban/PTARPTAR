@@ -53,6 +53,7 @@ BEGIN RESULT
 					"specification": "l1"
 				},
 				"discrete_variables": {
+					"a": "10";
 				},
 				"continuous_variables": {
 					"p": "1",

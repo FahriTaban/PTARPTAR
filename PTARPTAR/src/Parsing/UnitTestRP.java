@@ -16,7 +16,20 @@ public class UnitTestRP {
 		List<Element> result = r_lex.getTokens();
 //		testValidRun(parser, result);
 		List<Element> run = parser.getValidRun(result);
-		testParameters(parser,run);
+//		testParameters(parser,run);
+//		testStates(parser,run);
+		List<List<Element>> states = parser.getStates(run);
+		for(List<Element> state : states) {
+//			testLocations(parser, state);
+//			testDiscreteVariables(parser, state);
+//			testContinuousVariables(parser,state);
+		}
+		List<List<Element>> transitions = parser.getOuterTransitions(run);
+		testTransitions(parser,run);
+//		for(List<Element> transition: transitions) {
+//			testDuration(parser, transition);
+//			testAction(parser, transition);
+//		}
 	}
 	
 	public static void testValidRun(Result_Parser parser, List<Element> result) {
@@ -37,14 +50,14 @@ public class UnitTestRP {
 	}
 	
 	public static List<List<Element>> testLocations(Result_Parser parser, List<Element> state) {
-		System.out.println("LOCATIONS OF " + state.get(0).getContent());
+		System.out.println("LOCATIONS OF STATE");
 		List<List<Element>> locations = parser.getLocations(state);
 		printStructures(locations);
 		return locations;
 	}
 	
 	public static List<List<Element>> testTransitions(Result_Parser parser, List<Element> run){
-		System.out.println("TRANSITIONS OF LOCATION " + run.get(0).getContent());
+		System.out.println("TRANSITIONS OF RUN");
 		List<List<Element>> transitions = parser.getOuterTransitions(run);
 		printStructures(transitions);
 		System.out.println("______________________________________________________");
@@ -56,9 +69,19 @@ public class UnitTestRP {
 		printElem(parser.getDuration(transition));
 	}
 	
-	public static void testVariables(Result_Parser parser, List<Element> state) {
-		System.out.println("VARIABLES OF STATE" + state.get(0).getContent());
-		printStructures(parser.getVariables(state));
+	public static void testDiscreteVariables(Result_Parser parser, List<Element> state) {
+		System.out.println("DISCRETE VARIABLES OF STATE");
+		printStructures(parser.getVariables(state,true));
+	}
+	
+	public static void testContinuousVariables(Result_Parser parser, List<Element> state) {
+		System.out.println("CONTINUOUS VARIABLES OF STATE");
+		printStructures(parser.getVariables(state,false));
+	}
+	
+	public static void testAction(Result_Parser parser, List<Element> transition) {
+		System.out.println("ACTION OF TRANSITION");
+		printElem(parser.getAction(transition));
 	}
 	
 	static void printElem(Element elem) {

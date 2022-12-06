@@ -126,18 +126,13 @@ public class Result_Parser extends Parser{
 	
 	
 	public List<List<Element>> getLocations(List<Element> state) {
-		List<Element> locations = new ArrayList<>();
-		for(Element e : state) {
-			if (e.getType() == "BRACE_R") {
-				break;
-			}
-			locations.add(e);
-		}
+		List<Element> locations = getSubList(state, "KEY_LOCATION", "BRACE_R");
 		return this.getVariableAndValue(locations, "KEY_VAR_NAME");
 	}
 	
 	public Element getDuration(List<Element> transition) {
-		return this.getValue(transition, "KEY_DURATION", "VALUE");
+		Element duration = getValue(transition, "KEY_TRANSITION_DURATION", "VALUE");
+		return duration;
 	}
 	
 	
@@ -147,46 +142,16 @@ public class Result_Parser extends Parser{
 	 * @param state
 	 * @return
 	 */
-	public List<List<Element>> getVariables(List<Element> state) {
-		List<List<Element>> variables = new ArrayList<>();
-		boolean fetch = false;
-		int fetched = 0;
-		int complete = 0;
-		int braceCount = 0;
-		boolean braceClosed = false;
-		List<Element> variable = new ArrayList<>();
-		for (Element e : state) {
-			if (fetch && e.getType() == "BRACE_L") {
-				braceCount++;
-				braceClosed = false;
-			}
-			if (fetch && e.getType() == "BRACE_R") {
-				braceCount--;
-				braceClosed = true;
-				fetch = false;
-			}
-			if (e.getType() == "KEY_VARS") {
-				fetch = true;
-			}
-			if (fetch && e.getType() == "KEY_VAR_NAME" && e.getContent() != "global_time") {
-				variable.add(e);
-				fetched++;
-			}
-			if (fetched == 2) {
-				variables.add(List.copyOf(variable));
-				variable.clear();
-				fetched = 0;	
-				}
-			if (braceCount == 0 && braceClosed) {
-				if (complete < 2) {
-					complete++;
-				}
-				else {
-					return variables;
-				}
-			}
+	public List<List<Element>> getVariables(List<Element> state, boolean discrete) {
+		String begin;
+		if (discrete) {
+			begin = "KEY_VARS_DISCRETE";
 		}
-		return variables;
+		else {
+			begin = "KEY_VARS_CONTINUOUS";
+		}
+		List<Element> variables = getSubList(state, begin, "BRACE_R");
+		return getVariableAndValue(variables, "KEY_VAR_NAME");
 	}
 	
 	/**
@@ -229,6 +194,10 @@ public class Result_Parser extends Parser{
 				
 		}
 		return transitions;
+	}
+	
+	public Element getAction(List<Element> transition){
+		return this.getValue(transition, "KEY_ACTION", "KEY_VAR_NAME");
 	}
 	
 

@@ -29,6 +29,23 @@ public class Parser {
 		return elems;
 	}
 	
+	public List<Element> getSubList(List<Element> tokens, String begin, String end){
+		List<Element> elems = new ArrayList<>();
+		boolean fetch = false;
+		for (Element e : tokens) {
+			if (e.getType() == begin) {
+				fetch = true;
+			}
+			else if (e.getType() == end && fetch) {
+				break;
+			}
+			else if (fetch) {
+				elems.add(e);
+			}
+		}
+		return elems;
+	}
+	
 	
 	/**
 	 * Returns pairs of variable name and its value as elements
@@ -45,7 +62,7 @@ public class Parser {
 				fetchNext = true;
 				elems.add(e);
 			}
-			if (fetchNext && (e.getType() == "KEY_VAR_NAME" || e.getType() == "VALUE")) {
+			else if (fetchNext && (e.getType() == "KEY_VAR_NAME" || e.getType() == "VALUE")) {
 				elems.add(e);
 				elemsList.add(List.copyOf(elems));
 				elems.clear();
@@ -65,13 +82,14 @@ public class Parser {
 	public Element getValue(List<Element> tokens, String variableName, String valueType){
 		boolean fetchNext = false;
 		for (Element e : tokens) {
+			e.elemInfo();
 			if (e.getType() == variableName) {
 				fetchNext = true;
-				continue;
-			}
-			if (fetchNext && e.getType() == valueType) {
+				}
+			else if (fetchNext && e.getType() == valueType) {
 				return e;
 			}
+			System.out.println(fetchNext);
 		}
 		return null;
 	}
