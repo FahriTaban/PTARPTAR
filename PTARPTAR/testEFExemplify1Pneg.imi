@@ -49,6 +49,21 @@ loc lT: invariant True
 end (* pta *)
 
 (************************************************************)
+  automaton specification2
+(************************************************************)
+synclabs: a1, a2;
+
+loc l1: invariant x >= 4
+	when x <= 2 sync a1 goto l2;
+
+loc l2: invariant x < 4
+	when x <= p sync a2 do {x := 0} goto lT;
+
+loc lT: invariant True
+
+end (* pta *)
+
+(************************************************************)
 (* Initial state *)
 (************************************************************)
 

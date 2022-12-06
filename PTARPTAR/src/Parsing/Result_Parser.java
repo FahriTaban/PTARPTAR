@@ -133,7 +133,7 @@ public class Result_Parser extends Parser{
 			}
 			locations.add(e);
 		}
-		return this.getVariableAndValue(locations, "KEY_VAR_NAME", "KEY_VAR_NAME");
+		return this.getVariableAndValue(locations, "KEY_VAR_NAME");
 	}
 	
 	public Element getDuration(List<Element> transition) {
