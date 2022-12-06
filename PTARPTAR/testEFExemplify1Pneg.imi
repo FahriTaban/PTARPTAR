@@ -40,6 +40,7 @@ synclabs: a1, a2;
 
 loc l1: invariant x <= 2
 	when x <= 2 sync a1 goto l2;
+	when x >= 0 sync a2 goto lT;
 
 loc l2: invariant x <= 4
 	when x > p sync a2 goto lT;

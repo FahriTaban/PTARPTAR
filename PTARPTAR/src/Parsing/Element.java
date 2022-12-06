@@ -24,4 +24,10 @@ public class Element {
 		System.out.println("Type: " + this.type);
 		System.out.println(this.content);
 	}
+	
+	public boolean isComparisonOperator() {
+		return this.type == "LEQ" || this.type == "LT" 
+				|| this.type == "EQ" || this.type == "GT" 
+				|| this.type == "GEQ";
+	}
 }

@@ -86,6 +86,7 @@ public class Parser {
 	public List<List<Element>> getElemLists(List<Element> elems, String begin, String end){
 		List<List<Element>> lists = new ArrayList<>();
 		boolean fetch = false;
+		boolean fetchedFirst = false;
 		List<Element> list = new ArrayList<>();
 		for (Element e : elems) {
 			if (fetch && e.getType() == end) {
@@ -93,11 +94,15 @@ public class Parser {
 				list.clear();
 				fetch = false;
 			}
-			if (begin == "" || e.getType() == begin) {
-				fetch = true;
-				continue;
-			}
 			if (fetch) {
+				list.add(e);
+			}
+			if (e.getType() == begin) {
+				fetch = true;
+			}
+			else if (begin == "" && !fetchedFirst) {
+				fetch = true;
+				fetchedFirst = true;
 				list.add(e);
 			}
 		}
@@ -115,6 +120,7 @@ public class Parser {
 	public List<List<Element>> getElemLists(List<Element> elems, String begin, String end, String altEnd){
 		List<List<Element>> lists = new ArrayList<>();
 		boolean fetch = false;
+		boolean fetchedFirst = false;
 		List<Element> list = new ArrayList<>();
 		for (Element e : elems) {
 			if (fetch && (e.getType() == end || e.getType() == altEnd)) {
@@ -122,11 +128,15 @@ public class Parser {
 				list.clear();
 				fetch = false;
 			}
-			if (begin == "" || e.getType() == begin) {
-				fetch = true;
-				continue;
-			}
 			if (fetch) {
+				list.add(e);
+			}
+			if (e.getType() == begin) {
+				fetch = true;
+			}
+			else if (begin == "" && !fetchedFirst) {
+				fetch = true;
+				fetchedFirst = true;
 				list.add(e);
 			}
 		}

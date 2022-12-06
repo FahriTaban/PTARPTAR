@@ -14,68 +14,84 @@ public class UnitTestMP {
 		m_lex.findTokens();
 		Model_Parser parser = new Model_Parser();
 		List<Element> model = m_lex.getTokens();
-		testClocks(parser,model);
-		testParameters(parser,model);
-		testAutomata(parser,model);
-		testActions(parser,model);
-		testLocations(parser,model);
-		testTransitions(parser,model);
-		testGuards(parser,model);
-		testAction(parser,model);
-		testUpdates(parser,model);
-		getPostLoc(parser,model);
+//		testClocks(parser,model);
+//		testParameters(parser,model);
+//		testAutomata(parser,model);
+		List<List<Element>> automata = parser.getAutomata(model);
+		for(List<Element> automaton : automata) {
+//		testActions(parser,automaton);
+			List<List<Element>> locations = parser.getLocations(automaton);
+//			testLocations(parser,automaton);
+			for (List<Element> location : locations) {
+			List<List<Element>> transitions = parser.getTransitions(location);
+//			testTransitions(parser,location);
+			for(List<Element> transition : transitions) {
+			testGuards(parser,transition);
+			testAction(parser,transition);
+			testUpdates(parser,transition);
+			getPostLoc(parser,transition);	
+		}
+		}
+		}
 		
 		
 	}
 	public static void testClocks(Model_Parser parser, List<Element> model) 
 	{
+		System.out.println("CLOCKS USED IN MODEL");
 		printElems(parser.getClocks(model));
-		System.out.println("______________________________________________________");
 	}
 	
 	public static void testParameters(Model_Parser parser, List<Element> model) {
+		System.out.println("PARAMETERS USED IN MODEL");
 		printElems(parser.getParameters(model));
-		System.out.println("______________________________________________________");
 	}
 	
-	public static void testAutomata(Model_Parser parser, List<Element> model) {
-		printStructures(parser.getAutomata(model));
-		System.out.println("______________________________________________________");
+	public static List<List<Element>> testAutomata(Model_Parser parser, List<Element> model) {
+		System.out.println("AUTOMATA IN MODEL");
+		List<List<Element>> automata = parser.getAutomata(model);
+		printStructures(automata);
+		return automata;
 	}
 	
 	public static void testActions(Model_Parser parser, List<Element> automaton) {
+		System.out.println("ACTIONS OF AUTOMATON " + automaton.get(0).getContent());
 		printElems(parser.getActions(automaton));
-		System.out.println("______________________________________________________");
 	}
 	
-	public static void testLocations(Model_Parser parser, List<Element> automaton) {
-		printStructures(parser.getAutomata(automaton));
-		System.out.println("______________________________________________________");
+	public static List<List<Element>> testLocations(Model_Parser parser, List<Element> automaton) {
+		System.out.println("LOCATIONS OF " + automaton.get(0).getContent());
+		List<List<Element>> locations = parser.getLocations(automaton);
+		printStructures(locations);
+		return locations;
 	}
 	
-	public static void testTransitions(Model_Parser parser, List<Element> location){
+	public static List<List<Element>> testTransitions(Model_Parser parser, List<Element> location){
+		System.out.println("TRANSITIONS OF LOCATION " + location.get(0).getContent());
+		List<List<Element>> transitions = parser.getTransitions(location);
 		printStructures(parser.getTransitions(location));
 		System.out.println("______________________________________________________");
+		return transitions;
 	}
 	
 	public static void testGuards(Model_Parser parser, List<Element> transition){
+		System.out.println("GUARDS OF TRANSITION");
 		printStructures(parser.getGuards(transition));
-		System.out.println("______________________________________________________");
 	}
 	
 	public static void testAction(Model_Parser parser, List<Element> transition) {
+		System.out.println("ACTION OF TRANSITION");
 		printElem(parser.getAction(transition));
-		System.out.println("______________________________________________________");
 	}
 	
 	public static void testUpdates(Model_Parser parser, List<Element> transition){
+		System.out.println("UPDATE OF TRANSITION");
 		printStructures(parser.getUpdates(transition));
-		System.out.println("______________________________________________________");
 	}
 	
 	public static void getPostLoc(Model_Parser parser, List<Element> transition) {
+		System.out.println("POSTLOC OF TRANSITION");
 		printElem(parser.getPostLoc(transition));
-		System.out.println("______________________________________________________");
 	}
 	
 	

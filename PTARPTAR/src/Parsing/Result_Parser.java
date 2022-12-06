@@ -64,20 +64,20 @@ public class Result_Parser extends Parser{
 	
 	/**
 	 * Returns other parameter valuations with the same run (as a list of elements)
-	 * @param tokens List of elements to be parsed
+	 * @param run List of elements to be parsed
 	 * @return
 	 */
-	public List<Element> getParameterConstraints(List<Element> tokens){
+	public List<Element> getParameterConstraints(List<Element> run){
 		List<Element> constraints = new ArrayList<>();
 		boolean fetch = false;
-		for (Element e : tokens) {
+		for (Element e : run) {
 			if (e.getType() == "KEY_OTHER_VALUATIONS") {
 				fetch = true;
 			}
 			if (e.getType() == "KEY_RUN_NATURE_VALID") {
 				break;
 			}
-			if (fetch) {
+			if (fetch && (e.getType() == "KEY_VAR_NAME" || e.getType() == "VALUE" || e.isComparisonOperator())) {
 				constraints.add(e);
 			}
 		}
