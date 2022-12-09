@@ -26,6 +26,9 @@ public class Model_Lexer {
     			token = t;
     			lex = input.substring(0,end);
     			if(token.isUseful()) {
+    				if (token.name() == "KEY_LOCATION_ACCESS") {
+    					lex = lex.substring(4, lex.length()-1);
+    				}
     				Element elem = new Element(token.name(),lex);
     				tokens.add(elem);
     			}

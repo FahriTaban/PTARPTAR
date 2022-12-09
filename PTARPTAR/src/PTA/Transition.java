@@ -9,41 +9,42 @@ import org.javatuples.Pair;
  *
  */
 public class Transition {
-	private Location prestate;
+	private String prestate;
 	private List<Constraint> guards;
-	private Action action;
-	private Update updateRule;
-	private Location poststate;
+	private String action;
+	private List<Update> updateRules;
+	private String poststate;
 	
-	public Transition(Location pre, Location post,Update updateRule, List<Constraint> gs, Action a) {
+	public Transition(String pre, String action, String post,List<Update> updateRules, List<Constraint> gs) {
 		this.prestate = pre;
+		this.action = action;
 		this.poststate = post;
 		this.guards = List.copyOf(gs);
-		this.action = a;
+		this.updateRules = updateRules;
 		
 	}
 
-	public Location getPrestate() {
+	public String getPrestate() {
 		return prestate;
 	}
 
-	public Location getPoststate() {
+	public String getPoststate() {
 		return poststate;
 	}
 
 	public List<Constraint> getGuards() {
 		return guards;
 	}
-
-	public Action getAction() {
-		return action;
+	
+	public List<Update> getUpdateRule() {
+		return updateRules;
+	}
+	
+	public String getAction() {
+		return this.action;
 	}
 
-	public Update getUpdateRule() {
-		return updateRule;
-	}
-
-	public void setUpdateRule(Update updateRule) {
-		this.updateRule = updateRule;
+	public void setUpdateRule(List<Update> updateRules) {
+		this.updateRules = updateRules;
 	}
 }

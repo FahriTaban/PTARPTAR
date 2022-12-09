@@ -12,6 +12,16 @@ public class Model_Parser extends Parser{
 	public List<Element> getParameters(List<Element> model){
 		return getVariableNames(model, "KEY_VAR_DECL_CLOCKS", "KEY_VAR_DECL_PARAMETERS");
 	}
+	
+	public List<List<Element>> getInitLocations(List<Element> model){
+		List<Element> initBlock = getSubList(model, "KEY_INIT", "BRACE_R");
+		return getElemLists(initBlock, "KEY_LOCATION_ACCESS","COMMA",true);
+	}
+	
+	public List<List<Element>> getInitConstraints(List<Element> model){
+		List<Element> continuousBlock = getSubList(getSubList(model, "KEY_INIT", "BRACE_R"),"KEY_INIT_CONTINUOUS","SEMI");
+		return getElemLists(continuousBlock, "AND", "AND", "SEMI");
+	}
 		
 	public List<List<Element>> getAutomata(List<Element> model){
 		return getElemLists(model, "KEY_AUTOMATON", "KEY_END");

@@ -14,10 +14,15 @@ public class Location {
 	private List<Transition> transitions;
 	private boolean urgent;
 
-	public Location(String n, List<Constraint> inv, boolean urg) {
+	public Location(String n, List<Constraint> inv, List<Transition> transitions) {
+		this.name = n;
+		this.transitions = transitions;
+		this.invariants = inv;
+	}
+	
+	public Location(String n, List<Constraint> inv) {
 		this.name = n;
 		this.invariants = List.copyOf(inv);
-		this.urgent = urg;
 	}
 	
 	public Location(String n) {
@@ -42,6 +47,10 @@ public class Location {
 
 	public boolean isUrgent() {
 		return urgent;
+	}
+	
+	public void setUrgent(boolean urg) {
+		this.urgent = urg;
 	}
 
 	public List<Transition> getTransitions() {

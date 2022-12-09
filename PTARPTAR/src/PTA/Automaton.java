@@ -40,4 +40,13 @@ public class Automaton {
 	public void setLocations(List<Location> locations) {
 		this.locations = locations;
 	}
+	
+	public Location findLocation(String loc_name) {
+		for(Location loc : this.locations) {
+			if (loc.getName() == loc_name) {
+				return loc;
+			}
+		}
+		return null;
+	}
 }

@@ -17,6 +17,8 @@ public class UnitTestMP {
 //		testClocks(parser,model);
 //		testParameters(parser,model);
 //		testAutomata(parser,model);
+		testInitLocations(parser,model);
+		testInitConstraints(parser,model);
 		List<List<Element>> automata = parser.getAutomata(model);
 		for(List<Element> automaton : automata) {
 //		testActions(parser,automaton);
@@ -27,7 +29,7 @@ public class UnitTestMP {
 				List<List<Element>> transitions = parser.getTransitions(location);
 //				testTransitions(parser,location);
 				for(List<Element> transition : transitions) {
-					testGuards(parser,transition);
+//					testGuards(parser,transition);
 //					testAction(parser,transition);
 //					testUpdates(parser,transition);
 //					getPostLoc(parser,transition);	
@@ -46,6 +48,16 @@ public class UnitTestMP {
 	public static void testParameters(Model_Parser parser, List<Element> model) {
 		System.out.println("PARAMETERS USED IN MODEL");
 		printElems(parser.getParameters(model));
+	}
+	
+	public static void testInitLocations(Model_Parser parser, List<Element> model) {
+		System.out.println("INITAL LOCATIONS");
+		printStructures(parser.getInitLocations(model));
+	}
+	
+	public static void testInitConstraints(Model_Parser parser, List<Element> model) {
+		System.out.println("INITAL CONSTRAINTS");
+		printStructures(parser.getInitConstraints(model));
 	}
 	
 	public static List<List<Element>> testAutomata(Model_Parser parser, List<Element> model) {

@@ -6,43 +6,34 @@ package PTA;
  *
  */
 public class Constraint {
-	private final Value val;
-	private final Operator operator;
-	private final Value bound;
+	private Value val1;
+	private String operator;
+	private Value val2;
 	
-	public Constraint(Value v, Operator op, Value b) {
-		this.val = v;
+	public Constraint(Value v, String op, Value b) {
+		this.val1 = v;
 		this.operator = op;
-		this.bound = b;
+		this.val2 = b;
+	}
+	
+	public Constraint(String bool) {
+		this.val1 = new Value(bool);
+		this.operator = "";
+		this.val2 = new Value("");
 	}
 	
 	
-	public Value getValue() {
-		return val;
+	public Value getValue1() {
+		return val1;
+	}
+	
+	public Value getValue2() {
+		return val2;
 	}
 
 
-	public Operator getOperator() {
+	public String getOperator() {
 		return operator;
 	}
 	
-	public String opToString() {
-		switch(this.operator) {
-			case lt:
-				return "<";
-			case leq:
-				return "<=";
-			case gt:
-				return ">";
-			case geq:
-				return ">=";
-			default:
-				return " ";
-		}
-	}
-
-
-	enum Operator {
-		lt,leq,gt,geq
-	}
 }

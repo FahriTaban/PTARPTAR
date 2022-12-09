@@ -3,15 +3,24 @@ package PTA;
 import java.util.List;
 
 public class NetworkPTA {
-	private final List<Automaton> automata;
-	private final List<Clock> clocks;
-	private final List<Parameter> parameters;
-	private final List<Boolean> bools;
-	private final List<Location> initial_locations;
-	private final List<Constraint> initial_constraints;
+	private List<Automaton> automata;
+	private List<Clock> clocks;
+	private List<Parameter> parameters;
+	private List<Boolean> bools;
+	private List<Constraint> initial_locations;
+	private List<Constraint> initial_constraints;
 	
 	public NetworkPTA(List<Automaton> a, List<Clock> c,
-			List<Parameter> p, List<Boolean> b, List<Location> locs, List<Constraint> cons) {
+			List<Parameter> p, List<Constraint> locs, List<Constraint> cons) {
+		this.automata = a;
+		this.clocks = c;
+		this.parameters = p;
+		this.initial_locations = locs;
+		this.initial_constraints = cons;
+	}
+	
+	public NetworkPTA(List<Automaton> a, List<Clock> c,
+			List<Parameter> p, List<Boolean> b, List<Constraint> locs, List<Constraint> cons) {
 		this.automata = a;
 		this.clocks = c;
 		this.parameters = p;
@@ -36,7 +45,7 @@ public class NetworkPTA {
 		return bools;
 	}
 
-	public List<Location> getInitial_Locations() {
+	public List<Constraint> getInitial_Locations() {
 		return initial_locations;
 	}
 

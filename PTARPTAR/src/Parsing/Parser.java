@@ -66,6 +66,7 @@ public class Parser {
 				elems.add(e);
 				elemsList.add(List.copyOf(elems));
 				elems.clear();
+				fetchNext = false;
 			}
 		}
 		return elemsList;
