@@ -46,6 +46,28 @@ public class Parser {
 		return elems;
 	}
 	
+	public List<List<Element>> getValOpVal(List<Element> token){
+		List<List<Element>> vovs = new ArrayList<>();
+		List<Element> vov = new ArrayList<>();
+		int fetched = 0;
+		for (Element e : token) {
+			if (e.getType() == "KEY_VAR_NAME" || e.getType() == "VALUE" || e.isComparisonOperator()) {
+				fetched++;
+				vov.add(e);
+			} 
+			if (e.isBool()) {
+				vov.add(e);
+				vovs.add(List.copyOf(vov));
+				vov.clear();
+			}
+			else if (fetched == 3) {
+				vovs.add(List.copyOf(vov));
+				vov.clear();
+				fetched = 0;
+			}
+		}
+		return vovs;
+	}
 	
 	/**
 	 * Returns pairs of variable name and its value as elements

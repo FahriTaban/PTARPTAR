@@ -31,6 +31,7 @@ public enum Result_Token {
 	KEY_TRANSITION_PTA("PTA"),
 	KEY_TRANSITION_GUARD("guard"),
 	KEY_TRANSITION_UPDATES("updates"),
+	KEY_AND("AND"),
 	
 	KEY_VAR_BOOL_TRUE("True"),
 	KEY_VAR_BOOL_FALSE("False"),

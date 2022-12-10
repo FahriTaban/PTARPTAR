@@ -34,4 +34,8 @@ public class Element {
 	public boolean isValue() {
 		return this.type == "VALUE" || this.type == "KEY_VAR_BOOL_TRUE" || this.type == "KEY_VAR_BOOL_FALSE";
 	}
+	
+	public boolean isBool() {
+		return this.type == "KEY_VAR_BOOL_TRUE" || this.type == "KEY_VAR_BOOL_FALSE";
+	}
 }

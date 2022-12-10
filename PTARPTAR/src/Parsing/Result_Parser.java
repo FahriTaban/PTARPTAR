@@ -166,41 +166,25 @@ public class Result_Parser extends Parser{
 	 * @return List of List of Elements representing outer transitions (only duration and action used)
 	 */
 	public List<List<Element>> getOuterTransitions(List<Element> run){
-		List<List<Element>> transitions = new ArrayList<>();
-		int fetch = 0;
-		boolean got_duration = false;
-		boolean got_action = false;
-		List<Element> transition = new ArrayList<>();
-		for (Element e : run) {
-			if (fetch == 2) {
-				if (e.getType() == "KEY_TRANSITION_DURATION") {
-					got_duration = true;
-					transition.add(e);
-				}
-				else if (e.getType() == "KEY_ACTION") {
-					got_action = true;
-					transition.add(e);
-				}
-				else if ((got_duration && e.getType() == "VALUE") || (got_action && e.getType() == "KEY_VAR_NAME")) {
-					transition.add(e);
-				}
-				if (e.getType() == "COMMA" && got_duration && got_action) {
-					fetch--;
-					transitions.add(List.copyOf(transition));
-					transition.clear();
-					got_duration = false;
-					got_action = false;
-				}
-			}
-			if (e.getType() == "KEY_STEPS") {
-				fetch++;
-			}
-			if (e.getType() == "KEY_TRANSITION" && fetch < 2) {
-				fetch++;
-			}
-				
-		}
-		return transitions;
+		return getElemLists(run, "KEY_TRANSITION", "KEY_STATE");
+	}
+	
+	public List<List<Element>> getInnerTransitions(List<Element> outerTransitions){
+		return getElemLists(outerTransitions, "KEY_TRANSITION" , "KEY_TRANSITION");
+	}
+	
+	public Element getPTA(List<Element> innerTransition) {
+		return getValue(innerTransition, "KEY_TRANSITION_PTA", "KEY_VAR_NAME");
+	}
+	
+	public List<List<Element>> getGuard(List<Element> innerTransition){
+		List<Element> sub = getSubList(innerTransition, "KEY_TRANSITION_GUARD", "COMMA");
+		return getValOpVal(sub);
+	}
+	
+	public List<List<Element>> getUpdates(List<Element> innerTransition){
+		List<Element> sub = getSubList(innerTransition, "KEY_TRANSITION_UPDATES", "BRACE_R");
+		return getVariableAndValue(sub, "KEY_VAR_NAME");
 	}
 	
 	/**

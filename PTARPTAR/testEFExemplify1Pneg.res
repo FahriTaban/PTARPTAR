@@ -75,8 +75,9 @@ BEGIN RESULT
 					{
 					"transition": {
 						"PTA": "specification",
-						"guard": " 2 >= x",
+						"guard": " 2 >= x AND x < 4 AND True",
 						"updates": {
+							"t_AVI": "0""AVIisIdle": "False"
 						}
 					}
 					}

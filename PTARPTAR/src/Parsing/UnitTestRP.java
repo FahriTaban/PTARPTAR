@@ -24,12 +24,39 @@ public class UnitTestRP {
 //			testDiscreteVariables(parser, state);
 //			testContinuousVariables(parser,state);
 		}
-		List<List<Element>> transitions = parser.getOuterTransitions(run);
-		testTransitions(parser,run);
-		for(List<Element> transition: transitions) {
+		List<List<Element>> ot = parser.getOuterTransitions(run);
+//		testTransitions(parser,run);
+		for(List<Element> transition: ot) {
 //			testDuration(parser, transition);
 //			testAction(parser, transition);
+			List<List<Element>> it = parser.getInnerTransitions(transition);
+//			testInnerTransitions(parser,transition);
+			for(List<Element> i : it) {
+				testPTA(parser,i);
+				testGuard(parser,i);
+				testUpdates(parser,i);
+			}
 		}
+	}
+	
+	public static void testInnerTransitions(Result_Parser parser, List<Element> ot) {
+		System.out.println("INNER TRANSITION");
+		printStructures(parser.getInnerTransitions(ot));
+	}
+	
+	public static void testPTA(Result_Parser parser, List<Element> it) {
+		System.out.println("PTA");
+		printElem(parser.getPTA(it));
+	}
+	
+	public static void testGuard(Result_Parser parser, List<Element> it) {
+		System.out.println("GUARD");
+		printStructures(parser.getGuard(it));
+	}
+	
+	public static void testUpdates(Result_Parser parser, List<Element> it) {
+		System.out.println("UPDATES");
+		printStructures(parser.getUpdates(it));
 	}
 	
 	public static void testValidRun(Result_Parser parser, List<Element> result) {
