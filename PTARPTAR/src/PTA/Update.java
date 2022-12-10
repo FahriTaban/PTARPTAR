@@ -2,10 +2,11 @@ package PTA;
 
 public class Update {
 	private String variable;
-	private int setToValue;
+	private String setToValue;
 	
-	public Update(String var, int val) {
-		
+	public Update(String var, String val) {
+		this.variable = var;
+		this.setToValue = val;
 	}
 
 	public String getVariable() {
@@ -16,11 +17,16 @@ public class Update {
 		this.variable = variable;
 	}
 
-	public int getSetToValue() {
+	public String getSetToValue() {
 		return setToValue;
 	}
 
-	public void setSetToValue(int setToValue) {
+	public void setSetToValue(String setToValue) {
 		this.setToValue = setToValue;
+	}
+	
+	public void printInfo() {
+		System.out.println("Update");
+		System.out.println(this.variable + " := " + this.setToValue);
 	}
 }

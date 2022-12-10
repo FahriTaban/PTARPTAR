@@ -13,7 +13,7 @@ public class ConvertPTAToModel {
 	 * @param npta
 	 * @param filePath
 	 */
-	public void nptaToModel(NetworkPTA npta, String filePath) {
+	public static void nptaToModel(NetworkPTA npta, String filePath) {
 		String model;
 		String vars = declareVariables(npta.getClocks(),npta.getParameter());
 		String automata = "";
@@ -22,8 +22,16 @@ public class ConvertPTAToModel {
 		}
 		String initBlock = declareInit(npta.getInitial_Locations(), npta.getInitial_Constraints());
 		model = vars + "\n\n" + automata + initBlock;
-		String fp = Utility.createFile(filePath);
-		Utility.writeToFile(fp, model);
+		System.out.println("vars");
+		System.out.println(vars);
+		System.out.println("automata");
+		System.out.println(automata);
+		System.out.println("initBlock");
+		System.out.println(initBlock);
+		System.out.println("model");
+		System.out.println(model);
+//		String fp = Utility.createFile(filePath);
+		Utility.writeToFile(filePath, model);
 	}
 	
 	/**
@@ -32,11 +40,11 @@ public class ConvertPTAToModel {
 	 * @param initCons
 	 * @return
 	 */
-	public String declareInit(List<Constraint> initLocs, List<Constraint> initCons) {
-		String decl = "init := \\{\n\n";
+	public static String declareInit(List<Constraint> initLocs, List<Constraint> initCons) {
+		String decl = "init := {\n\n";
 		String initLoc = declareInitLocs(initLocs);
 		String initCon = declareInitCons(initCons);
-		decl += initLoc + "\n\n" + initCon + "\n\\}";
+		decl += initLoc + "\n\n" + initCon + "\n}";
 		return decl;
 	}
 	
@@ -46,10 +54,10 @@ public class ConvertPTAToModel {
 	 * @param locs
 	 * @return
 	 */
-	public String declareInitLocs(List<Constraint> locs) {
+	public static String declareInitLocs(List<Constraint> locs) {
 		String decl = "discrete = \n";
 		for(Constraint loc : locs) {
-			decl += "loc\\[" + loc.getValue1().getName() + "\\] " + loc.getOperator() + " " + loc.getValue2() + ",\n";
+			decl += "loc[" + loc.getValue1().getName() + "] " + loc.getOperator() + " " + loc.getValue2().getName() + ",\n";
 		}
 		decl += ";";
 		return decl;
@@ -61,10 +69,24 @@ public class ConvertPTAToModel {
 	 * @param cons
 	 * @return
 	 */
-	public String declareInitCons(List<Constraint> cons) {
+	public static String declareInitCons(List<Constraint> cons) {
 		String decl = "continuous = \n";
+		String pos1 = "";
+		String pos2 = "";
 		for(Constraint con : cons) {
-			decl += "& " + con.getValue1().getName() + " " + con.getOperator() + " " + con.getValue2() + "\n";
+			if (con.getValue1().isConstant()) {
+				pos1 = Integer.toString(con.getValue1().getValue());
+			}
+			else {
+				pos1 = con.getValue1().getName();
+			}
+			if (con.getValue2().isConstant()) {
+				pos1 = Integer.toString(con.getValue2().getValue());
+			}
+			else {
+				pos2 = con.getValue2().getName();
+			}
+			decl += "& " + pos1 + " " + con.getOperator() + " " + pos2 + " " + "\n";
 		}
 		decl += ";";
 		return decl;
@@ -76,14 +98,14 @@ public class ConvertPTAToModel {
 	 * @param parameters
 	 * @return
 	 */
-	public String declareVariables(List<Clock> clocks, List<Parameter> parameters) {
+	public static String declareVariables(List<Clock> clocks, List<Parameter> parameters) {
 		String decl = "var \n";
 		for(Clock c : clocks) {
 			decl += c.getName()+",";
 		}
 		decl += ": clock;\n";
 		for(Parameter p : parameters) {
-			decl += p.getName();
+			decl += p.getName()+",";
 		}
 		decl += ": parameter;";
 		return decl;
@@ -94,7 +116,7 @@ public class ConvertPTAToModel {
 	 * @param a
 	 * @return
 	 */
-	public String declareAutomaton(Automaton a) {
+	public static String declareAutomaton(Automaton a) {
 		String decl = "automaton " +a.getName() + "\n\n";
 		// get actions
 		decl += declareActions(a) + "\n\n";
@@ -112,7 +134,7 @@ public class ConvertPTAToModel {
 	 * @param a
 	 * @return
 	 */
-	public String declareActions(Automaton a) {
+	public static String declareActions(Automaton a) {
 		String decl = "synclabs: ";
 		for(Action act : a.getActions()) {
 			decl += act.getName() + ",";
@@ -126,7 +148,7 @@ public class ConvertPTAToModel {
 	 * @param loc
 	 * @return
 	 */
-	public String declareLocation(Location loc) {
+	public static String declareLocation(Location loc) {
 		String decl = "loc " + loc.getName() + ": invariant ";
 		String invariant = declareConstraints(loc.getInvariants());
 		String transitions = "";
@@ -143,15 +165,15 @@ public class ConvertPTAToModel {
 	 * @param t
 	 * @return
 	 */
-	public String declareTransition(Transition t) {
-		String decl = "when " + declareConstraints(t.getGuards()) + " sync " + t.getAction();
+	public static String declareTransition(Transition t) {
+		String decl = "when " + declareConstraints(t.getGuards()) + "sync " + t.getAction();
 		String end;
 		if (!t.getUpdateRule().isEmpty()) {
 			end = " do " + declareUpdate(t) + " goto " + t.getPoststate() + ";";
 		} else {
 			end = " goto " + t.getPoststate() + ";";
 		}
-		return decl;
+		return decl+end;
 	}
 	
 	/**
@@ -159,7 +181,7 @@ public class ConvertPTAToModel {
 	 * @param cons
 	 * @return
 	 */
-	public String declareConstraints(List<Constraint> cons) {
+	public static String declareConstraints(List<Constraint> cons) {
 		String decl = "";
 		for(Constraint con : cons) {
 			if (con.getValue2().getName() == "") {
@@ -177,12 +199,15 @@ public class ConvertPTAToModel {
 	 * @param t
 	 * @return
 	 */
-	public String declareUpdate(Transition t) {
-		String decl = "\\{";
+	public static String declareUpdate(Transition t) {
+		if (t.getUpdateRule().isEmpty()) {
+			return "";
+		}
+		String decl = "{";
 		for(Update u : t.getUpdateRule()) {
 			decl += u.getVariable() + " := " + u.getSetToValue()+",";
 		}
-		decl = decl.substring(0,decl.length()-1) + "\\}";
+		decl = decl.substring(0,decl.length()-1) + "}";
 		return decl;
 	}
 	

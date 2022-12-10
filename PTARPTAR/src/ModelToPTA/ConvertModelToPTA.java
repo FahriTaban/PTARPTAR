@@ -1,4 +1,4 @@
-package ElementToPTA;
+package ModelToPTA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import Parsing.*;
  * @author 49173
  *
  */
-public class ConvertModelToJava {
+public class ConvertModelToPTA {
 	static Model_Parser parser = new Model_Parser();
 	static List<Clock> clocks;
 	static List<Parameter> parameters;
@@ -24,8 +24,9 @@ public class ConvertModelToJava {
 	 * @param fileName Name of the IMITATOR-PTA-file
 	 * @return 
 	 */
-	public NetworkPTA buildNetworkPTA(String fileName) {
+	public static NetworkPTA buildNetworkPTA(String fileName) {
 		Model_Lexer lex = new Model_Lexer(fileName);
+		lex.findTokens();
 		List<Element> model = lex.getTokens();
 		// get variables for NPTA construction
 		// get clocks
@@ -36,11 +37,12 @@ public class ConvertModelToJava {
 		variables.addAll(parameters);
 		// get automata
 		List<Automaton> automata = buildAutomata(parser.getAutomata(model));
-		// get inital locations
+		// get initial locations
 		List<Constraint> initLocs = createConstraints(parser.getInitLocations(model));
 		// get initial constraints
 		List<Constraint> initConstraints = createConstraints(parser.getInitConstraints(model));
-		return new NetworkPTA(automata, clocks, parameters, initLocs, initConstraints);
+		NetworkPTA npta = new NetworkPTA(automata, clocks, parameters, initLocs, initConstraints);
+		return npta;
 	}
 	
 	/**
@@ -48,7 +50,7 @@ public class ConvertModelToJava {
 	 * @param clock_elements
 	 * @return
 	 */
-	public List<Clock> createClocks(List<Element> clock_elements){
+	public static List<Clock> createClocks(List<Element> clock_elements){
 		List<Clock> clocks = new ArrayList<>();
 		for(Element c : clock_elements) {
 			clocks.add(new Clock(c.getContent()));
@@ -61,7 +63,7 @@ public class ConvertModelToJava {
 	 * @param clock_elements
 	 * @return
 	 */
-	public List<Parameter> createParams(List<Element> param_elements){
+	public static List<Parameter> createParams(List<Element> param_elements){
 		List<Parameter> params = new ArrayList<>();
 		for(Element c : param_elements) {
 			params.add(new Parameter(c.getContent()));
@@ -74,7 +76,7 @@ public class ConvertModelToJava {
 	 * @param automata_elements
 	 * @return
 	 */
-	public List<Automaton> buildAutomata(List<List<Element>> automata_elements) {
+	public static List<Automaton> buildAutomata(List<List<Element>> automata_elements) {
 		List<Automaton> automata = new ArrayList<>();
 		for(List<Element> automaton : automata_elements) {
 			automata.add(buildAutomaton(automaton));
@@ -87,7 +89,7 @@ public class ConvertModelToJava {
 	 * @param automaton
 	 * @return
 	 */
-	public Automaton buildAutomaton(List<Element> automaton) {
+	public static Automaton buildAutomaton(List<Element> automaton) {
 		String name = parser.getAutomatonName(automaton);
 		Automaton autom = new Automaton(name);
 		autom.setActions(createActions(automaton));
@@ -100,7 +102,7 @@ public class ConvertModelToJava {
 	 * @param automaton 
 	 * @return
 	 */
-	public List<Action> createActions(List<Element> automaton){
+	public static List<Action> createActions(List<Element> automaton){
 		List<Element> action_Elements = parser.getActions(automaton);
 		List<Action> actions = new ArrayList<>();
 		for(Element e : action_Elements) {
@@ -114,7 +116,7 @@ public class ConvertModelToJava {
 	 * @param automaton
 	 * @return
 	 */
-	public List<Location> createLocations(List<Element> automaton){
+	public static List<Location> createLocations(List<Element> automaton){
 		List<List<Element>> location_Elements = parser.getLocations(automaton);
 		List<Location> locations = new ArrayList<>();
 		for(List<Element> location : location_Elements) {
@@ -131,7 +133,7 @@ public class ConvertModelToJava {
 	 * @param location
 	 * @return
 	 */
-	public List<Transition> createTransitions(List<Element> location){
+	public static List<Transition> createTransitions(List<Element> location){
 		List<List<Element>> transition_Elements = parser.getTransitions(location);
 		List<Transition> transitions = new ArrayList<>();
 		String location_name = location.get(0).getContent();
@@ -152,20 +154,28 @@ public class ConvertModelToJava {
 	 * @param elements
 	 * @return
 	 */
-	public List<Constraint> createConstraints(List<List<Element>> elements){
+	public static List<Constraint> createConstraints(List<List<Element>> elements){
 		List<Constraint> constraints = new ArrayList<>();
 		for(List<Element> constraint : elements) {
 			List<Value> values = new ArrayList<>();
 			Constraint c;
 			if (constraint.size() == 1) {
-				c = new Constraint(constraint.get(0).getContent());
+				c = new Constraint(new Value(constraint.get(0).getContent()),"",new Value(""));
 			} else {
 				for (Element e : constraint) {
-					if (e.getType() == "VALUE") {
-						values.add(new Value(Integer.valueOf(e.getContent())));
+					if (e.isValue()) {
+						values.add(new Value(e.getContent()));
 					}
-					else if (e.getType() == "KEY_VAR_NAME" || e.getType() == "KEY_LOCATION_ACCESS"){
-						values.add(findValue(e.getContent()));
+					else if (e.getType() == "KEY_VAR_NAME") {
+						if (findValue(e.getContent()) == null) {
+							values.add(new Value(e.getContent()));
+						}
+						else {
+							values.add(findValue(e.getContent()));	
+						}
+					}
+					else if (e.getType() == "KEY_LOCATION_ACCESS") {
+						values.add(new Value(e.getContent()));
 					}
 				}
 				c = new Constraint(values.get(0),constraint.get(1).getContent(),values.get(1));
@@ -180,11 +190,11 @@ public class ConvertModelToJava {
 	 * @param update_elements
 	 * @return
 	 */
-	public List<Update> createUpdates(List<List<Element>> update_elements){
+	public static List<Update> createUpdates(List<List<Element>> update_elements){
 		List<Update> updates = new ArrayList<>();
 		for(List<Element> update : update_elements) {
 			String variable_name = update.get(0).getContent();
-			int value = Integer.valueOf(update.get(2).getContent());
+			String value = update.get(2).getContent();
 			updates.add(new Update(variable_name,value));
 		}
 		return updates;
@@ -197,13 +207,25 @@ public class ConvertModelToJava {
 	 * @param valueName
 	 * @return
 	 */
-	private Value findValue(String valueName) {
+	private static Value findValue(String valueName) {
 		for(Value v : variables) {
-			if (v.getName() == valueName) {
+			if (v.getName().equals(valueName)) {
 				return v;
 			}
 		}
+		System.out.println("Failed to find variable " + valueName);
 		return null;
 	}
 	
+	private static void printInfo() {
+		for(Clock c : clocks) {
+			c.printInfo(true);
+		}
+		for(Parameter p : parameters) {
+			p.printInfo(false);
+		}
+		for(Value v : variables) {
+			v.printInfo();
+		}
+	}
 }

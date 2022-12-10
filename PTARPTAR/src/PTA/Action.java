@@ -12,4 +12,8 @@ public class Action {
 	public String getName() {
 		return name;
 	}
+	
+	public void printInfo() {
+		System.out.println("Action " + this.name);
+	}
 }

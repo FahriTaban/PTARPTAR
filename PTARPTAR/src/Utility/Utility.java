@@ -34,12 +34,20 @@ public class Utility {
 	}
 	
 	public static void writeToFile(String path, String content) {
-		try {
-			FileWriter wr = new FileWriter(path);
-			wr.append(content);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		File file = new File(path);
+        FileWriter fr = null;
+        try {
+            fr = new FileWriter(file,false);
+            fr.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            //close resources
+            try {
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 	}
 }

@@ -49,4 +49,16 @@ public class Automaton {
 		}
 		return null;
 	}
+	
+	public void printInfo() {
+		System.out.println("Automaton " + this.name);
+		System.out.println("Actions");
+		for(Action a : this.actions) {
+			a.printInfo();
+		}
+		System.out.println("Locations");
+		for(Location l : this.locations) {
+			l.printInfo();
+		}
+	}
 }

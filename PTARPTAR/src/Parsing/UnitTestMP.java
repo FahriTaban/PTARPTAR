@@ -31,7 +31,7 @@ public class UnitTestMP {
 				for(List<Element> transition : transitions) {
 //					testGuards(parser,transition);
 //					testAction(parser,transition);
-//					testUpdates(parser,transition);
+					testUpdates(parser,transition);
 //					getPostLoc(parser,transition);	
 			}
 		}

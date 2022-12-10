@@ -60,4 +60,16 @@ public class Location {
 	public void setTransitions(List<Transition> transitions) {
 		this.transitions = transitions;
 	}
+	
+	public void printInfo() {
+		System.out.println("Location " + this.name);
+		System.out.println("Invariants");
+		for(Constraint i : this.invariants) {
+			i.printInfo();
+		}
+		System.out.println("Transitions");
+		for(Transition t : this.transitions) {
+			t.printInfo();
+		}
+	}
 }

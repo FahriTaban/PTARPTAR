@@ -25,10 +25,10 @@ public class UnitTestRP {
 //			testContinuousVariables(parser,state);
 		}
 		List<List<Element>> transitions = parser.getOuterTransitions(run);
-//		testTransitions(parser,run);
+		testTransitions(parser,run);
 		for(List<Element> transition: transitions) {
-			testDuration(parser, transition);
-			testAction(parser, transition);
+//			testDuration(parser, transition);
+//			testAction(parser, transition);
 		}
 	}
 	

@@ -36,4 +36,21 @@ public class Constraint {
 		return operator;
 	}
 	
+	public void printInfo() {
+		System.out.println("Constraint");
+		String va1;
+		String va2;
+		if(this.val1.getName() != null) {
+			va1 = val1.getName();
+		} else {
+			va1 = Integer.toString(val1.getValue());
+		}
+		if(this.val2.getName() != null) {
+			va2 = val2.getName();
+		} else {
+			va2 = Integer.toString(val2.getValue());
+		}
+		System.out.println(va1 + " " + this.operator + " " + va2);
+	}
+	
 }

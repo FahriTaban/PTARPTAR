@@ -6,7 +6,7 @@ package PTA;
  *
  */
 public class Value {
-	private int valuation = 0;
+	private int valuation;
 	private String name;
 	
 	public Value(int v, String n) {
@@ -23,6 +23,10 @@ public class Value {
 		this.setName("Integer");
 	}
 
+	public boolean isConstant() {
+		return this.name == null;
+	}
+	
 	public int getValue() {
 		return valuation;
 	}
@@ -37,5 +41,25 @@ public class Value {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public void printInfo(boolean isClock) {
+		String type;
+		if (isClock) {
+			type = "Clock";
+		} else {
+			type = "Parameter";
+		}
+		if (this.name != null) {
+			System.out.println(type + " " + this.name);
+		}
+		System.out.println("Valuation =" + Integer.toString(this.valuation));
+	}
+	
+	public void printInfo() {
+		if (this.name != null) {
+			System.out.println("Variable "+ " " + this.name);
+		}
+		System.out.println("Valuation =" + Integer.toString(this.valuation));
 	}
 }

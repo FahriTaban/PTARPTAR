@@ -1,4 +1,4 @@
-package ElementToPTA;
+package ModelToPTA;
 
 public class State {
 }

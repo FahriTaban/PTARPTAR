@@ -29,6 +29,9 @@ public class Transition {
 	}
 
 	public String getPoststate() {
+		if (poststate == null) {
+			System.out.println("No poststate found");
+		}
 		return poststate;
 	}
 
@@ -46,5 +49,20 @@ public class Transition {
 
 	public void setUpdateRule(List<Update> updateRules) {
 		this.updateRules = updateRules;
+	}
+	
+	public void printInfo() {
+		System.out.println("Transition");
+		System.out.println("Prestate " + this.prestate);
+		for(Constraint g : this.guards) {
+			g.printInfo();
+		}
+		System.out.println("Action " + this.action);
+		System.out.println("Update Rules:");
+		for(Update u : this.updateRules) {
+			u.printInfo();
+		}
+		System.out.println("Poststate " + this.poststate);
+		
 	}
 }

@@ -52,4 +52,27 @@ public class NetworkPTA {
 	public List<Constraint> getInitial_Constraints() {
 		return initial_constraints;
 	}
+	
+	public void printInfo() {
+		System.out.println("Clocks");
+		for(Clock c : this.clocks) {
+			c.printInfo(true);
+		}
+		System.out.println("Parameters");
+		for(Parameter p : this.parameters) {
+			p.printInfo(false);
+		}
+		System.out.println("Automata");
+		for(Automaton a : this.automata) {
+			a.printInfo();
+		}
+		System.out.println("Initial Locations");
+		for(Constraint c : this.initial_locations) {
+			c.printInfo();
+		}
+		System.out.println("Initial Constraints");
+		for(Constraint c : this.initial_constraints) {
+			c.printInfo();
+		}
+	}
 }
