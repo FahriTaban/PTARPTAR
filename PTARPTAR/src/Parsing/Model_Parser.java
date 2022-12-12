@@ -56,7 +56,18 @@ public class Model_Parser extends Parser{
 	}
 	
 	public List<List<Element>> getUpdates(List<Element> transition){
-		return getElemLists(transition, "BRACE_L", "COMMA", "BRACE_R");
+		List<List<Element>> elems = getElemLists(transition, "BRACE_L", "COMMA", "BRACE_R");
+		List<List<Element>> ret = new ArrayList<>();
+		for(List<Element> es : elems) {
+			List<Element> ret_part = new ArrayList<>();
+			for(Element e : es) {
+				if (!(e.getType() == "DEF")) {
+					ret_part.add(e);
+				}
+			}
+			ret.add(ret_part);
+		}
+		return ret;
 	}
 	
 	public Element getPostLoc(List<Element> transition) {

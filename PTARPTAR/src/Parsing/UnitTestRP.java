@@ -14,7 +14,7 @@ public class UnitTestRP {
 		r_lex.findTokens();
 		Result_Parser parser = new Result_Parser();
 		List<Element> result = r_lex.getTokens();
-//		testValidRun(parser, result);
+		testValidRun(parser, result);
 		List<Element> run = parser.getValidRun(result);
 //		testParameters(parser,run);
 //		testStates(parser,run);
@@ -28,7 +28,7 @@ public class UnitTestRP {
 //		testTransitions(parser,run);
 		for(List<Element> transition: ot) {
 //			testDuration(parser, transition);
-//			testAction(parser, transition);
+			testAction(parser, transition);
 			List<List<Element>> it = parser.getInnerTransitions(transition);
 //			testInnerTransitions(parser,transition);
 			for(List<Element> i : it) {

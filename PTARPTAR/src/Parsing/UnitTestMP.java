@@ -5,8 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.junit.Test;
-
-public class UnitTestMP {
+import Utility.UnitTest;
+public class UnitTestMP extends UnitTest{
 
 	public static void main(String[] args) {
 		String model_name = "testEFExemplify1Pneg.imi";
@@ -17,8 +17,8 @@ public class UnitTestMP {
 //		testClocks(parser,model);
 //		testParameters(parser,model);
 //		testAutomata(parser,model);
-		testInitLocations(parser,model);
-		testInitConstraints(parser,model);
+//		testInitLocations(parser,model);
+//		testInitConstraints(parser,model);
 		List<List<Element>> automata = parser.getAutomata(model);
 		for(List<Element> automaton : automata) {
 //		testActions(parser,automaton);
@@ -111,25 +111,4 @@ public class UnitTestMP {
 		System.out.println("POSTLOC OF TRANSITION");
 		printElem(parser.getPostLoc(transition));
 	}
-	
-	
-	static void printElem(Element elem) {
-		elem.elemInfo();
-	}
-	
-	static void printElems(List<Element> elems) {
-		for (Element e : elems) {
-			e.elemInfo();
-		}
-	}
-	
-	static void printStructures(List<List<Element>> structures) {
-		for (List<Element> s : structures) {
-			System.out.println("*".repeat(1000) + "\n NEW STRUCTURE \n " + "*".repeat(1000));
-			for (Element e : s) {
-				e.elemInfo();
-			}
-		}
-	}
-
 }
