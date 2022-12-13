@@ -32,7 +32,8 @@ public class Element {
 	}
 	
 	public boolean isValue() {
-		return this.type == "VALUE" || this.type == "KEY_VAR_BOOL_TRUE" || this.type == "KEY_VAR_BOOL_FALSE";
+		return this.type == "VALUE" || this.type == "KEY_VAR_BOOL_TRUE" || this.type == "KEY_VAR_BOOL_FALSE"
+				|| this.type == "DIVISION";
 	}
 	
 	public boolean isBool() {

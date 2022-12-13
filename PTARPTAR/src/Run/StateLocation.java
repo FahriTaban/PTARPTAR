@@ -27,4 +27,10 @@ public class StateLocation {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
+	
+	public void printInfo() {
+		System.out.println("STATE-LOCATION");
+		this.automaton.printInfo();
+		this.location.printInfo();
+	}
 }

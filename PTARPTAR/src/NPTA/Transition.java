@@ -55,16 +55,17 @@ public class Transition {
 	
 	public void printInfo() {
 		System.out.println("Transition");
-		System.out.println("Prestate " + this.preloc);
+		StringBuilder trans = new StringBuilder();
+		trans.append(this.preloc);
 		for(Constraint g : this.guards) {
-			g.printInfo();
+			trans.append("," + g.constraintToString());
 		}
-		System.out.println("Action " + this.action);
-		System.out.println("Update Rules:");
+		trans.append("---" + this.action + "---> " );
 		for(Update u : this.updateRules) {
-			u.printInfo();
+			trans.append(u.updateToString()+ ",");
 		}
-		System.out.println("Poststate " + this.postloc);
+		trans.append(" " + this.postloc);
+		System.out.println(trans.toString());
 		
 	}
 	
@@ -83,14 +84,14 @@ public class Transition {
 	/**
 	 * Checks if a transition is semantically equal to a set of arguments representing a transition
 	 * @param preloc
-	 * @param guards
+	 * @param guard_elems
 	 * @param action
-	 * @param updates
+	 * @param update_elems
 	 * @param postloc
 	 * @return
 	 */
-	public boolean transitionEquals(String preloc, List<List<Element>> guards
-			, String action, List<List<Element>> updates, String postloc) {
+	public boolean transitionEquals(String preloc, List<List<Element>> guard_elems
+			, String action, List<List<Element>> update_elems, String postloc) {
 		boolean prel = false, a = false, ub = false,gb = false, postl = false;
 		int countGuard = 0;
 		int countUpdate = 0;
@@ -103,28 +104,29 @@ public class Transition {
 		if(this.postloc.equals(postloc)) {
 			postl = true;
 		}
-		for(List<Element> ge : guards) {
+		for(List<Element> guard_elem : guard_elems) {
 			for(Constraint g : this.guards) {
-				if(g.constraintEquals(ge)) {
+				if(g.constraintEquals(guard_elem)) {
 					countGuard++;
+					break;
 				}
 			}
 		}
-		for(List<Element> upd : updates) {
+		for(List<Element> update_elem : update_elems) {
 			for(Update update : this.updateRules) {
-				if(update.updateEquals(upd)) {
+				if(update.updateEquals(update_elem)) {
 					countUpdate++;
 				}
 			}
 		}
-		gb = (countGuard == guards.size());
-		ub = (countUpdate == updates.size());
+		gb = (countGuard == this.guards.size());
+		ub = (countUpdate == this.updateRules.size());
 		if (!(prel && a && postl && gb && ub)) {
 		System.out.print(prel);
 		System.out.print(gb);
 		System.out.print(a);
 		System.out.print(ub);
-		System.out.print(postl);
+		System.out.println(postl);
 		}
 		return prel && a && postl && gb && ub;
 	}

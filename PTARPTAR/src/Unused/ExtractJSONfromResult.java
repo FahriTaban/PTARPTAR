@@ -6,7 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import org.json.*;
-import Utility.Main;
+
+import SMT.Main;
 
 public class ExtractJSONfromResult {
 

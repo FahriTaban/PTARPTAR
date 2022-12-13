@@ -42,4 +42,8 @@ public class Update {
 		System.out.println("Update");
 		System.out.println(this.variable + " := " + this.setToValue);
 	}
+	
+	public String updateToString() {
+		return "{"+this.variable + " := " + this.setToValue+"}";
+	}
 }

@@ -1,7 +1,10 @@
 package NPTA;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import Parsing.*;
+import Utility.Utility;
 /**
  * Linear constraint on clock or parameter
  * @author 49173
@@ -56,7 +59,6 @@ public class Constraint {
 	}
 	
 	public String constraintToString() {
-		System.out.println("Constraint");
 		String va1;
 		String va2;
 		if(this.val1.getName() != null) {
@@ -73,15 +75,60 @@ public class Constraint {
 	}
 	
 	public boolean constraintEquals(List<Element> elems) {
+		boolean res = checkEquality(elems);
+		if(!res && elems.size() > 1) {
+			List<Element> reversed = reverseList(elems);
+			res = checkEquality(reversed);
+		}
+		if(!res) {
+			System.out.println(this.constraintToString() + " NOT EQUAL TO " + Utility.elemToString(elems));
+		}
+		return res;
+		
+	}
+	
+	private List<Element> reverseList(List<Element> elems){
+		List<Element> reversed = new ArrayList<>();
+		for(int i = elems.size()-1;i >= 0;i--) {
+			Element e = elems.get(i);
+			if(e.isComparisonOperator()) {
+				Element f = new Element("",negateOperator(e.getContent()));
+				reversed.add(f);
+			} else {
+			reversed.add(elems.get(i));
+			}
+		}
+		return reversed;
+	}
+	
+	private boolean checkEquality(List<Element> elems) {
 		int count = 0;
-		for(Element g : elems) {
-			if (this.val1.valueEquals(g.getContent()) || this.getOperator().equals(g.getContent()) 
-					|| this.val2.valueEquals(g.getContent())) {
+		for(int i = 0; i < elems.size(); i++) {
+			Element g = elems.get(i);
+			String gc = g.getContent();
+			if (this.val1.valueEquals(gc) || this.getOperator().equals(gc) 
+					|| this.val2.valueEquals(gc)) {
 				count++;
 			}
 		}
-		return (count == 3 || (count == 1 && elems.size() == 1) );
-		
+		return count == elems.size() && elems.size() > 0;
+	}
+	
+	private String negateOperator(String operator) {
+		switch(operator) {
+			case "=":
+				return "!=";
+			case ">=":
+				return "<=";
+			case "<=":
+				return ">=";
+			case ">":
+				return "<";
+			case "<":
+				return ">";
+			default:
+				return operator;
+		}
 	}
 	
 }

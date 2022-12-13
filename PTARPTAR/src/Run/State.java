@@ -51,4 +51,11 @@ public class State {
 	public String getId() {
 		return id;
 	}
+	
+	public void printInfo() {
+		System.out.println("STATE WITH ID " + this.id);
+		for(StateLocation sl : this.stateLocations) {
+			sl.printInfo();
+		}
+	}
 }

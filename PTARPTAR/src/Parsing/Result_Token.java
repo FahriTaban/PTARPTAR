@@ -35,6 +35,7 @@ public enum Result_Token {
 	
 	KEY_VAR_BOOL_TRUE("True"),
 	KEY_VAR_BOOL_FALSE("False"),
+	DIVISION("\\d+/\\d+"),
 	VALUE("\\d+"),
 	KEY_VAR_NAME("\\w+"),
 	

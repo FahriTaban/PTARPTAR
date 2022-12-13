@@ -1,4 +1,4 @@
-package Utility;
+package SMT;
 /*++
  Copyright (c) 2012 Microsoft Corporation
 

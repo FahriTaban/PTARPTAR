@@ -51,7 +51,7 @@ public class UnitTestRP {
 	
 	public static void testGuard(Result_Parser parser, List<Element> it) {
 		System.out.println("GUARD");
-		printStructures(parser.getGuard(it));
+		printStructures(parser.getGuards(it));
 	}
 	
 	public static void testUpdates(Result_Parser parser, List<Element> it) {

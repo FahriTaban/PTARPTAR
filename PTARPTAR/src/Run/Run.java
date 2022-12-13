@@ -44,4 +44,20 @@ public class Run {
 		this.initialConstraints = initialConstraints;
 	}
 	
+	public void printInfo() {
+		System.out.println("RUN INFORMATION");
+		System.out.println("INITIAL CONSTRAINTS");
+		for(Constraint c : this.initialConstraints) {
+			c.printInfo();
+		}
+		System.out.println("STATES");
+		for(State s : this.states) {
+			s.printInfo();
+		}
+		System.out.println("OUTER TRANSITIONS");
+		for(OuterTransition ot : this.transitions) {
+			ot.printInfo();
+		}
+	}
+	
 }

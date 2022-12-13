@@ -1,0 +1,47 @@
+var 
+x,global_time,: clock;
+p,: parameter;
+
+automaton specification
+
+synclabs: s1,s2;
+
+loc l1: invariant x <= 2 
+when x <= 2 sync s1 goto l2;
+
+loc l2: invariant x <= 4 
+when x > p sync s2 goto lT;
+when True sync s1 goto lT;
+
+loc lT: invariant True 
+
+end
+
+automaton specification2
+
+synclabs: a1,a2;
+
+loc sl1: invariant x >= 0 
+when x <= 2 sync a1 goto sl2;
+
+loc sl2: invariant x < 4 
+when x <= p sync a2 do {x := 0} goto slT;
+
+loc slT: invariant True 
+
+end
+
+init := {
+
+discrete = 
+loc[specification] := l1,
+loc[specification2] := sl1,
+;
+
+continuous = 
+& global_time = 0 
+& x = 0 
+& p >= 0 
+& p <= 5 
+;
+}

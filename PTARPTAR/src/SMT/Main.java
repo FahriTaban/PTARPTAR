@@ -1,4 +1,4 @@
-package Utility;
+package SMT;
 
 import java.io.File;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import com.microsoft.z3.Log;
 import com.microsoft.z3.Version;
 import com.microsoft.z3.Z3Exception;
 
-import Utility.JavaExample.TestFailedException;
+import SMT.JavaExample.TestFailedException;
 
 public class Main {
 

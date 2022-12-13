@@ -2,9 +2,26 @@ package Utility;
 
 import java.util.List;
 
+import NPTA.Transition;
 import Parsing.Element;
+import Parsing.Parser;
+import Parsing.Result_Parser;
 
 public class UnitTest {
+
+	public static String resultTransitionElemToString(List<Element> transition,Result_Parser parser) {
+		String pta = parser.getPTA(transition).getContent();
+		StringBuilder string = new StringBuilder();
+		string.append(pta + ",");
+		for(List<Element> g: parser.getGuards(transition)) {
+			string.append(elemToString(g)+",");
+		}
+		for(List<Element> u: parser.getUpdates(transition)) {
+			string.append(elemToString(u)+",");
+		}
+		return string.toString();
+	} 
+
 	public static String elemToString(List<Element> elems) {
 		StringBuilder s = new StringBuilder();
 		for(Element e : elems) {

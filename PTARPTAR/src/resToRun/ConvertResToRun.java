@@ -11,12 +11,23 @@ public class ConvertResToRun {
 	private static Result_Parser parser = new Result_Parser();
 	private static NetworkPTA npta;
 	
-	public static Run createRun(List<Element> run, NetworkPTA n) {
+	public static Run createRun(String fileName, NetworkPTA n) {
 		npta = n;
+		Result_Lexer r_lex = new Result_Lexer(fileName);		
+		r_lex.findTokens();
+		List<Element> run = parser.getValidRun(r_lex.getTokens());
 		List<State> states = createStates(parser.getStates(run));
 		List<OuterTransition> transitions = createOuterTransitions(states, parser.getOuterTransitions(run));
 		List<Constraint> initialConstraints = npta.getInitial_Constraints();
 		return new Run(initialConstraints,states,transitions);
+	}
+	
+	public static NetworkPTA getNPTA() {
+		return npta;
+	}
+	
+	public static void setNPTA(NetworkPTA n) {
+		npta = n;
 	}
 	
 	public static List<State> createStates(List<List<Element>> states){
@@ -48,7 +59,7 @@ public class ConvertResToRun {
 				return a;
 			}
 		}
-		System.out.println("Automaton " + name +" not found");
+		System.out.println("AUTOMATON " + name +" NOT FOUND");
 		return null;
 	}
 	
@@ -57,12 +68,13 @@ public class ConvertResToRun {
 			if (a.getName().equals(automaton)) {
 				for(Location l : a.getLocations()) {
 					if(l.getName().equals(location)) {
+						System.out.println("LOCATION " + location + " FOUND");
 						return l;
 					}
 				}
 			}
 		}
-		System.out.println("Location " + location + " of automaton " + automaton + " not found");
+		System.out.println("LOCATION " + location + " OF AUTOMATON " + automaton + " NOT FOUND");
 		return null;
 	}
 	
@@ -70,7 +82,7 @@ public class ConvertResToRun {
 		List<OuterTransition> ot = new ArrayList<>();
 		int size = states.size();
 		State pre, post;
-		for(int i = 0; i < size - 1; i--) {
+		for(int i = 0; i < size - 1; i++) {
 			pre = states.get(i);
 			post = states.get(i+1);
 			List<Element> outerTransition = outerTransitions.get(i);
@@ -94,16 +106,20 @@ public class ConvertResToRun {
 	
 	public static Transition findTransition(String preloc, String postloc, String action, List<Element> innerTransition) {
 		List<List<Element>> update = parser.getUpdates(innerTransition);
-		List<List<Element>> guards = parser.getGuard(innerTransition);
+		List<List<Element>> guards = parser.getGuards(innerTransition);
 		String pta = parser.getPTA(innerTransition).getContent();
 		Automaton a = findAutomaton(pta);
 		Location l = findLocation(a.getName(),preloc);
+		if(l == null) {
+			System.out.println("ABORTING findTransition DUE TO MISSING LOCATION");
+			return null;
+		}
 		for(Transition t : l.getTransitions()) {
 			if (t.transitionEquals(preloc, guards, action, update, postloc)) {
 				return t;
 			}
 		}
-		System.out.println("Transition not found for automaton " + a.getName() + ": " +preloc+ " " + action + " " + postloc);
+		System.out.println("TRANSITION NOT FOUND FOR AUTOMATON " + a.getName() + ": " +preloc+ " " + action + " " + postloc);
 		return null;
 	}
 	
