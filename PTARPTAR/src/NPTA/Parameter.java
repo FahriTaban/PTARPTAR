@@ -1,11 +1,6 @@
 package NPTA;
 
-public class Parameter extends Value {
-
-	public Parameter(int v, String n) {
-		super(v, n);
-		// TODO Auto-generated constructor stub
-	}
+public class Parameter extends Variable {
 	
 	public Parameter(String n) {
 		super(n);

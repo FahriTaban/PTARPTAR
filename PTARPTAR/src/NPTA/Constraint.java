@@ -1,6 +1,7 @@
 package NPTA;
 
 import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.List;
 import Parsing.*;
@@ -11,29 +12,44 @@ import Utility.Utility;
  *
  */
 public class Constraint {
-	private Value val1;
+	private Ex lhs;
 	private String operator;
-	private Value val2;
+	private Ex rhs;
+	private boolean isBoolean = false;
 	
-	public Constraint(Value v, String op, Value b) {
-		this.val1 = v;
+	public Constraint(Ex v, String op, Ex b) {
+		this.lhs = v;
 		this.operator = op;
-		this.val2 = b;
+		this.rhs = b;
 	}
 	
-	public Constraint(String bool) {
-		this.val1 = new Value(bool);
+	public Constraint(boolean bool) {
+		this.lhs = new Ex(bool);
 		this.operator = "";
-		this.val2 = new Value("");
+		this.rhs = new Ex(bool);
+		this.isBoolean = true;
 	}
 	
-	
-	public Value getValue1() {
-		return val1;
+	public Constraint(Element con) {
+		List<String> strings = Utility.splitString(con.getContent(),"[><=]+");
+		if (strings.size() == 1) {
+			this.lhs = new Ex(strings.get(0));
+			this.operator = "";
+			this.rhs = new Ex("");
+			this.isBoolean = true;
+		} else {
+		this.lhs = new Ex(strings.get(0));
+		this.operator = strings.get(1);
+		this.rhs = new Ex(strings.get(2));
+		}
 	}
 	
-	public Value getValue2() {
-		return val2;
+	public Ex getEx1() {
+		return lhs;
+	}
+	
+	public Ex getEx2() {
+		return rhs;
 	}
 
 
@@ -43,92 +59,61 @@ public class Constraint {
 	
 	public void printInfo() {
 		System.out.println("Constraint");
-		String va1;
-		String va2;
-		if(this.val1.getName() != null) {
-			va1 = val1.getName();
-		} else {
-			va1 = Integer.toString(val1.getValue());
-		}
-		if(this.val2.getName() != null) {
-			va2 = val2.getName();
-		} else {
-			va2 = Integer.toString(val2.getValue());
-		}
-		System.out.println(va1 + " " + this.operator + " " + va2);
+		System.out.println(this.toString());
 	}
 	
-	public String constraintToString() {
-		String va1;
-		String va2;
-		if(this.val1.getName() != null) {
-			va1 = val1.getName();
+	@Override
+	public String toString() {
+		String le1 = "";
+		String le2 = "";
+		String op = "";
+		if (this.isBoolean) {
+			le1 = this.lhs.getVariable(0);
+			return le1;
 		} else {
-			va1 = Integer.toString(val1.getValue());
+			le1 = this.lhs.toString();
+			le2 = this.rhs.toString();
+			op = this.operator;
 		}
-		if(this.val2.getName() != null) {
-			va2 = val2.getName();
-		} else {
-			va2 = Integer.toString(val2.getValue());
-		}
-		return va1 + " " + this.operator + " " + va2;
+		return le1 + " " + op + " " + le2;
 	}
 	
-	public boolean constraintEquals(List<Element> elems) {
-		boolean res = checkEquality(elems);
-		if(!res && elems.size() > 1) {
-			List<Element> reversed = reverseList(elems);
-			res = checkEquality(reversed);
+	public String reversedToString() {
+		String le1 = "";
+		String le2 = "";
+		String op = "";
+		if (this.isBoolean) {
+			le1 = this.lhs.getVariables().get(0).getName();
+			return le1;
+		} else {
+			le1 = this.rhs.toString();
+			le2 = this.lhs.toString();
+			op = Utility.negateOperator(this.operator);
+		}
+		return le1 + " " + op + " " + le2;
+	}
+	
+	public boolean constraintEquals(Element constraint) {
+		boolean res = checkEquality(constraint, this.toString());
+		if(!res) {
+			res = checkEquality(constraint, this.reversedToString());
 		}
 		if(!res) {
-			System.out.println(this.constraintToString() + " NOT EQUAL TO " + Utility.elemToString(elems));
+			System.out.println(this.toString() + " NOT EQUAL TO " + constraint.getContent());
 		}
 		return res;
 		
 	}
 	
-	private List<Element> reverseList(List<Element> elems){
-		List<Element> reversed = new ArrayList<>();
-		for(int i = elems.size()-1;i >= 0;i--) {
-			Element e = elems.get(i);
-			if(e.isComparisonOperator()) {
-				Element f = new Element("",negateOperator(e.getContent()));
-				reversed.add(f);
-			} else {
-			reversed.add(elems.get(i));
-			}
-		}
-		return reversed;
+	private boolean checkEquality(Element con_elem, String con) {
+		return con_elem.getContent().equals(con);
 	}
 	
-	private boolean checkEquality(List<Element> elems) {
-		int count = 0;
-		for(int i = 0; i < elems.size(); i++) {
-			Element g = elems.get(i);
-			String gc = g.getContent();
-			if (this.val1.valueEquals(gc) || this.getOperator().equals(gc) 
-					|| this.val2.valueEquals(gc)) {
-				count++;
-			}
+	public boolean constrainsClock(Clock c){
+		if (this.isBoolean) {
+			return false;
 		}
-		return count == elems.size() && elems.size() > 0;
-	}
-	
-	private String negateOperator(String operator) {
-		switch(operator) {
-			case "=":
-				return "!=";
-			case ">=":
-				return "<=";
-			case "<=":
-				return ">=";
-			case ">":
-				return "<";
-			case "<":
-				return ">";
-			default:
-				return operator;
-		}
+		return this.lhs.toString().contains(c.getName()) || this.rhs.toString().contains(c.getName());
 	}
 	
 }

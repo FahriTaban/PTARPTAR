@@ -46,4 +46,8 @@ public class Update {
 	public String updateToString() {
 		return "{"+this.variable + " := " + this.setToValue+"}";
 	}
+	
+	public boolean updatesClock(Clock c){
+		return this.variable.equals(c.getName());
+	}
 }

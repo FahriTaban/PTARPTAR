@@ -46,28 +46,33 @@ public class Parser {
 		return elems;
 	}
 	
-	public List<List<Element>> getValOpVal(List<Element> token){
-		List<List<Element>> vovs = new ArrayList<>();
-		List<Element> vov = new ArrayList<>();
-		int fetched = 0;
-		for (Element e : token) {
-			if (e.getType() == "KEY_VAR_NAME" || e.getType() == "VALUE" || e.isComparisonOperator()) {
-				fetched++;
-				vov.add(e);
-			} 
-			if (e.isBool()) {
-				vov.add(e);
-				vovs.add(List.copyOf(vov));
-				vov.clear();
+	public List<Element> getSubList(List<Element> tokens, String begin, String end, String altEnd){
+		List<Element> elems = new ArrayList<>();
+		boolean fetch = false;
+		for (Element e : tokens) {
+			if (e.getType() == begin) {
+				fetch = true;
 			}
-			else if (fetched == 3) {
-				vovs.add(List.copyOf(vov));
-				vov.clear();
-				fetched = 0;
+			else if ((e.getType() == end || e.getType() == altEnd) && fetch) {
+				break;
+			}
+			else if (fetch) {
+				elems.add(e);
 			}
 		}
-		return vovs;
+		return elems;
 	}
+	
+	public List<Element> getConstraints(List<Element> token){
+		List<Element> cons = new ArrayList<>();
+		for (Element e : token) {
+			if (e.getType() == "CONSTRAINT" || e.getType() == "KEY_VAR_BOOL_TRUE" || e.getType() == "KEY_VAR_BOOL_FALSE") {
+				cons.add(e);
+			} 
+		}
+		return cons;
+	}
+	
 	
 	/**
 	 * Returns pairs of variable name and its value as elements

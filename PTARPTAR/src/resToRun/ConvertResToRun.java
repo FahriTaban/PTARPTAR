@@ -106,7 +106,7 @@ public class ConvertResToRun {
 	
 	public static Transition findTransition(String preloc, String postloc, String action, List<Element> innerTransition) {
 		List<List<Element>> update = parser.getUpdates(innerTransition);
-		List<List<Element>> guards = parser.getGuards(innerTransition);
+		List<Element> guards = parser.getGuards(innerTransition);
 		String pta = parser.getPTA(innerTransition).getContent();
 		Automaton a = findAutomaton(pta);
 		Location l = findLocation(a.getName(),preloc);

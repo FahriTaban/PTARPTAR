@@ -13,16 +13,16 @@ public class UnitTest {
 		String pta = parser.getPTA(transition).getContent();
 		StringBuilder string = new StringBuilder();
 		string.append(pta + ",");
-		for(List<Element> g: parser.getGuards(transition)) {
-			string.append(elemToString(g)+",");
+		for(Element g: parser.getGuards(transition)) {
+			string.append(g.getContent()+",");
 		}
 		for(List<Element> u: parser.getUpdates(transition)) {
-			string.append(elemToString(u)+",");
+			string.append(elemsToString(u)+",");
 		}
 		return string.toString();
 	} 
 
-	public static String elemToString(List<Element> elems) {
+	public static String elemsToString(List<Element> elems) {
 		StringBuilder s = new StringBuilder();
 		for(Element e : elems) {
 			s.append(e.getContent()+ " ");
@@ -30,7 +30,7 @@ public class UnitTest {
 		return s.toString();
 	}
 	
-	public static String elemsToString(List<List<Element>> elems) {
+	public static String elemssToString(List<List<Element>> elems) {
 		StringBuilder s = new StringBuilder();
 		for(List<Element> es : elems) {
 			for(Element e : es) {

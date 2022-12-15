@@ -33,4 +33,6 @@ public class StateLocation {
 		this.automaton.printInfo();
 		this.location.printInfo();
 	}
+	
+	
 }

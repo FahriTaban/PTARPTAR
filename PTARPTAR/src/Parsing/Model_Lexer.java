@@ -29,6 +29,9 @@ public class Model_Lexer {
     				if (token.name() == "KEY_LOCATION_ACCESS") {
     					lex = lex.substring(4, lex.length()-1);
     				}
+    				if (token.name() == "CONSTRAINT") {
+    					lex = lex.replaceAll("\\s+"," ");
+    				}
     				Element elem = new Element(token.name(),lex);
     				tokens.add(elem);
     			}

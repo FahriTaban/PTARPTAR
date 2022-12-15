@@ -29,9 +29,9 @@ public class UnitTestMP extends UnitTest{
 				List<List<Element>> transitions = parser.getTransitions(location);
 //				testTransitions(parser,location);
 				for(List<Element> transition : transitions) {
-//					testGuards(parser,transition);
+					testGuards(parser,transition);
 //					testAction(parser,transition);
-					testUpdates(parser,transition);
+//					testUpdates(parser,transition);
 //					getPostLoc(parser,transition);	
 			}
 		}
@@ -52,12 +52,12 @@ public class UnitTestMP extends UnitTest{
 	
 	public static void testInitLocations(Model_Parser parser, List<Element> model) {
 		System.out.println("INITAL LOCATIONS");
-		printStructures(parser.getInitLocations(model));
+		printElems(parser.getInitLocations(model));
 	}
 	
 	public static void testInitConstraints(Model_Parser parser, List<Element> model) {
 		System.out.println("INITAL CONSTRAINTS");
-		printStructures(parser.getInitConstraints(model));
+		printElems(parser.getInitConstraints(model));
 	}
 	
 	public static List<List<Element>> testAutomata(Model_Parser parser, List<Element> model) {
@@ -81,7 +81,7 @@ public class UnitTestMP extends UnitTest{
 	
 	public static void testInvariants(Model_Parser parser, List<Element> location){
 		System.out.println("INVARIANT OF LOCATION " + location.get(0).getContent());
-		printStructures(parser.getInvariants(location));
+		printElems(parser.getInvariants(location));
 	}
 	
 	public static List<List<Element>> testTransitions(Model_Parser parser, List<Element> location){
@@ -94,7 +94,7 @@ public class UnitTestMP extends UnitTest{
 	
 	public static void testGuards(Model_Parser parser, List<Element> transition){
 		System.out.println("GUARDS OF TRANSITION");
-		printStructures(parser.getGuards(transition));
+		printElems(parser.getGuards(transition));
 	}
 	
 	public static void testAction(Model_Parser parser, List<Element> transition) {

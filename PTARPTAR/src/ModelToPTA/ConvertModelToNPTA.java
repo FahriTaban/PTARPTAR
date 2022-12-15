@@ -16,7 +16,7 @@ public class ConvertModelToNPTA {
 	static Model_Parser parser = new Model_Parser();
 	static List<Clock> clocks;
 	static List<Parameter> parameters;
-	static List<Value> variables = new ArrayList<>();
+	static List<Variable> variables = new ArrayList<>();
 	
 	/**
 	 * Converts an IMITATOR-PTA-file into a NetworkPTA. This NetworkPTA is then used to construct the MaxSMT instance
@@ -154,31 +154,16 @@ public class ConvertModelToNPTA {
 	 * @param elements
 	 * @return
 	 */
-	public static List<Constraint> createConstraints(List<List<Element>> elements){
+	public static List<Constraint> createConstraints(List<Element> elements){
 		List<Constraint> constraints = new ArrayList<>();
-		for(List<Element> constraint : elements) {
-			List<Value> values = new ArrayList<>();
+		for(Element constraint : elements) {
 			Constraint c;
-			if (constraint.size() == 1) {
-				c = new Constraint(new Value(constraint.get(0).getContent()),"",new Value(""));
+			if (constraint.getType() == "KEY_VAR_BOOL_TRUE") {
+				c = new Constraint(true);
+			} else if (constraint.getType() == "KEY_VAR_BOOL_FALSE") {
+				c = new Constraint(false);
 			} else {
-				for (Element e : constraint) {
-					if (e.isValue()) {
-						values.add(new Value(e.getContent()));
-					}
-					else if (e.getType() == "KEY_VAR_NAME") {
-						if (findValue(e.getContent()) == null) {
-							values.add(new Value(e.getContent()));
-						}
-						else {
-							values.add(findValue(e.getContent()));	
-						}
-					}
-					else if (e.getType() == "KEY_LOCATION_ACCESS") {
-						values.add(new Value(e.getContent()));
-					}
-				}
-				c = new Constraint(values.get(0),constraint.get(1).getContent(),values.get(1));
+				c = new Constraint(constraint);
 			}
 			constraints.add(c);
 		}
@@ -207,8 +192,8 @@ public class ConvertModelToNPTA {
 	 * @param valueName
 	 * @return
 	 */
-	private static Value findValue(String valueName) {
-		for(Value v : variables) {
+	private static Variable findValue(String valueName) {
+		for(Variable v : variables) {
 			if (v.getName().equals(valueName)) {
 				return v;
 			}
@@ -224,7 +209,7 @@ public class ConvertModelToNPTA {
 		for(Parameter p : parameters) {
 			p.printInfo(false);
 		}
-		for(Value v : variables) {
+		for(Variable v : variables) {
 			v.printInfo();
 		}
 	}

@@ -34,14 +34,14 @@ end
 init := {
 
 discrete = 
-loc[specification] := l1,
-loc[specification2] := sl1,
+loc[specification] = l1,
+loc[specification2] = sl1,
 ;
 
 continuous = 
-& global_time = 0 
-& x = 0 
-& p >= 0 
-& p <= 5 
+& global_time = 0
+& x = 0
+& p >= 0
+& p <= 5
 ;
 }

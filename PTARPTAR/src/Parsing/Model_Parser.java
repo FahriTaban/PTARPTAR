@@ -13,14 +13,24 @@ public class Model_Parser extends Parser{
 		return getVariableNames(model, "KEY_VAR_DECL_CLOCKS", "KEY_VAR_DECL_PARAMETERS");
 	}
 	
-	public List<List<Element>> getInitLocations(List<Element> model){
+	public List<Element> getInitLocations(List<Element> model){
 		List<Element> initBlock = getSubList(model, "KEY_INIT", "BRACE_R");
-		return getElemLists(initBlock, "KEY_LOCATION_ACCESS","COMMA",true);
+		List<List<Element>> split = getElemLists(initBlock, "KEY_LOCATION_ACCESS","COMMA",true);
+		List<Element> merged = new ArrayList<>();
+		for(List<Element> pieces : split) {
+			StringBuilder content = new StringBuilder();
+			for(Element p : pieces) {
+				content.append(p.getContent() + " ");
+			}
+			String c = content.toString().strip();
+			merged.add(new Element("CONSTRAINT", c));
+		}
+		return merged;
 	}
 	
-	public List<List<Element>> getInitConstraints(List<Element> model){
+	public List<Element> getInitConstraints(List<Element> model){
 		List<Element> continuousBlock = getSubList(getSubList(model, "KEY_INIT", "BRACE_R"),"KEY_INIT_CONTINUOUS","SEMI");
-		return getElemLists(continuousBlock, "AND", "AND", "SEMI");
+		return getConstraints(continuousBlock);
 	}
 		
 	public List<List<Element>> getAutomata(List<Element> model){
@@ -39,16 +49,18 @@ public class Model_Parser extends Parser{
 		return getElemLists(automaton, "KEY_LOCATION", "KEY_LOCATION", "KEY_END");
 	}
 	
-	public List<List<Element>> getInvariants(List<Element> location){
-		return getElemLists(location, "KEY_INVARIANT", "KEY_LOCATION_WHEN", "KEY_END");
+	public List<Element> getInvariants(List<Element> location){
+		List<Element> sublist = getSubList(location, "KEY_INVARIANT", "KEY_LOCATION_WHEN", "KEY_END");
+		return getConstraints(sublist);
 	}
 	
 	public List<List<Element>> getTransitions(List<Element> location){
 		return getElemLists(location, "KEY_LOCATION_WHEN", "SEMI",true);
 	}
 	
-	public List<List<Element>> getGuards(List<Element> transition){
-		return getElemLists(transition, "KEY_LOCATION_WHEN", "KEY_ACTION", "AND");
+	public List<Element> getGuards(List<Element> transition){
+		List<Element> sublist = getSubList(transition, "KEY_LOCATION_WHEN", "KEY_ACTION", "AND");
+		return getConstraints(sublist);
 	}
 	
 	public Element getAction(List<Element> transition) {

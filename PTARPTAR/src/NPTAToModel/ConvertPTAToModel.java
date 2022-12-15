@@ -57,7 +57,9 @@ public class ConvertPTAToModel {
 	public static String declareInitLocs(List<Constraint> locs) {
 		String decl = "discrete = \n";
 		for(Constraint loc : locs) {
-			decl += "loc[" + loc.getValue1().getName() + "] " + loc.getOperator() + " " + loc.getValue2().getName() + ",\n";
+			String pta = loc.getEx1().getVariables().get(0).getName();
+			String location = loc.getEx2().getVariables().get(0).getName();
+			decl += "loc[" + pta + "] " + loc.getOperator() + " " + location + ",\n";
 		}
 		decl += ";";
 		return decl;
@@ -71,22 +73,10 @@ public class ConvertPTAToModel {
 	 */
 	public static String declareInitCons(List<Constraint> cons) {
 		String decl = "continuous = \n";
-		String pos1 = "";
-		String pos2 = "";
+		String conString = "";
 		for(Constraint con : cons) {
-			if (con.getValue1().isConstant()) {
-				pos1 = Integer.toString(con.getValue1().getValue());
-			}
-			else {
-				pos1 = con.getValue1().getName();
-			}
-			if (con.getValue2().isConstant()) {
-				pos1 = Integer.toString(con.getValue2().getValue());
-			}
-			else {
-				pos2 = con.getValue2().getName();
-			}
-			decl += "& " + pos1 + " " + con.getOperator() + " " + pos2 + " " + "\n";
+			conString = con.toString();
+			decl += "& " + conString + "\n";
 		}
 		decl += ";";
 		return decl;
@@ -168,7 +158,7 @@ public class ConvertPTAToModel {
 	public static String declareTransition(Transition t) {
 		String decl = "when " + declareConstraints(t.getGuards()) + "sync " + t.getAction();
 		String end;
-		if (!t.getUpdateRule().isEmpty()) {
+		if (!t.getUpdateRules().isEmpty()) {
 			end = " do " + declareUpdate(t) + " goto " + t.getPoststate() + ";";
 		} else {
 			end = " goto " + t.getPoststate() + ";";
@@ -184,11 +174,7 @@ public class ConvertPTAToModel {
 	public static String declareConstraints(List<Constraint> cons) {
 		String decl = "";
 		for(Constraint con : cons) {
-			if (con.getValue2().getName() == "") {
-				decl += con.getValue1().getName() + " & ";
-			} else {
-				decl += con.getValue1().getName() + " " + con.getOperator() + " " + con.getValue2().getName() + " & ";
-			}
+			decl += con.toString() + " & ";
 		}
 		decl = decl.substring(0,decl.length()-2);
 		return decl;
@@ -200,11 +186,11 @@ public class ConvertPTAToModel {
 	 * @return
 	 */
 	public static String declareUpdate(Transition t) {
-		if (t.getUpdateRule().isEmpty()) {
+		if (t.getUpdateRules().isEmpty()) {
 			return "";
 		}
 		String decl = "{";
-		for(Update u : t.getUpdateRule()) {
+		for(Update u : t.getUpdateRules()) {
 			decl += u.getVariable() + " := " + u.getSetToValue()+",";
 		}
 		decl = decl.substring(0,decl.length()-1) + "}";

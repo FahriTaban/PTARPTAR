@@ -77,7 +77,7 @@ public class Result_Parser extends Parser{
 			if (e.getType() == "KEY_RUN_NATURE_VALID") {
 				break;
 			}
-			if (fetch && (e.getType() == "KEY_VAR_NAME" || e.getType() == "VALUE" || e.isComparisonOperator())) {
+			if (fetch && e.getType() == "CONSTRAINT") {
 				constraints.add(e);
 			}
 		}
@@ -177,9 +177,9 @@ public class Result_Parser extends Parser{
 		return getValue(innerTransition, "KEY_TRANSITION_PTA", "KEY_VAR_NAME");
 	}
 	
-	public List<List<Element>> getGuards(List<Element> innerTransition){
+	public List<Element> getGuards(List<Element> innerTransition){
 		List<Element> sub = getSubList(innerTransition, "KEY_TRANSITION_GUARD", "COMMA");
-		return getValOpVal(sub);
+		return getConstraints(sub);
 	}
 	
 	public List<List<Element>> getUpdates(List<Element> innerTransition){

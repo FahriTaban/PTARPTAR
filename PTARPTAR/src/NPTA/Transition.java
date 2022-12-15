@@ -41,7 +41,7 @@ public class Transition {
 		return guards;
 	}
 	
-	public List<Update> getUpdateRule() {
+	public List<Update> getUpdateRules() {
 		return updateRules;
 	}
 	
@@ -58,7 +58,7 @@ public class Transition {
 		StringBuilder trans = new StringBuilder();
 		trans.append(this.preloc);
 		for(Constraint g : this.guards) {
-			trans.append("," + g.constraintToString());
+			trans.append("," + g.toString());
 		}
 		trans.append("---" + this.action + "---> " );
 		for(Update u : this.updateRules) {
@@ -73,7 +73,7 @@ public class Transition {
 		StringBuilder guards = new StringBuilder();
 		StringBuilder updates = new StringBuilder();
 		for(Constraint g : this.guards) {
-			guards.append("{" + g.constraintToString() + "},");
+			guards.append("{" + g.toString() + "},");
 		}
 		for(Update u : this.updateRules) {
 			updates.append("{" + u.getVariable() + " := " + u.getSetToValue() + "},");
@@ -90,7 +90,7 @@ public class Transition {
 	 * @param postloc
 	 * @return
 	 */
-	public boolean transitionEquals(String preloc, List<List<Element>> guard_elems
+	public boolean transitionEquals(String preloc, List<Element> guard_elems
 			, String action, List<List<Element>> update_elems, String postloc) {
 		boolean prel = false, a = false, ub = false,gb = false, postl = false;
 		int countGuard = 0;
@@ -104,7 +104,7 @@ public class Transition {
 		if(this.postloc.equals(postloc)) {
 			postl = true;
 		}
-		for(List<Element> guard_elem : guard_elems) {
+		for(Element guard_elem : guard_elems) {
 			for(Constraint g : this.guards) {
 				if(g.constraintEquals(guard_elem)) {
 					countGuard++;

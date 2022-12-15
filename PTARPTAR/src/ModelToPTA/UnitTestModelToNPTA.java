@@ -22,13 +22,24 @@ public class UnitTestModelToNPTA {
 		List<Element> clocks = parser.getClocks(model);
 		List<Element> parameter = parser.getParameters(model);
 		List<List<Element>> automata = parser.getAutomata(model);
-		List<List<Element>> initLocs = parser.getInitLocations(model);
-		List<List<Element>> initCons = parser.getInitConstraints(model);
+		for(List<Element> a : automata) {
+//			testConstraints(parser.getConstraints(a));
+		}
+		List<Element> initLocs = parser.getInitLocations(model);
+		List<Element> initCons = parser.getInitConstraints(model);
 //		testClocks(clocks);
 //		testParameter(parameter);
 //		testAutomata(automata);
 //		testInitLocs(initLocs);
 //		testInitCons(initCons);
+	}
+	
+	public static void testConstraints(List<Element> cons_e) {
+		List<Constraint> cons = ConvertModelToNPTA.createConstraints(cons_e);
+		for(Constraint c : cons) {
+			c.printInfo();
+		}
+		
 	}
 	
 	public static void testClocks(List<Element> clocks) {
@@ -41,7 +52,7 @@ public class UnitTestModelToNPTA {
 	public static void testParameter(List<Element> params) {
 		List<Parameter> j_params = ConvertModelToNPTA.createParams(params);
 		for(Parameter p : j_params) {
-			p.printInfo(true);
+			p.printInfo(false);
 		}
 	}
 	
@@ -52,14 +63,14 @@ public class UnitTestModelToNPTA {
 		}
 	}
 	
-	public static void testInitLocs(List<List<Element>> locs) {
+	public static void testInitLocs(List<Element> locs) {
 		List<Constraint> initLocs = ConvertModelToNPTA.createConstraints(locs);
 		for(Constraint c : initLocs) {
 			c.printInfo();
 		}
 	}
 	
-	public static void testInitCons(List<List<Element>> cons) {
+	public static void testInitCons(List<Element> cons) {
 		List<Constraint> initCons = ConvertModelToNPTA.createConstraints(cons);
 		for(Constraint c : initCons) {
 			c.printInfo();

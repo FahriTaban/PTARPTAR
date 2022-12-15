@@ -58,4 +58,14 @@ public class State {
 			sl.printInfo();
 		}
 	}
+	
+	public List<Constraint> iBounds(Clock c){
+		List<Constraint> invariants = this.getInvariants();
+		for(Constraint i : invariants) {
+			if (i.constrainsClock(c)) {
+				invariants.add(i);
+			}
+		}
+		return invariants;
+	}
 }

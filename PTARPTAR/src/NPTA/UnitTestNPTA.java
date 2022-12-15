@@ -25,11 +25,11 @@ public class UnitTestNPTA extends UnitTest{
 		List<Automaton> automata = npta.getAutomata();
 		List<List<Element>> location_elems = null;
 		List<Location> locations = null;
-		List<List<Element>> invariant_elems = null;
+		List<Element> invariant_elems = null;
 		List<Constraint> invariants = null;
 		List<List<Element>> transition_elems = null;
 		List<Transition> transitions = null;
-		List<List<Element>> guard_elems = null;
+		List<Element> guard_elems = null;
 		List<Constraint> guards = null;
 		List<List<Element>> update_elems = null;
 		List<Update> updates = null;
@@ -41,9 +41,9 @@ public class UnitTestNPTA extends UnitTest{
 		Location location = null;
 		List<Element> transition_elem = null;
 		Transition transition = null;
-		List<Element> invariant_elem = null;
+		Element invariant_elem = null;
 		Constraint invariant = null;
-		List<Element> guard_elem = null;
+		Element guard_elem = null;
 		Constraint guard = null;
 		List<Element> update_elem = null;
 		Update update = null;
@@ -80,7 +80,7 @@ public class UnitTestNPTA extends UnitTest{
 					guard_elems = parser.getGuards(transition_elem);
 					guards = transition.getGuards();
 					update_elems = parser.getUpdates(transition_elem);
-					updates = transition.getUpdateRule();
+					updates = transition.getUpdateRules();
 					countUpdates = updates.size();
 					testTransitionEquality(preloc,postloc,action_elem.getContent(),guard_elems,update_elems,transition);
 					countGuards = guards.size();
@@ -116,9 +116,9 @@ public class UnitTestNPTA extends UnitTest{
 	 * @param econstraints
 	 * @param jconstraints
 	 */
-	public static void testConstraintEquality(List<Element> constraint_elem, Constraint constraint) {
+	public static void testConstraintEquality(Element constraint_elem, Constraint constraint) {
 		if(!constraint.constraintEquals(constraint_elem)) {
-			System.out.println("NO MATCH EQUALITY: " + constraint.constraintToString() + " AND " + elemToString(constraint_elem));
+			System.out.println("NO MATCH EQUALITY: " + constraint.toString() + " AND " + constraint_elem.getContent());
 			}
 	}
 	/**
@@ -127,18 +127,18 @@ public class UnitTestNPTA extends UnitTest{
 	 * @param jtrans
 	 * @param parser
 	 */
-	public static void testTransitionEquality(String preloc, String postloc, String action, List<List<Element>> guard_elems,
+	public static void testTransitionEquality(String preloc, String postloc, String action, List<Element> guard_elems,
 			List<List<Element>> update_elems, Transition transition) {
 			if(!transition.transitionEquals(preloc, guard_elems, action, update_elems, postloc)) {
 				System.out.println("NO MATCH TRANSITION: " + preloc+","+ elemsToString(guard_elems) + "," + action + "," + 
-						elemsToString(update_elems) + "," + postloc + " AND \n" + transition.transitionToString());
+						elemssToString(update_elems) + "," + postloc + " AND \n" + transition.transitionToString());
 			}
 	}
 		
 		public static void testUpdateEquality(List<Element> update_elem, Update update) {
 			if(!update.updateEquals(update_elem)) {
 			System.out.println("NO MATCH UPDATE: " + update.getVariable() + "," + update.getSetToValue() + 
-					" AND " + elemToString(update_elem));
+					" AND " + elemsToString(update_elem));
 			}
 		}
 	

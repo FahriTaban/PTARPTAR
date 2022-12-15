@@ -62,7 +62,7 @@ public class UnitTestResToRun extends UnitTest{
 
 	public static void testFindTransition(String preloc, String postloc, String action, List<Element> innerTransition) {
 		String guards = elemsToString(parser.getGuards(innerTransition));
-		String updates = elemsToString(parser.getUpdates(innerTransition));
+		String updates = elemssToString(parser.getUpdates(innerTransition));
 		System.out.println("INPUT PARAMETER");
 		System.out.println(preloc + " , " + guards + " , " + action + " , " + updates + " , " + postloc);
 		System.out.println("INPUT TRANSITION");

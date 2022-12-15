@@ -38,6 +38,14 @@ public class OuterTransition {
 		return guards;
 	}
 	
+	public List<Update> getUpdates(){
+		List<Update> updates = new ArrayList<>();
+		for (Transition t : this.transitions) {
+			updates.addAll(t.getUpdateRules());
+		}
+		return updates;
+	}
+	
 	public void printInfo() {
 		System.out.println("OUTER TRANSITION");
 		System.out.println("PRESTATE");		
@@ -49,5 +57,16 @@ public class OuterTransition {
 			t.printInfo();
 		}
 		System.out.println("POSTSTATE");
+		this.poststate.printInfo();
+	}
+	
+	public List<Constraint> gBounds(Clock c){
+		List<Constraint> guards = this.getGuards();
+		for(Constraint g : guards) {
+			if (g.constrainsClock(c)) {
+				guards.add(g);
+			}
+		}
+		return guards;
 	}
 }

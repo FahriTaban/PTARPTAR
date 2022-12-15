@@ -5,7 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import Parsing.Element;
 import Parsing.Result_Parser;
@@ -63,8 +66,8 @@ public class Utility {
 		String pta = parser.getPTA(transition).getContent();
 		StringBuilder string = new StringBuilder();
 		string.append(pta + ",");
-		for(List<Element> g: parser.getGuards(transition)) {
-			string.append(elemToString(g)+",");
+		for(Element g: parser.getGuards(transition)) {
+			string.append(g.getContent()+",");
 		}
 		for(List<Element> u: parser.getUpdates(transition)) {
 			string.append(elemToString(u)+",");
@@ -120,5 +123,61 @@ public class Utility {
 	
 	public static void print(String s){
 		System.out.println(s);
+	}
+	
+	public static List<Element> reverseList(List<Element> elems){
+		List<Element> reversed = new ArrayList<>();
+		for(int i = elems.size()-1;i >= 0;i--) {
+			Element e = elems.get(i);
+			if(e.isComparisonOperator()) {
+				Element f = new Element("",negateOperator(e.getContent()));
+				reversed.add(f);
+			} else {
+			reversed.add(elems.get(i));
+			}
+		}
+		return reversed;
+	}
+	
+	public static String negateOperator(String operator) {
+		switch(operator) {
+			case "=":
+				return "=";
+			case ">=":
+				return "<=";
+			case "<=":
+				return ">=";
+			case ">":
+				return "<";
+			case "<":
+				return ">";
+			default:
+				return operator;
+		}
+	}
+	
+	public static List<String> splitString(String s, String delim){
+		System.out.println(s);
+		Pattern p = Pattern.compile(delim);
+		Matcher m = p.matcher(s);
+		if (m.find()) {
+			int begin = m.start();
+			int end = m.end();
+			String lhs = s.substring(0,begin).strip();
+			String op = s.substring(begin,end).strip();
+			String rhs = s.substring(end,s.length()).strip();
+	        return List.of(lhs,op,rhs);
+		} else {
+			return List.of(s);
+		}
+	}
+	
+	public static boolean isArOperator(String s) {
+		Pattern p = Pattern.compile("[+\\-\\*]");
+		Matcher m = p.matcher(s);
+		if(m.find() && s.length() == 1) {
+			return true;
+		} 
+		return false;
 	}
 }
