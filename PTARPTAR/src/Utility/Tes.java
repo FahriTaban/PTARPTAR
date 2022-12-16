@@ -5,17 +5,21 @@ import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
-
+import NPTA.*;
 public class Tes {
-
+	
 	public static void main(String[] args) {
-		System.out.print("\n".isBlank());
-		String s = "x + s <= 2";
-		List<String> strings = Utility.splitString(s, "[<>=]+");
-		for(String a:strings) {
-			System.out.print(a+",");
-			System.out.println(Utility.isArOperator(a));
-		}
+		Ex ex = new Ex("x + 2 + p");
+		System.out.println(ex.getVariables().size());
+		System.out.println(ex.getOperators().size());
+		System.out.println(ex.toString() + "\n" + ex.toSMTString());
+//		System.out.print("\n".isBlank());
+//		String s = "x + s <= 2";
+//		List<String> strings = Utility.splitString(s, "[<>=]+");
+//		for(String a:strings) {
+//			System.out.print(a+",");
+//			System.out.println(Utility.isArOperator(a));
+//		}
 	}
 	
 	static void printElems(List<Element> elems) {

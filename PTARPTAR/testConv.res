@@ -1,7 +1,7 @@
 (************************************************************
  * Result by: IMITATOR 3.4-beta "Cheese Durian" (build ?????/?????)
  * Model    : '/imitator/fff/testConv.imi'
- * Generated: Tue Dec 13, 2022 14:17:02
+ * Generated: Fri Dec 16, 2022 13:32:03
  * Command  : /imitator/bin/imitator /imitator/fff/testConv.imi /imitator/fff/testConvProp3.imiprop -comparison equality -merge none
  ************************************************************)
 
@@ -1810,21 +1810,21 @@ END RESULT
 Number of states                        : 16
 Number of transitions                   : 18
 Number of computed states               : 19
-Total computation time                  : 0.031 second
-States/second in state space            : 503.9 (16/0.031 second)
-Computed states/second                  : 598.3 (19/0.031 second)
-Estimated memory                        : 6.262 MiB (i.e., 820867 words of size 8)
+Total computation time                  : 0.027 second
+States/second in state space            : 577.0 (16/0.027 second)
+Computed states/second                  : 685.3 (19/0.027 second)
+Estimated memory                        : 6.262 MiB (i.e., 820864 words of size 8)
 ------------------------------------------------------------
 
 ------------------------------------------------------------
  Statistics: Algorithm counters
 ------------------------------------------------------------
 main algorithm + parsing                : 0.034 second
-main algorithm                          : 0.031 second
+main algorithm                          : 0.028 second
 ------------------------------------------------------------
  Statistics: Parsing counters
 ------------------------------------------------------------
-model parsing and converting            : 0.001 second
+model parsing and converting            : 0.005 second
 ------------------------------------------------------------
  Statistics: State computation counters
 ------------------------------------------------------------
@@ -1843,5 +1843,5 @@ state space drawing                     : 0.000 second
 ------------------------------------------------------------
  Statistics: Global counter
 ------------------------------------------------------------
-total                                   : 0.045 second
+total                                   : 0.044 second
 ------------------------------------------------------------

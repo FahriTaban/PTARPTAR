@@ -57,8 +57,8 @@ public class ConvertPTAToModel {
 	public static String declareInitLocs(List<Constraint> locs) {
 		String decl = "discrete = \n";
 		for(Constraint loc : locs) {
-			String pta = loc.getEx1().getVariables().get(0).getName();
-			String location = loc.getEx2().getVariables().get(0).getName();
+			String pta = loc.getLhs().getVariables().get(0).getName();
+			String location = loc.getRhs().getVariables().get(0).getName();
 			decl += "loc[" + pta + "] " + loc.getOperator() + " " + location + ",\n";
 		}
 		decl += ";";

@@ -28,9 +28,10 @@ public class Ex {
 		if (s == "") {
 			return;
 		} else {
-			List<String> parts = Utility.splitString(s, " ");
+			String[] parts = s.split(" ");
 			for(String p : parts) {
-				if (Utility.isArOperator(s)) {
+				System.out.println(p);
+				if (Utility.isArOperator(p)) {
 					this.operators.add(p);
 				} else {
 					this.variables.add(new Variable(p));
@@ -58,6 +59,26 @@ public class Ex {
 		return this.getVariables().get(i).getName();
 	}
 	
+	public String reverseToString() {
+		if (this.isBoolean) {
+			return this.variables.get(0).toString();
+		}
+		StringBuilder s = new StringBuilder();
+		String var = "";
+		String op = ""; 
+		for(int i = this.operators.size()-1; i >= 0;i--) {
+			var = this.variables.get(i).getName();
+			int j = i - 1;
+			if(j == -1) {
+				op = "";
+			} else {
+				op = " " + Utility.negateOperator(this.operators.get(i));
+			}
+			s.append(var + op + " ");
+		}
+		return s.toString();
+	}
+	
 	@Override
 	public String toString() {
 		if (this.isBoolean) {
@@ -75,19 +96,27 @@ public class Ex {
 		return s.toString();
 	}
 	
-	public String reverseToString(){
+	public String toSMTString() {
+		if (this.isBoolean) {
+			return this.variables.get(0).toString();
+		}
 		StringBuilder s = new StringBuilder();
 		String var = "";
 		String op = ""; 
-		for(int i = this.operators.size()-1; i >= 0 ;i--) {
-			var = this.variables.get(i).getName();
-			op = this.operators.get(i);
-			op = Utility.negateOperator(op);
-			s.append(var + " " + op + " ");
+		int j = operators.size()-1;
+		for(int i = 0; i < this.variables.size();i++) {
+			var = this.getVariable(i);
+			if(i > j) {
+				s.append(var);
+			} else {
+				op = this.operators.get(i) + " ";
+				s.append("(" + op + var + " ");
+			}
 		}
-		s.append(this.variables.get(0));
+		s.append(")".repeat(this.operators.size()));
 		return s.toString();
 	}
+
 	
 
 }

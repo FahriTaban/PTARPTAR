@@ -61,12 +61,12 @@ public class OuterTransition {
 	}
 	
 	public List<Constraint> gBounds(Clock c){
-		List<Constraint> guards = this.getGuards();
-		for(Constraint g : guards) {
-			if (g.constrainsClock(c)) {
-				guards.add(g);
+		List<Constraint> gBounds = new ArrayList<>();
+		for(Constraint constraint : this.getGuards()) {
+			if (constraint.constrainsClock(c)) {
+				gBounds.add(constraint);
 			}
 		}
-		return guards;
+		return gBounds;
 	}
 }

@@ -1,6 +1,7 @@
 package Run;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import NPTA.*;
@@ -60,12 +61,12 @@ public class State {
 	}
 	
 	public List<Constraint> iBounds(Clock c){
-		List<Constraint> invariants = this.getInvariants();
-		for(Constraint i : invariants) {
-			if (i.constrainsClock(c)) {
-				invariants.add(i);
+		List<Constraint> iBounds = new ArrayList<>();
+		for(Constraint constraint : this.getInvariants()) {
+			if (constraint.constrainsClock(c)) {
+				iBounds.add(constraint);
 			}
 		}
-		return invariants;
+		return iBounds;
 	}
 }

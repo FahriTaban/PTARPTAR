@@ -25,7 +25,7 @@ public class UnitTestResToRun extends UnitTest{
 		List<Element> result = r_lex.getTokens();
 		NetworkPTA npta = ConvertModelToNPTA.buildNetworkPTA(testconvModel);
 //		npta.printInfo();
-		Run run = ConvertResToRun.createRun(result_name,npta);
+		Run run = ConvertResToRun.createRun(testconvRes,npta);
 		ConvertResToRun.setNPTA(npta);
 		NetworkPTA npta_conv = ConvertResToRun.getNPTA();
 		ConvertPTAToModel.nptaToModel(npta_conv, "testConversion_COPY.txt");

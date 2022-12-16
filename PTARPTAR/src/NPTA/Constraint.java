@@ -44,11 +44,11 @@ public class Constraint {
 		}
 	}
 	
-	public Ex getEx1() {
+	public Ex getLhs() {
 		return lhs;
 	}
 	
-	public Ex getEx2() {
+	public Ex getRhs() {
 		return rhs;
 	}
 

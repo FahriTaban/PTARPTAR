@@ -31,10 +31,11 @@ public class Main {
 	                cfg.put("model", "true");
 	                Context ctx = new Context(cfg);
 	        
-	                p.simpleExample();
-	                p.parserExample1(ctx);
-	                p.parserExample2(ctx);
-	                p.parserExample5(ctx);
+//	                p.simpleExample();
+//	                p.parserExample1(ctx);
+//	                p.parserExample2(ctx);
+//	                p.parserExample5(ctx);
+	                p.quantifierExample1(ctx);
 	                // core dumps: p.floatingPointExample2(ctx);
 	            }
 
@@ -46,11 +47,6 @@ public class Main {
 	        } catch (Z3Exception ex)
 	        {
 	            System.out.println("Z3 Managed Exception: " + ex.getMessage());
-	            System.out.println("Stack trace: ");
-	            ex.printStackTrace(System.out);
-	        } catch (TestFailedException ex)
-	        {
-	            System.out.println("TEST CASE FAILED: " + ex.getMessage());
 	            System.out.println("Stack trace: ");
 	            ex.printStackTrace(System.out);
 	        } catch (Exception ex)

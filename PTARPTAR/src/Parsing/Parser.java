@@ -65,6 +65,7 @@ public class Parser {
 	
 	public List<Element> getConstraints(List<Element> token){
 		List<Element> cons = new ArrayList<>();
+		List<Element> cons_ordered = new ArrayList<>();
 		for (Element e : token) {
 			if (e.getType() == "CONSTRAINT" || e.getType() == "KEY_VAR_BOOL_TRUE" || e.getType() == "KEY_VAR_BOOL_FALSE") {
 				cons.add(e);

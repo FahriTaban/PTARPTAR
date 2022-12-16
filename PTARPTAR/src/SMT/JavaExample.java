@@ -20,6 +20,7 @@ Notes:
 
 import java.util.*;
 
+
 import com.microsoft.z3.*;
 
 class JavaExample

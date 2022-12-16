@@ -187,21 +187,6 @@ public class ConvertModelToNPTA {
 		
 	}
 	
-	/**
-	 * Returns the value from the list of values with the given valueName
-	 * @param valueName
-	 * @return
-	 */
-	private static Variable findValue(String valueName) {
-		for(Variable v : variables) {
-			if (v.getName().equals(valueName)) {
-				return v;
-			}
-		}
-		System.out.println("Failed to find variable " + valueName);
-		return null;
-	}
-	
 	private static void printInfo() {
 		for(Clock c : clocks) {
 			c.printInfo(true);

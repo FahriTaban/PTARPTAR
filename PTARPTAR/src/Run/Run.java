@@ -7,6 +7,7 @@ import NPTA.Clock;
 import NPTA.Constraint;
 import NPTA.NetworkPTA;
 import NPTA.Transition;
+import NPTA.Update;
 
 
 public class Run {
@@ -39,6 +40,14 @@ public class Run {
 	public List<Constraint> getInitialConstraints() {
 		return initialConstraints;
 	}
+	
+	public List<List<Update>> getUpdates(){
+		List<List<Update>> updates = new ArrayList<>();
+		for(OuterTransition ot : this.transitions) {
+			updates.add(ot.getUpdates());
+		}
+		return updates;
+	}
 
 	public void setInitialConstraints(List<Constraint> initialConstraints) {
 		this.initialConstraints = initialConstraints;
@@ -58,6 +67,22 @@ public class Run {
 		for(OuterTransition ot : this.transitions) {
 			ot.printInfo();
 		}
+	}
+
+	public List<List<Constraint>> getInvariants() {
+		List<List<Constraint>> invariants = new ArrayList<>();
+		for(State s : this.states) {
+			invariants.add(s.getInvariants());
+		}
+		return invariants;
+	}
+	
+	public List<List<Constraint>> getGuards() {
+		List<List<Constraint>> guards = new ArrayList<>();
+		for(OuterTransition ot : this.transitions) {
+			guards.add(ot.getGuards());
+		}
+		return guards;
 	}
 	
 }
