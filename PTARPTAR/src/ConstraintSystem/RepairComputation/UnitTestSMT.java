@@ -61,7 +61,7 @@ public class UnitTestSMT {
     };
 
 	
-	public static void parserExample1(Context ctx, String formula) throws TestFailedException
+	public void parserExample1(Context ctx, String formula) throws TestFailedException
     {
         System.out.println("ParserExample1");
         Log.append("ParserExample1");

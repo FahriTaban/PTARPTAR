@@ -57,6 +57,10 @@ public class Constraint {
 		return operator;
 	}
 	
+	public void setOperator(String op) {
+		this.operator = op;
+	}
+	
 	public void printInfo() {
 		System.out.println("Constraint");
 		System.out.println(this.toString());
