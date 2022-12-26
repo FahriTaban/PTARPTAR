@@ -62,4 +62,16 @@ public class UnitTest {
 	public static void print(String s){
 		System.out.println(s);
 	}
+	
+	public static void printList(List<String> l) {
+		for(String s : l) {
+			System.out.println(s);
+		}
+	}
+
+	public static void printListList(List<List<String>> l) {
+		for(List<String> s : l) {
+			printList(s);
+		}
+	}
 }

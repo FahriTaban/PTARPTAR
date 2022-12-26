@@ -17,6 +17,13 @@ public class Constraint {
 	private Ex rhs;
 	private boolean isBoolean = false;
 	
+	public Constraint(Constraint c) {
+		this.lhs = new Ex(c.getLhs().getVariables(),c.getLhs().getOperators());
+		this.operator = c.operator;
+		this.rhs = new Ex(c.getRhs().getVariables(),c.getRhs().getOperators());
+		this.isBoolean = c.isBoolean;
+	}
+	
 	public Constraint(Ex v, String op, Ex b) {
 		this.lhs = v;
 		this.operator = op;

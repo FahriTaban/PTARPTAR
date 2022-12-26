@@ -1,71 +1,91 @@
 package ConstraintSystem;
 
 import java.util.ArrayList;
+
+import java.util.HashMap;
 import java.util.List;
 
 import NPTA.*;
 import Run.OuterTransition;
 import Run.State;
+import Utility.Utility;
 
 public class ToSMT2 {
-		
-	public static String assertion(Constraint c) {
-		String cons = declareConstraint(c);
-		return par("assert " + cons);
+	
+	public static List<String> declareBoundVariables(List<Clock> clocks, 
+			int numberOfStates,int numberOfTransitions) {
+		List<String> res = new ArrayList<>();
+		res.addAll(declareClocks(clocks, numberOfStates,true));
+		res.addAll(declareDelays(numberOfTransitions,true));
+		return res;
 	}
 	
 	public static String declareConstraint(Constraint c) {
 		return par(c.getOperator()+" "+c.getLhs().toString() + " " + c.getRhs().toString());
-	}
-	
-	
-	public static String declareReal(Variable v) {
-		return par("declare-fun " + v.getName() + " " + par("") + " Real");
-	}
+	}	
 	
 	public static String declareReal(String v) {
 		return par("declare-fun " + v + " " + par("") + " Real");
 	}
 	
-	public static String initValue(Variable v) {
-		return par("");
+	public static String declareBoundReal(String v) {
+		return par(v + " Real");
 	}
 	
 	public static String par(String s) {
 		if (s.equals("")) {
 			return "()";
-		} else if (!s.contains(" ")){
+		} 
+		else if (!s.contains(" ") && !s.contains("-")){
 			return s;
-		} else {
+		} 
+		else {
 		return "("+s+")";
 		}
 	}
 	
-	public static String declareClocks(List<Clock> clocks, int numberOfStates) {
-		StringBuilder s = new StringBuilder();
-		for(Clock c : clocks) {
+	public static List<String> declareClocks(List<Clock> clocks, int numberOfStates, boolean bound) {
+		List<String> s = new ArrayList<>();
+ 		for(Clock c : clocks) {
 			for(int i = 0; i < numberOfStates; i++) {
 				String alias = c.getName()+Integer.toString(i);
-				s.append(declareReal(alias) + "\n");
+				if (!bound) {
+					s.add(declareReal(alias));
+				} else {
+					s.add(declareBoundReal(alias));
+				}
 			}
 		}
-		return s.toString().strip();
+		return s;
 	}
 	
-	public static String declareParameters(List<Parameter> params) {
-		StringBuilder s = new StringBuilder();
+	public static List<String> declareVariationVariables(List<VariationVariable> vvs){
+		List<String> s = new ArrayList<>();
+		for(VariationVariable vv : vvs) {
+			s.add(declareReal(vv.getName()));
+		}
+		return s;
+	}
+	
+	public static List<String> declareParameters(List<Parameter> params) {
+		List<String> s = new ArrayList<>();
 		for(Parameter p : params) {
-			s.append(declareReal(p) + "\n");
+			s.add(declareReal(p.getName()));
 		}
-		return s.toString().strip();
+		return s;
 	}
 	
-	public static String declareDelays(int numberOfTransitions) {
-		StringBuilder s = new StringBuilder();
+	public static List<String> declareDelays(int numberOfTransitions,boolean bound) {
+		List<String> s = new ArrayList<>();
 		for(int i = 0; i < numberOfTransitions; i++) {
-			s.append(declareReal("delta"+Integer.toString(i)) + "\n");
+			String delta = "delta"+Integer.toString(i);
+			if (!bound) {
+				s.add(declareReal(delta));
+			} else {
+				s.add(declareBoundReal(delta));
+			}
 		}
-		return s.toString().strip();
+		return s;
 	}
 	
 	/**
@@ -74,19 +94,19 @@ public class ToSMT2 {
 	 * @return
 	 */
 	public static String initializeInitConstraints(List<Constraint> constraints, List<Clock> clocks) {
-		StringBuilder s = new StringBuilder();
+		List<String> s = new ArrayList<>();
 		for(Constraint c : constraints) {
 			Variable var = c.getLhs().getVariables().get(0);
 			if (!isVariableClock(var,clocks)) {
-				s.append(par(c.getOperator() + " " + var.getName() + " " + par(c.getRhs().toString())) + " ");
+				s.add(par(c.getOperator() + " " + var.getName() + " " + par(c.getRhs().toString())));
 			} else {
 				String alias = c.getLhs().toString() + "0";
 				String op = c.getOperator();
 				String rhs = c.getRhs().toString();
-				s.append(par(op + " " + alias + " " + par(rhs))+ " ");
+				s.add(par(op + " " + alias + " " + par(rhs)));
 			}
 		}
-		return s.toString().strip();
+		return Utility.concatPretty("and", s);
 	}
 	
 	/**
@@ -95,41 +115,44 @@ public class ToSMT2 {
 	 * @return
 	 */
 	public static String timeAdvancement(int numberOfTransitions) {
-		StringBuilder s = new StringBuilder();
+		List<String> s = new ArrayList<>();
 		for(int i = 0; i < numberOfTransitions; i++) {
-			s.append(par("delta" + Integer.toString(i) +" >= 0") + " ");
+			String tA = formatSMT("delta" + Integer.toString(i),"0", ">=");
+			s.add(tA);
 		}
-		return s.toString().strip();
+		return Utility.concatPretty("and", s);
 	}
 	
 	public static String clockResets(List<List<Clock>> resetClocks) {
-		StringBuilder s = new StringBuilder();
+		List<String> s = new ArrayList<>();
 		for(int i = 0; i < resetClocks.size(); i++) {
 			List<Clock> rcs = resetClocks.get(i);
 				for(Clock clock : rcs) {
-					String var = clock.getName();
-					s.append(par("= " + var+Integer.toString(i+1) + " 0") + " ");
+					String var = clock.getName()+Integer.toString(i+1);
+					String cR = par("= " + var + " 0");
+					s.add(cR);
 				}
 		}
-		return s.toString().strip();	
+		return Utility.concatPretty("and", s);	
 	}
 	
 	public static String sojournTime(List<List<Clock>> clocks) {
-		StringBuilder s = new StringBuilder();
+		List<String> s = new ArrayList<>();
 		for(int i = 0; i < clocks.size();i++) {
 			List<Clock> cs = clocks.get(i);
 			for(Clock c : cs) {
 				String name_left = c.getName()+Integer.toString(i+1);
 				String name_right = c.getName()+Integer.toString(i);
 				String delta = "delta"+Integer.toString(i);
-				s.append(par("= " + name_left + " " + par("+ " + name_right + " " + delta)));
+				String sT = formatSMT(name_left, addVar(name_right,delta),"=");
+				s.add(sT);
 			}
 		}
-		return s.toString().strip();
+		return Utility.concatPretty("and", s);
 	}
 	
-	public static String getInvariantBounds(List<State> states, List<Clock> clocks){
-		StringBuilder iBounds = new StringBuilder();
+	public static String getInvariantBounds(List<State> states, List<Clock> clocks) {
+		List<String> iBounds = new ArrayList<>();
 		for(int i = 0;i < states.size(); i++) {
 			State state = states.get(i);
 			for(Clock c : clocks) {
@@ -138,16 +161,17 @@ public class ToSMT2 {
 					for(Constraint bound : bounds) {
 						String alias = c.getName() + Integer.toString(i);
 						String delta = "delta"+Integer.toString(i);
-						iBounds.append(locationInvariants(alias, bound, delta) + " ");
+						List<String> gBound = locationInvariant(alias, bound, delta);
+						iBounds.addAll(gBound);
 					}
 				}
 			}
 		}
-		return iBounds.toString().strip();
+		return Utility.concatPretty("and", iBounds);
 	}
 	
 	public static String getTransitionGuards(List<OuterTransition> transitions, List<Clock> clocks) {
-		StringBuilder gBounds = new StringBuilder();
+		List<String> gBounds = new ArrayList<>();
 		for(int i = 0;i < transitions.size(); i++) {
 			OuterTransition trans = transitions.get(i);
 			for(Clock c : clocks) {
@@ -156,25 +180,93 @@ public class ToSMT2 {
 					for(Constraint bound : bounds) {
 						String alias = c.getName() + Integer.toString(i);
 						String delta = "delta"+Integer.toString(i);
-						gBounds.append(transitionGuards(alias, bound, delta) + " ");
+						String gBound = transitionGuard(alias, bound, delta);
+						gBounds.add(gBound);
 					}
 				}
 			}
 		}
-		return gBounds.toString().strip();
+		return Utility.concatPretty("and", gBounds);
 	}
 	
-	private static String transitionGuards(String clock, Constraint c, String delta) {
+	public static String transitionGuard(String clock, Constraint c, String delta) {
 		return par(c.getOperator() +  " " + clock + " " + par(c.getRhs().toSMTString()));
 	}
-
-	public static String locationInvariants(String clock, Constraint c, String delta) {
-		String op = c.getOperator();
-		String rhs = c.getRhs().toSMTString();
-		return par(op + " " + clock + " " + par(rhs)) + " " + 
-				par(op + " " + par("+ " + clock + " "+ delta) + " " + par(rhs));
+	
+	public static String transitionGuard(String clock, Constraint c, String delta, String varVar) {
+		return par(c.getOperator() +  " " + clock + " " + addVar(par(c.getRhs().toSMTString()),varVar));
 	}
 	
+	public static String transitionGuardOV(String clock, Constraint c, String delta, String op) {
+		return par(op +  " " + clock + " " + par(c.getRhs().toSMTString()));
+	}
+	
+	public static String transitionGuard(String clock, Constraint c, String delta, String varVar, String op) {
+		return par(op +  " " + clock + " " + addVar(par(c.getRhs().toSMTString()),varVar));
+	}
+
+	public static List<String> locationInvariant(String clock, Constraint c, String delta) {
+		List<String> lI = new ArrayList<>();
+		String op = c.getOperator();
+		String rhs = c.getRhs().toSMTString();
+		lI.add(par(op + " " + clock + " " + par(rhs)));
+		lI.add(par(op + " " + addVar(clock,delta) + " " + par(rhs)));
+		return lI;
+	}
+	
+	public static List<String> locationInvariant(String clock, Constraint c, String delta, String var) {
+		List<String> lI = new ArrayList<>();
+		String op = c.getOperator();
+		String rhs = c.getRhs().toSMTString();
+		lI.add(par(op + " " + clock + " " + addVar(par(rhs),var)));
+		lI.add(par(op + " " + addVar(clock,delta) + " " + addVar(par(rhs),var)));
+		return lI;
+	}
+	
+	public static List<String> locationInvariantOV(String clock, Constraint c, String delta, String op) {
+		List<String> lI = new ArrayList<>();
+		String rhs = c.getRhs().toSMTString();
+		lI.add(par(op + " " + clock + " " + par(rhs)));
+		lI.add(par(op + " " + addVar(clock,delta) + " " + par(rhs)));
+		return lI;
+	}
+	
+	public static List<String> locationInvariant(String clock, Constraint c, String delta, String var, String op) {
+		List<String> lI = new ArrayList<>();
+		String rhs = c.getRhs().toSMTString();
+		lI.add(par(op + " " + clock + " " + addVar(par(rhs),var)));
+		lI.add(par(op + " " + addVar(clock,delta) + " " + addVar(par(rhs),var)));
+		return lI;
+	}
+	
+	public static String connectClauses(List<String> clauses, String operation) {
+		StringBuilder s = new StringBuilder();
+		s.append(operation + " ");
+		for(String c : clauses) {
+			s.append(c + " ");
+		}
+		return par(s.toString().strip());
+	}
+	
+	public static String connectClausesPretty(List<String> clauses, String operation) {
+		StringBuilder s = new StringBuilder();
+		s.append(operation+ " ");
+		return par(s.toString().strip());
+	}
+	
+	public static String positityConstraint(String exp, String var) {
+		return par(">= " + addVar(exp,var) + " 0");
+	}
+	
+	public static String urgentLocations(HashMap<Integer,State> locs) {
+		List<String> s = new ArrayList<>();
+		for(Integer i : locs.keySet()) {
+			String delta = "delta"+i.toString();
+			s.add(formatSMT(delta,"0","="));
+		}
+		return Utility.concatPretty("and", s);
+	}
+
 	private static boolean isVariableClock(Variable var, List<Clock> clocks) {
 		for(Clock c : clocks) {
 			if (c.getName().equals(var.getName())){
@@ -182,6 +274,14 @@ public class ToSMT2 {
 			}
 		}
 		return false;
+	}
+	
+	private static String addVar(String exp, String var) {
+		return par("+ " + exp + " " + var);
+	}
+	
+	public static String formatSMT(String l1, String l2, String op) {
+		return par(op + " " + l1 + " " + l2);
 	}
 	
 }

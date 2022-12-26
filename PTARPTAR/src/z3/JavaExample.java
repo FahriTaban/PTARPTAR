@@ -1,4 +1,4 @@
-package SMT;
+package z3;
 /*++
  Copyright (c) 2012 Microsoft Corporation
 
@@ -19,6 +19,7 @@ Notes:
 --*/
 
 import java.util.*;
+
 
 
 import com.microsoft.z3.*;
@@ -1447,7 +1448,7 @@ class JavaExample
         Log.append("ParserExample1");
 
         BoolExpr f = ctx.parseSMTLIB2String(
-                "(declare-const x Int) (declare-const y Int) (assert (and (> x y) (> x 0) (< 0 y)))",
+                "(declare-const x Int) (declare-const y Int) (assert (xor (> x y) (> x 0) (< 0 y)))",
                 null, null, null, null)[0];
         System.out.println("formula " + f);
 
@@ -2284,30 +2285,30 @@ class JavaExample
                 Context ctx = new Context(cfg);
         
                 p.optimizeExample(ctx);
-                p.basicTests(ctx);
-                p.castingTest(ctx);
-                p.sudokuExample(ctx);
+//                p.basicTests(ctx);
+//                p.castingTest(ctx);
+//                p.sudokuExample(ctx);
                 p.quantifierExample1(ctx);
                 p.quantifierExample2(ctx);
-                p.logicExample(ctx);
-                p.parOrExample(ctx);
+//                p.logicExample(ctx);
+//                p.parOrExample(ctx);
                 p.findModelExample1(ctx);
                 p.findModelExample2(ctx);
-                p.pushPopExample1(ctx);
-                p.arrayExample1(ctx);
-                p.arrayExample3(ctx);
-                p.bitvectorExample1(ctx);
-                p.bitvectorExample2(ctx);
+//                p.pushPopExample1(ctx);
+//                p.arrayExample1(ctx);
+//                p.arrayExample3(ctx);
+//                p.bitvectorExample1(ctx);
+//                p.bitvectorExample2(ctx);
                 p.parserExample1(ctx);
                 p.parserExample2(ctx);
                 p.parserExample5(ctx);
-                p.iteExample(ctx);
+//                p.iteExample(ctx);
                 p.evalExample1(ctx);
                 p.evalExample2(ctx);
-                p.findSmallModelExample(ctx);
-                p.simplifierExample(ctx);
-                p.finiteDomainExample(ctx);
-                p.floatingPointExample1(ctx);
+//                p.findSmallModelExample(ctx);
+//                p.simplifierExample(ctx);
+//                p.finiteDomainExample(ctx);
+//                p.floatingPointExample1(ctx);
                 // core dumps: p.floatingPointExample2(ctx);
             }
 

@@ -2,8 +2,10 @@ package ConstraintSystem;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
+import ConstraintSystem.VariationVariable.VarType;
 import ModelToPTA.ConvertModelToNPTA;
 import NPTA.Clock;
 import NPTA.Constraint;
@@ -19,6 +21,8 @@ import Utility.UnitTest;
 import resToRun.ConvertResToRun;
 
 public class UnitTestTDTCS extends UnitTest{
+	
+	
 	public static void main(String[] args) {
 		PrintStream out = System.out;
 		System.setOut(new PrintStream(OutputStream.nullOutputStream()));
@@ -32,6 +36,7 @@ public class UnitTestTDTCS extends UnitTest{
 		Run run = ConvertResToRun.createRun(testconvRes,npta);
 		System.setOut(out);
 		
+		List<VariationVariable> vvs = new ArrayList<>();
 		List<Clock> clocks = npta.getClocks();
 		List<Constraint> initCons = run.getInitialConstraints();
 		List<Parameter> parameters = npta.getParameter();
@@ -40,27 +45,32 @@ public class UnitTestTDTCS extends UnitTest{
 		List<List<Constraint>> guards = run.getGuards();
 		List<OuterTransition> transitions = run.getTransitions();
 		List<List<Update>> updates = run.getUpdates();
-		List<List<Clock>> resetClocks = TDTCS.getAllResetClocks(updates,clocks);
-		List<List<Clock>> nonResetClocks = TDTCS.getAllNonResetClocks(resetClocks,clocks);
+		List<List<Clock>> resetClocks = run.getAllResetClocks(clocks);
+		List<List<Clock>> nonResetClocks = run.getAllNonResetClocks(clocks);
 		int numberOfStates = states.size();
 		int numberOfTransitions = run.getTransitions().size();
 	
-		testDecl(clocks,parameters,numberOfTransitions,numberOfStates);
-		testInit(initCons,clocks);
-		testTimeAdvancement(numberOfTransitions);
-		testClockResets(resetClocks);
-		testSojTime(nonResetClocks);
-		testLocInvariants(states,clocks);
-		testTransGuards(transitions,clocks);
+		testTDTCS(run,npta,VarType.ClockBound, "new_tdtcs.txt", vvs);
+		
+//		testTDTCS(run,npta,VarType.ClockReference);
+//		testTDTCS(run,npta,VarType.ClockReset);
+//		testTDTCS(run,npta,VarType.Operator);
+//		testTDTCS(run,npta,VarType.ParameterBound);
+//		testTDTCS(run,npta,VarType.UrgentLocation);
+	}
+	
+	public static void testTDTCS(Run run, NetworkPTA npta, VarType vtype, String fp,
+			List<VariationVariable> vvs) {
+		System.out.println(SMT2.createSMT2Encoding(run, npta, vtype,vvs,fp));
 	}
 	
 	public static void testDecl(List<Clock> clocks, List<Parameter> parameters, int numberOfTransitions, int numberOfStates) {
-		String clockDecl = ToSMT2.declareClocks(clocks,numberOfStates);
-		String paramDecl = ToSMT2.declareParameters(parameters);
-		String deltaDecl = ToSMT2.declareDelays(numberOfTransitions);
-		System.out.println(clockDecl);
-		System.out.println(paramDecl);
-		System.out.println(deltaDecl);
+		List<String> clockDecl = ToSMT2.declareClocks(clocks,numberOfStates, false);
+		List<String> paramDecl = ToSMT2.declareParameters(parameters);
+		List<String> deltaDecl = ToSMT2.declareDelays(numberOfTransitions, false);
+		printList(clockDecl);
+		printList(paramDecl);
+		printList(deltaDecl);
 	}
 	
 	public static void testInit(List<Constraint> cons, List<Clock> clocks) {
@@ -89,7 +99,7 @@ public class UnitTestTDTCS extends UnitTest{
 	}
 	
 	public static void testTransGuards(List<OuterTransition> transitions, List<Clock> clocks) {
-		String transitionGuards = ToSMT2.getTransitionGuards(transitions,clocks);
+		String  transitionGuards = ToSMT2.getTransitionGuards(transitions,clocks);
 		System.out.println(transitionGuards);
 	}
 }

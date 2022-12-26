@@ -1,5 +1,6 @@
-package ConstraintSystem.RepairComputation;
+package ConstraintSystem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import NPTA.*;
@@ -10,20 +11,24 @@ public class VariationVariable {
 	private VarType type;
 	private String name;
 	private String repairValue;
+	private String neutralRepairValue = "0";
 	private String operator;
 	private Constraint constraint;
 	private Update update;
 	private State state;
 	private Clock clock;
-	private List<Update> updates;
-	
-	enum VarType{
-		ClockBound, Operator, ClockReference, ResetClock, UrgentLocation, ParameterBound
-	}
+	private List<Clock> clocks = new ArrayList<>();
+	private List<Update> updates = new ArrayList<>();
 	
 	public VariationVariable(String name, VarType type) {
 		this.setName(name);
 		this.type = type;
+	}
+	
+	public VariationVariable(String name, VarType type, Constraint c) {
+		this.setName(name);
+		this.type = type;
+		this.constraint = c;
 	}
 	
 	public void setRepairValue(String val) {
@@ -34,16 +39,21 @@ public class VariationVariable {
 		switch(this.type){
 			case ClockBound:
 				clockBound();
+				return;
 			case Operator:
 				operator();
+				return;
 			case ClockReference:
 				clockReference();
-			case ResetClock:
+				return;
+			case ClockReset:
 				resetClocks();
+				return;
 			case UrgentLocation:
 				return;
 			case ParameterBound:
 				parameterBound();
+				return;
 			default:
 				return;
 		}
@@ -68,23 +78,30 @@ public class VariationVariable {
 		switch(Integer.valueOf(this.repairValue)) {
 			case 0:
 				newOp = ">";
+				break;
 			case 1:
 				newOp = ">=";
+				break;
 			case 2:
 				newOp = "=";
+				break;
 			case 3:
 				newOp = "<=";
+				break;
 			case 4:
 				newOp = "<";
+				break;
 			default:
 				newOp = "";
+				break;
 		}
 		this.constraint.setOperator(newOp);
 	}
 	
 	public void clockReference() {
+		int index = Integer.valueOf(this.repairValue);
 		this.constraint.getLhs().getVariables().clear();
-		this.constraint.getLhs().getVariables().add(this.clock);
+		this.constraint.getLhs().getVariables().add(this.clocks.get(index));
 	}
 	
 	public void resetClocks() {
@@ -146,6 +163,57 @@ public class VariationVariable {
 		this.clock = c;
 	}
 	
+	public void setConstraint(Constraint c) {
+		this.constraint = c;
+	}
+	
+	public Constraint getConstraint() {
+		return this.constraint;
+	}
+
+	public List<Clock> getClocks() {
+		return clocks;
+	}
+
+	public void addClock(Clock clock) {
+		this.clocks.add(clock);
+	}
 	
 	
+	public String getNeutralRepairValue() {
+		return neutralRepairValue;
+	}
+
+	public void setNeutralRepairValue(String nrp) {
+		switch(this.type){
+		case ClockBound:
+			this.neutralRepairValue = "0";
+			return;
+		case Operator:
+			this.neutralRepairValue = nrp;
+			return;
+		case ClockReference:
+			this.neutralRepairValue = nrp;
+			return;
+		case ClockReset:
+			this.neutralRepairValue = "0";
+			return;
+		case UrgentLocation:
+			this.neutralRepairValue = "0";
+			return;
+		case ParameterBound:
+			this.neutralRepairValue = nrp;
+			return;
+		default:
+			return;
+	}
+}
+
+	public String neutralEq() {
+		return ToSMT2.formatSMT(this.name, this.neutralRepairValue, "=");
+	}
+
+	public enum VarType{
+		ClockBound, Operator, ClockReference, ClockReset, UrgentLocation, ParameterBound
+	}
 }

@@ -19,6 +19,16 @@ public class State {
 		this.stateLocations = List.copyOf(locations);
 	}
 
+	public boolean isUrgent() {
+		for(Constraint c : this.getInvariants()) {
+			if (c.getRhs().toString().equals("0") && 
+					c.getOperator().equals("=")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public List<StateLocation> getStateLocations() {
 		return stateLocations;
 	}

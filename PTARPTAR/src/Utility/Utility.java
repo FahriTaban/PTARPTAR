@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ConstraintSystem.ToSMT2;
 import Parsing.Element;
 import Parsing.Result_Parser;
 
@@ -179,5 +180,53 @@ public class Utility {
 			return true;
 		} 
 		return false;
+	}
+	
+	public static String concatStrings(List<String> ss) {
+		StringBuilder sb = new StringBuilder();
+		for(String s : ss) {
+			sb.append(s+"\n");
+		}
+		return sb.toString().strip();
+	}
+	
+	public static String concatPretty(String connector, List<String> strings) {
+		if (strings.isEmpty()) {
+			return "";
+		}
+		StringBuilder s = new StringBuilder();
+		s.append("("+connector+" ");
+		String ws;
+		for(int i = 0; i < strings.size(); i++) {
+			String c = strings.get(i);
+			if (i != strings.size()-1) {
+				ws = "\n\t";
+			} else {
+				ws = "";
+			}
+			s.append(c + ws);
+		}
+		s.append(")");
+		return s.toString();
+	}
+	
+	public static String concatPretty(String connector, String innerConnector, List<List<String>> strings) {
+		if (strings.isEmpty()) {
+			return "";
+		}
+		StringBuilder s = new StringBuilder();
+		s.append("(assert ("+connector+" ");
+		String ws;
+		for(int i = 0; i < strings.size(); i++) {
+			List<String> c = strings.get(i);
+			if (i != strings.size()-1) {
+				ws = "\n\t";
+			} else {
+				ws = "";
+			}
+			s.append(ToSMT2.connectClauses(c, innerConnector) + ws);
+		}
+		s.append("))");
+		return s.toString();
 	}
 }

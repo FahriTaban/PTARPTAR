@@ -7,7 +7,7 @@ import java.util.*;
 
 import com.microsoft.z3.*;
 
-import ConstraintSystem.TDTCS;
+import ConstraintSystem.SMT2;
 import ModelToPTA.ConvertModelToNPTA;
 import NPTA.Clock;
 import NPTA.Constraint;
@@ -44,8 +44,8 @@ public class UnitTestSMT {
 		List<List<Constraint>> guards = run.getGuards();
 		List<OuterTransition> transitions = run.getTransitions();
 		List<List<Update>> updates = run.getUpdates();
-		List<List<Clock>> resetClocks = TDTCS.getAllResetClocks(updates,clocks);
-		List<List<Clock>> nonResetClocks = TDTCS.getAllNonResetClocks(resetClocks,clocks);
+		List<List<Clock>> resetClocks = run.getAllResetClocks(clocks);
+		List<List<Clock>> nonResetClocks = run.getAllNonResetClocks(clocks);
 		int numberOfStates = states.size();
 		int numberOfTransitions = run.getTransitions().size();
 	

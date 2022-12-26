@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 import org.json.*;
 
-import SMT.Main;
+import z3.Main;
 
 public class ExtractJSONfromResult {
 

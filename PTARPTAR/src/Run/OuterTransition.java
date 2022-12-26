@@ -46,6 +46,35 @@ public class OuterTransition {
 		return updates;
 	}
 	
+	public List<Clock> getResetClocks(List<Clock> clocks){
+		List<Clock> resetClocks = new ArrayList<>();
+		for(Update u : this.getUpdates()) {
+			for(Clock c : clocks) {
+				if (u.updatesClock(c)) {
+					resetClocks.add(c);
+				}
+			}
+		}
+		return resetClocks;
+	}
+	
+	public List<Clock> getNonResetClocks(List<Clock> clocks){
+		List<Clock> nonResetClocks = new ArrayList<>();
+		for(Clock c : clocks) {
+			boolean isNonResetClock = true;
+			for(Update u : this.getUpdates()) {
+				if (u.updatesClock(c)) {
+					isNonResetClock = false;
+					break;
+				}
+			}
+			if (isNonResetClock) {
+				nonResetClocks.add(c);
+			}
+		}
+		return nonResetClocks;
+	}
+	
 	public void printInfo() {
 		System.out.println("OUTER TRANSITION");
 		System.out.println("PRESTATE");		
