@@ -6,9 +6,8 @@ import Utility.Utility;
 import java.util.*;
 
 import ConstraintSystem.ToSMT2;
-import ConstraintSystem.VariationVariable;
 import ConstraintSystem.RepairComputation.*;
-import ConstraintSystem.VariationVariable.VarType;
+import ConstraintSystem.RepairComputation.VariationVariable.VarType;
 
 public class UrgentLocationVariation {
 	
@@ -18,7 +17,7 @@ public class UrgentLocationVariation {
 	
 	public static List<String> urgentLocation(List<State> states, List<VariationVariable> vvs){
 		List<String> clauses = new ArrayList<>();
-		for(int i = 0; i < states.size(); i++) {
+		for(int i = 0; i < states.size()-1; i++) {
 			State s  = states.get(i);
 			String varName = "ulv"+Integer.toString(i);
 			String delta = "delta"+Integer.toString(i);

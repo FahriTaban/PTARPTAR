@@ -1,5 +1,6 @@
 package NPTA;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Automaton {
@@ -16,7 +17,7 @@ public class Automaton {
 	public Automaton(String name) {
 		this.name = name;
 	}
-
+	
 	public String getName() {
 		return name;
 	}

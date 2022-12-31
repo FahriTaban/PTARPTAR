@@ -25,7 +25,6 @@ public class Statespace_Lexer {
 	    		if (end != -1) {
 	    			if (t.name() == "KEY_TRANSITIONS_DESCRIPTION") {
 	    				begin = true;
-	    				continue;
 	    			}
 	    			foundToken = true;
 	    			token = t;

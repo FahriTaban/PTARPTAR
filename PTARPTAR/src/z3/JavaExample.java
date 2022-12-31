@@ -24,7 +24,7 @@ import java.util.*;
 
 import com.microsoft.z3.*;
 
-class JavaExample
+public class JavaExample
 {
     @SuppressWarnings("serial")
     class TestFailedException extends Exception
@@ -1451,7 +1451,9 @@ class JavaExample
                 "(declare-const x Int) (declare-const y Int) (assert (xor (> x y) (> x 0) (< 0 y)))",
                 null, null, null, null)[0];
         System.out.println("formula " + f);
-
+        Solver s = ctx.mkSolver();
+        s.add(f);
+        System.out.println(s.toString());
         @SuppressWarnings("unused")
         Model m = check(ctx, f, Status.SATISFIABLE);
     }

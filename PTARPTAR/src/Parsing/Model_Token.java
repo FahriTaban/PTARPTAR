@@ -18,7 +18,7 @@ public enum Model_Token {
 	KEY_END("end"),
 	KEY_AUTOMATON("automaton"),
 	KEY_ACTIONS("synclabs"),
-	CONSTRAINT("\\w+(\\s*[\\+\\-\\*]\\s*\\w+)*\\s*[><=]+\\s*\\w+(\\s*[\\+\\-\\*]\\s*\\w+)*"),
+	CONSTRAINT("\\w+(\\s*[\\+\\-\\*\\/]\\s*\\w+)*\\s*[><=]+\\s*\\w+(\\s*[\\+\\-\\*\\/]\\s*\\w+)*"),
 	KEY_DO("do"),
 	KEY_ACTION("sync"),
 	KEY_LOCATION_ACCESS("loc\\[\\w+\\]"),

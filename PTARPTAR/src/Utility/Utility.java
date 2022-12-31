@@ -185,7 +185,7 @@ public class Utility {
 	public static String concatStrings(List<String> ss) {
 		StringBuilder sb = new StringBuilder();
 		for(String s : ss) {
-			sb.append(s+"\n");
+			sb.append(s+"\n\t");
 		}
 		return sb.toString().strip();
 	}
@@ -215,7 +215,7 @@ public class Utility {
 			return "";
 		}
 		StringBuilder s = new StringBuilder();
-		s.append("(assert ("+connector+" ");
+		s.append("("+connector+" ");
 		String ws;
 		for(int i = 0; i < strings.size(); i++) {
 			List<String> c = strings.get(i);
@@ -226,7 +226,7 @@ public class Utility {
 			}
 			s.append(ToSMT2.connectClauses(c, innerConnector) + ws);
 		}
-		s.append("))");
+		s.append(")");
 		return s.toString();
 	}
 }

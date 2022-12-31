@@ -11,7 +11,7 @@ public class Update {
 		this.variable = var;
 		this.setToValue = val;
 	}
-
+	
 	public String getVariable() {
 		return variable;
 	}

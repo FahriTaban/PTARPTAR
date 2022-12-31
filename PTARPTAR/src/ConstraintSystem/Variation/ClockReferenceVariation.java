@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import ConstraintSystem.ToSMT2;
-import ConstraintSystem.VariationVariable;
-import ConstraintSystem.VariationVariable.VarType;
+import ConstraintSystem.RepairComputation.VariationVariable;
+import ConstraintSystem.RepairComputation.VariationVariable.VarType;
 import NPTA.Clock;
 import NPTA.Constraint;
 import Run.OuterTransition;
@@ -36,15 +36,17 @@ public class ClockReferenceVariation {
 	 */
 	public static List<List<String>> getInvariantBounds(List<State> states, List<Clock> clocks, List<VariationVariable> vvs) {
 		List<List<String>> allClauses = new ArrayList<>();
-		for(int i = 0;i < states.size(); i++) {
+		int l = 0;
+		for(int i = 0; i < states.size(); i++) {
 			State state = states.get(i);
-			for(Clock c : clocks) {
+			for(int j = 0; j < clocks.size(); j++) {
+				Clock c = clocks.get(j);
 				List<Constraint> bounds = state.iBounds(c);
 				if (!bounds.isEmpty()) {
 					for(Constraint bound : bounds) {
 						List<String> varClauses = new ArrayList<>();
 						String delta = "delta"+Integer.toString(i);
-						String varName = "crvi"+Integer.toString(i);
+						String varName = "crvi"+Integer.toString(l++);
 						VariationVariable crv = new VariationVariable(varName, VarType.ClockReference);
 						crv.setConstraint(bound);
 						vvs.add(crv);
@@ -55,7 +57,7 @@ public class ClockReferenceVariation {
 							}
 							String alias = altC.getName() + Integer.toString(i);
 							crv.addClock(altC);
-							String variation = ToSMT2.formatSMT(varName, Integer.toString(k+1), "=");
+							String variation = ToSMT2.formatSMT(varName, Integer.toString(k), "=");
 							List<String> iBound = ToSMT2.locationInvariant(alias, bound, delta);
 							iBound.add(variation);
 							String merged = ToSMT2.connectClauses(iBound, "and");
@@ -71,6 +73,7 @@ public class ClockReferenceVariation {
 	
 	public static List<List<String>> getGuardBounds(List<OuterTransition> ots, List<Clock> clocks, List<VariationVariable> vvs) {
 		List<List<String>> allgBounds = new ArrayList<>();
+		int l = 0;
 		for(int i = 0;i < ots.size(); i++) {
 			OuterTransition t = ots.get(i);
 			for(Clock c : clocks) {
@@ -79,7 +82,7 @@ public class ClockReferenceVariation {
 					for(Constraint bound : bounds) {
 						List<String> gBounds = new ArrayList<>();
 						String delta = "delta"+Integer.toString(i);
-						String varName = "crvg"+Integer.toString(i);
+						String varName = "crvg"+Integer.toString(l++);		
 						VariationVariable crv = new VariationVariable(varName, VarType.Operator);
 						crv.setConstraint(bound);
 						vvs.add(crv);							

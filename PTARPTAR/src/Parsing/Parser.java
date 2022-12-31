@@ -86,11 +86,11 @@ public class Parser {
 		List<Element> elems = new ArrayList<>();
 		boolean fetchNext = false;
 		for (Element e : tokens) {
-			if (e.getType() == variableName && !fetchNext) {
+			if (e.getType().equals(variableName) && !fetchNext) {
 				fetchNext = true;
 				elems.add(e);
 			}
-			else if (fetchNext && (e.getType() == "KEY_VAR_NAME" || e.isValue())) {
+			else if (fetchNext && (e.getType().equals("KEY_VAR_NAME") || e.isValue())) {
 				elems.add(e);
 				elemsList.add(List.copyOf(elems));
 				elems.clear();

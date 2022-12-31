@@ -1,5 +1,6 @@
 package NPTA;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class NetworkPTA {
@@ -29,6 +30,15 @@ public class NetworkPTA {
 		this.initial_constraints = cons;
 	}
 
+	public Automaton findAutomaton(String name) {
+		for(Automaton a : this.automata) {
+			if (a.getName().equals(name)) {
+				return a;
+			}
+		}
+		return null;
+	}
+	
 	public List<Automaton> getAutomata() {
 		return automata;
 	}

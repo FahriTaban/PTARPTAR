@@ -34,6 +34,15 @@ public class Run {
 	public List<State> getStates() {
 		return states;
 	}
+	
+	public List<Constraint> getPropertyConstraints(){
+		List<Constraint> cons = new ArrayList<>();
+		OuterTransition lastTrans = this.getTransitions().get(this.getTransitions().size()-1);
+		for(Transition t : lastTrans.getTransitions()) {
+			cons.addAll(t.getGuards());
+		}
+		return cons;
+	}
 
 	public List<OuterTransition> getTransitions() {
 		return transitions;

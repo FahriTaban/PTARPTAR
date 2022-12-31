@@ -13,12 +13,12 @@ public class UnitTestPTAToModel {
 	static List<Element> model;
 	
 	public static void main(String[] args) {		
-		String model_name = "testEFExemplify1Pneg.imi";
+		String model_name = "example.imi";
 		Model_Lexer m_lex = new Model_Lexer(model_name);
 		m_lex.findTokens();
 		model = m_lex.getTokens();
 		NetworkPTA npta = ConvertModelToNPTA.buildNetworkPTA(model_name);
-		ConvertPTAToModel.nptaToModel(npta, "test");
+		ConvertPTAToModel.nptaToModel(npta, "example_model.imi");
 //		testVariables(npta.getClocks(),npta.getParameter());
 //		testInitLocs(npta.getInitial_Locations());
 //		testInitCons(npta.getInitial_Constraints());

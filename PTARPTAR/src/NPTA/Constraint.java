@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import java.util.Collections;
 import java.util.List;
+
+import ConstraintSystem.ToSMT2;
 import Parsing.*;
 import Utility.Utility;
 /**
@@ -15,6 +17,7 @@ public class Constraint {
 	private Ex lhs;
 	private String operator;
 	private Ex rhs;
+	private Constraint backup;
 	private boolean isBoolean = false;
 	
 	public Constraint(Constraint c) {
@@ -24,10 +27,17 @@ public class Constraint {
 		this.isBoolean = c.isBoolean;
 	}
 	
-	public Constraint(Ex v, String op, Ex b) {
-		this.lhs = v;
+	public Constraint(Ex lhs, String op, Ex rhs) {
+		this.lhs = lhs;
 		this.operator = op;
-		this.rhs = b;
+		this.rhs = rhs;
+	}
+	
+	public Constraint(Ex lhs, String op, Ex rhs, boolean b) {
+		this.lhs = lhs;
+		this.operator = op;
+		this.rhs = rhs;
+		this.isBoolean = b;
 	}
 	
 	public Constraint(boolean bool) {
@@ -51,6 +61,46 @@ public class Constraint {
 		}
 	}
 	
+	public String toSMTString() {
+		if (this.isBoolean) {
+			return ToSMT2.formatSMT("0", "0", "=");
+		} else {
+		return ToSMT2.par(this.operator + " " + this.lhs.toSMTString() + " " + this.rhs.toSMTString());
+		}
+	}
+	
+	public String toSMTString(String id) {
+		if (this.isBoolean) {
+			return ToSMT2.formatSMT("0", "0", "=");
+		} else {
+		return ToSMT2.par(this.operator + " " + this.lhs.toSMTString()+id + " " + this.rhs.toSMTString());
+		}
+	}
+	
+	public void backUp() {
+		Ex lhsc = this.copyEx(this.lhs);
+		Ex rhsc = this.copyEx(this.rhs);
+		String op = this.operator;
+		boolean b = this.isBoolean;
+		this.backup = new Constraint(lhsc,op,rhsc,b);
+		}
+	
+	public Ex copyEx(Ex e) {
+		List<Variable> vs = e.getVariables();
+		List<String> ops = e.getOperators();
+		List<Variable> vsc = new ArrayList<>();
+		List<String> opsc = new ArrayList<>();
+		for(Variable v : vs) {
+			vsc.add(new Variable(v.getName()));
+		}
+		for(String op : ops) {
+			opsc.add(op);
+		}
+		Ex c = new Ex(vsc,opsc);
+		c.setBool(e.getBool());
+		return new Ex(vsc,opsc);
+	}
+	
 	public Ex getLhs() {
 		return lhs;
 	}
@@ -58,7 +108,10 @@ public class Constraint {
 	public Ex getRhs() {
 		return rhs;
 	}
-
+	
+	public void setBoolean(boolean b) {
+		this.isBoolean = b;
+	}
 
 	public String getOperator() {
 		return operator;

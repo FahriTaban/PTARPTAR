@@ -36,6 +36,7 @@ public class UnitTest {
 			for(Element e : es) {
 				s.append(e.getContent()+ " ");
 			}
+			s.append("\n");
 		}
 		return s.toString();
 	}

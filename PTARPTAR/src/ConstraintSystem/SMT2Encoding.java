@@ -1,17 +1,18 @@
 package ConstraintSystem;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
+import ConstraintSystem.RepairComputation.VariationVariable;
+import ConstraintSystem.RepairComputation.VariationVariable.VarType;
 import ConstraintSystem.Variation.*;
-import ConstraintSystem.VariationVariable.VarType;
 import NPTA.*;
 import Run.*;
 import Utility.Utility;
 
-public class SMT2 {
+public class SMT2Encoding {
 	static List<Clock> clocks;
 	static List<Parameter> parameters;
 	static List<State> states;
@@ -21,7 +22,6 @@ public class SMT2 {
 	static List<List<Update>> updates;
 	static List<List<Clock>> resetClocks;
 	static List<List<Clock>> nonResetClocks;
-	static List<VariationVariable> varVars;
 	static HashMap<Integer,State> urgentLocs;
 	static int numberOfStates;
 	static int numberOfTransitions;
@@ -32,24 +32,45 @@ public class SMT2 {
 	static StringBuilder forallBlock = new StringBuilder();
 	static StringBuilder existsBlock = new StringBuilder();
 	static StringBuilder tdtcs = new StringBuilder();
+	static String temp = "";
 	
 	public static String createSMT2Encoding(Run run, NetworkPTA npta, VarType vType, 
 			List<VariationVariable> vvs, String filePath) {
-		varVars = vvs;
-		initProps(run,npta,vType);
-		tdtcs(vType, tdtcs);
-		appendVarBinding(existsBlock,false);
-		appendVarBinding(forallBlock,true);
-		existsBlock.append(tdtcs.toString());
-		forallBlock.append(tdtcs.toString());
-		appendEnd(existsBlock);
-		appendEnd(forallBlock);
-		prepareOuterBlock();
-		Utility.writeToFile(filePath, outerBlock.toString());
-		return outerBlock.toString();
+		initProps(run,npta);
+		tdtcs(vType,tdtcs,vvs);
+		prepareExistsBlock();
+		prepareForallBlock(run);
+		prepareOuterBlock(vvs);
+		String res = outerBlock.toString();
+		Utility.writeToFile(filePath, res);
+		return res;
 	}
 	
-	public static void prepareSoftAssertions() {
+	public static void prepareExistsBlock() {
+		String vb = getVarBindings();
+		String t = ToSMT2.concatWith("and", tdtcs.toString());
+		existsBlock.append(ToSMT2.concatWith("exists", vb+ " " +t));
+	}
+	
+	public static void prepareForallBlock(Run run){
+		String vb = getVarBindings();
+		String t = ToSMT2.concatWith("and", tdtcs.toString());
+		String impR = getImplicationR(run);
+		String imp = ToSMT2.concatWith("=>", t+ " " + ToSMT2.concatWith("not", impR));
+		forallBlock.append(ToSMT2.concatWith("forall", vb+ "\n\t" +imp));
+	}
+	
+	public static String getImplicationR(Run run) {
+		String id = Integer.toString(run.getTransitions().size()-1);
+		List<Constraint> cons = run.getPropertyConstraints();
+		StringBuilder sb = new StringBuilder();
+		for(Constraint c : cons) {
+			sb.append(c.toSMTString(id)+"\n\t");
+		}
+		return sb.toString().strip();
+	}
+	
+	public static void prepareSoftAssertions(List<VariationVariable> varVars) {
 		List<String> softs = new ArrayList<>();
 		for(VariationVariable vv : varVars) {
 			softs.add(vv.neutralEq());
@@ -58,38 +79,34 @@ public class SMT2 {
 		
 	}
 	
-	public static void prepareOuterBlock() {
-		outerBlock.append(Utility.concatStrings(
-				ToSMT2.declareParameters(parameters))+"\n");
+	public static void prepareOuterBlock(List<VariationVariable> varVars) {
+//		outerBlock.append(Utility.concatStrings(
+//				ToSMT2.declareParameters(parameters))+"\n");
 		outerBlock.append(Utility.concatStrings(
 				ToSMT2.declareVariationVariables(varVars))+"\n");
 		String forall = forallBlock.toString();
 		String inner = ToSMT2.formatSMT(existsBlock.toString(), "\n" + forall, "and");
-		outerBlock.append(ToSMT2.par("assert " + inner) + "\n");
-		prepareSoftAssertions();
-		outerBlock.append(soft.toString()+"\n");
-		outerBlock.append(ToSMT2.par("apply qe")+"\n");
-		outerBlock.append(ToSMT2.par("check-sat")+"\n");
-		outerBlock.append(ToSMT2.par("get-model")+"\n");
+		outerBlock.append(ToSMT2.concatWith("assert",inner) + "\n");
+//		if (!temp.equals("")) {
+//			outerBlock.append(ToSMT2.concatWith("assert",temp)+ "\n");
+//		}
+//		prepareSoftAssertions();
+//		outerBlock.append(soft.toString()+"\n");
+//		outerBlock.append(ToSMT2.par("apply qe")+"\n");
+//		outerBlock.append(ToSMT2.par("check-sat")+"\n");
+//		outerBlock.append(ToSMT2.par("get-model")+"\n");
 		}
 	
-	public static void appendVarBinding(StringBuilder s, boolean forall) {
-		String type;
-		if (forall) {
-			type = "forall";
-		} else {
-			type = "exists";
-		}
-		s.append(Utility.concatPretty(
-				type + " (", ToSMT2.declareBoundVariables(
-						clocks, numberOfStates, numberOfTransitions))+"\n(and ");
+	public static String getVarBindings() {
+		return ToSMT2.par(Utility.concatStrings(ToSMT2.declareBoundVariables(
+						clocks, parameters, numberOfStates, numberOfTransitions)));
 	}
 	
 	public static void appendEnd(StringBuilder s) {
 		s.append("))");
 	}
 	
-	public static void initProps(Run run, NetworkPTA npta, VarType vType) {
+	public static void initProps(Run run, NetworkPTA npta) {
 		ops.addAll(List.of(">",">=","=","<=","<"));
 		clocks = npta.getClocks();
 		parameters = npta.getParameter();
@@ -101,40 +118,56 @@ public class SMT2 {
 		resetClocks = run.getAllResetClocks(clocks);
 		nonResetClocks = run.getAllNonResetClocks(clocks);
 		urgentLocs = run.getUrgentLocations();
-		varVars = new ArrayList<>();
 		numberOfStates = states.size();
 		numberOfTransitions = run.getTransitions().size();
 		initCons = run.getInitialConstraints();
 	}
 	
-	public static void tdtcs(VarType vType, StringBuilder forallBlock) {
+	public static void tdtcs(VarType vType, StringBuilder st,List<VariationVariable> varVars) {
+		List<Integer> sequence;
+		String lower = "",upper = "";
 		switch(vType) {
 		case ClockBound:
-			appendClauses(forallBlock,List.of(0,1,-1,4,5));
+			sequence = List.of(0,1,-1,4,5);
 //			appendClauses(forallBlock,List.of(0,-1));
 			break;
 		case ClockReference:
-			appendClauses(forallBlock,List.of(0,1,-2,4,5));
+			sequence = List.of(0,1,-2,4,5);
+			lower = "0";
+			upper = Integer.toString(clocks.size());
 			break;
 		case ClockReset:
-			appendClauses(forallBlock,List.of(-3,2,3,4,5));
+			sequence = List.of(-3,2,3,4,5);
+			lower = "0";
+			upper = "1";
 			break;
 		case Operator:
-			appendClauses(forallBlock,List.of(0,1,-4,4,5));
+			sequence = List.of(0,1,-4,4,5);
+			lower = "0";
+			upper = "4";
 			break;
 		case UrgentLocation:
-			appendClauses(forallBlock,List.of(0,1,2,3,-5,5));
+			sequence = List.of(0,1,2,3,-5,5);
+			lower = "0";
+			upper = "1";
 			break;
 		case ParameterBound:
-			appendClauses(forallBlock,List.of(0,1,2,3,4,-6));
+			sequence = List.of(0,1,2,3,4,-6);
 			break;
 		default:
+			sequence = List.of();
 			break;
-			
+		}
+		appendClauses(st, sequence, varVars);
+		if (!lower.equals("")) {
+			for(VariationVariable vv : varVars) {
+				vv.setLower(lower);
+				vv.setUpper(upper);
+			}
 		}
 	}
 	
-	public static void appendClauses(StringBuilder s,List<Integer> args) {
+	public static void appendClauses(StringBuilder s,List<Integer> args,List<VariationVariable> varVars) {
 		s.append(ToSMT2.timeAdvancement(numberOfTransitions)+"\n");
 		for(int j = 0; j < args.size(); j++) {
 			String app = "";

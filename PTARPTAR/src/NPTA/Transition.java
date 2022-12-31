@@ -45,6 +45,23 @@ public class Transition {
 		return updateRules;
 	}
 	
+	public Update getClockUpdate(Clock c) {
+		for(Update u : this.updateRules) {
+			if (u.updatesClock(c)) {
+				return u;
+			}
+		}
+		return null;
+	}
+	
+	public void removeUpdate(Update u) {
+		this.updateRules.remove(u);
+	}
+	
+	public void addUpdate(Update u) {
+		this.updateRules.add(u);
+	}
+	
 	public String getAction() {
 		return this.action;
 	}

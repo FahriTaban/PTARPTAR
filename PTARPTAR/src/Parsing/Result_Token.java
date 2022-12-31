@@ -32,11 +32,11 @@ public enum Result_Token {
 	KEY_TRANSITION_GUARD("guard"),
 	KEY_TRANSITION_UPDATES("updates"),
 	KEY_AND("AND"),
-	CONSTRAINT("\\w+(\\s*[\\+\\-\\*]\\s*\\w+)*\\s*[><=]+\\s*\\w+(\\s*[\\+\\-\\*]\\s*\\w+)*"),
+	CONSTRAINT("\\w+(\\s*[\\+\\-\\*\\/]\\s*\\w+)*\\s*[><=]+\\s*\\w+(\\s*[\\+\\-\\*\\/]\\s*\\w+)*"),
 
 	KEY_VAR_BOOL_TRUE("True"),
 	KEY_VAR_BOOL_FALSE("False"),
-	DIVISION("\\d+/\\d+"),
+	DIVISION("\\d+\\/\\d+"),
 	VALUE("\\d+"),
 	KEY_VAR_NAME("\\w+"),
 	

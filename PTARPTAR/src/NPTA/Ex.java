@@ -51,6 +51,14 @@ public class Ex {
 		return this.variables;
 	}
 	
+	public void setBool(boolean b) {
+		this.isBoolean = b;
+	}
+	
+	public boolean getBool() {
+		return this.isBoolean;
+	}
+	
 	public List<String> getOperators(){
 		return this.operators;
 	}
@@ -98,7 +106,7 @@ public class Ex {
 	
 	public String toSMTString() {
 		if (this.isBoolean) {
-			return this.variables.get(0).toString();
+			return this.variables.get(0).getName();
 		}
 		StringBuilder s = new StringBuilder();
 		String var = "";

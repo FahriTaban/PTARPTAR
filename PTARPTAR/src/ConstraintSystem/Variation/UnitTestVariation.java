@@ -5,8 +5,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import ConstraintSystem.SMT2;
-import ConstraintSystem.VariationVariable;
+import ConstraintSystem.SMT2Encoding;
+import ConstraintSystem.RepairComputation.VariationVariable;
 import ModelToPTA.ConvertModelToNPTA;
 import NPTA.Clock;
 import NPTA.Constraint;

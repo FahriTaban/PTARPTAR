@@ -6,9 +6,8 @@ import NPTA.*;
 import java.util.*;
 
 import ConstraintSystem.ToSMT2;
-import ConstraintSystem.VariationVariable;
 import ConstraintSystem.RepairComputation.*;
-import ConstraintSystem.VariationVariable.VarType;
+import ConstraintSystem.RepairComputation.VariationVariable.VarType;
 
 public class OperatorVariation {
 
@@ -31,25 +30,27 @@ public class OperatorVariation {
 	 */
 	public static List<List<String>> getInvariantBounds(List<State> states, List<Clock> clocks, List<VariationVariable> vars, List<String> ops) {
 		List<List<String>> allClauses = new ArrayList<>();
+		int j = 0;
 		for(int i = 0;i < states.size(); i++) {
 			State state = states.get(i);
 			for(Clock c : clocks) {
 				List<Constraint> bounds = state.iBounds(c);
 				if (!bounds.isEmpty()) {
 					for(Constraint bound : bounds) {
+						bound.printInfo();
 						List<String> varClauses = new ArrayList<>();
 						String alias = c.getName() + Integer.toString(i);
 						String delta = "delta"+Integer.toString(i);
-						String varName = "ovi"+Integer.toString(i);
+						String varName = "ovi"+Integer.toString(j++);
 						VariationVariable ov = new VariationVariable(varName, VarType.Operator);
 						ov.setConstraint(bound);
 						vars.add(ov);
-						for(int j = 0; j < ops.size(); j++) {
-							String op = ops.get(j);
+						for(int k = 0; k < ops.size(); k++) {
+							String op = ops.get(k);
 							if (bound.getOperator().equals(op)) {
-								ov.setNeutralRepairValue(Integer.toString(j));
+								ov.setNeutralRepairValue(Integer.toString(k));
 							}
-							String variation = ToSMT2.formatSMT(varName, Integer.toString(j), "=");
+							String variation = ToSMT2.formatSMT(varName, Integer.toString(k), "=");
 							List<String> iBound = ToSMT2.locationInvariantOV(alias, bound, delta, op);
 							iBound.add(variation);
 							String merged = ToSMT2.connectClauses(iBound, "and");
@@ -74,22 +75,27 @@ public class OperatorVariation {
 	 */
 	public static List<List<String>> getGuardBounds(List<OuterTransition> ots, List<Clock> clocks, List<VariationVariable> vars, List<String> ops) {
 		List<List<String>> allgBounds = new ArrayList<>();
+		int j = 0;
 		for(int i = 0;i < ots.size(); i++) {
 			OuterTransition t = ots.get(i);
 			for(Clock c : clocks) {
 				List<Constraint> bounds = t.gBounds(c);
 				if (!bounds.isEmpty()) {
 					for(Constraint bound : bounds) {
+						bound.printInfo();
 						List<String> gBounds = new ArrayList<>();
 						String alias = c.getName() + Integer.toString(i);
 						String delta = "delta"+Integer.toString(i);
-						String varName = "ovg"+Integer.toString(i);
+						String varName = "ovg"+Integer.toString(j++);
 						VariationVariable ov = new VariationVariable(varName, VarType.Operator);
 						ov.setConstraint(bound);
 						vars.add(ov);							
-						for(int j = 0; j < ops.size(); j++) {
-							String op = ops.get(j);
-							String variation = ToSMT2.formatSMT(varName, Integer.toString(j), "=");
+						for(int k = 0; k < ops.size(); k++) {
+							String op = ops.get(k);
+							if (bound.getOperator().equals(op)) {
+								ov.setNeutralRepairValue(Integer.toString(k));
+							}
+							String variation = ToSMT2.formatSMT(varName, Integer.toString(k), "=");
 							String gBound = ToSMT2.transitionGuardOV(alias, bound, delta, op);
 							gBounds.add(ToSMT2.formatSMT(gBound, variation, "and"));
 						}

@@ -1,28 +1,28 @@
 (************************************************************
- * Result by: IMITATOR 3.4-beta "Cheese Durian" (build develop/7750055)
- * Model    : 'testEFExemplify1Pneg.imi'
- * Generated: Wed Nov 2, 2022 10:01:13
- * Command  : imitator testEFExemplify1Pneg.imi testEFExemplify1Pneg.imiprop -comparison equality -merge none
+ * Result by: IMITATOR 3.4-beta "Cheese Durian" (build ?????/?????)
+ * Model    : '/imitator/fff/example_model.imi'
+ * Generated: Sat Dec 31, 2022 13:13:32
+ * Command  : /imitator/bin/imitator /imitator/fff/example_model.imi /imitator/fff/exampleProp.imiprop -comparison equality -merge none
  ************************************************************)
 
 
 ------------------------------------------------------------
-Number of IPTAs                         : 1
-Number of clocks                        : 2
+Number of IPTAs                         : 2
+Number of clocks                        : 3
 Has invariants?                         : true
 Has clocks with rate <>1?               : false
 Has complex updates?                    : false
-L/U subclass                            : L-PTA
+L/U subclass                            : not L/U
 Bounded parameters?                     : true
 Has silent actions?                     : false
 Is strongly deterministic?              : true
 Number of parameters                    : 1
 Number of discrete variables            : 0
-Number of actions                       : 2
-Total number of locations               : 3
+Number of actions                       : 4
+Total number of locations               : 6
 Average locations per IPTA              : 3.0
-Total number of transitions             : 2
-Average transitions per IPTA            : 2.0
+Total number of transitions             : 6
+Average transitions per IPTA            : 3.0
 ------------------------------------------------------------
 
 BEGIN RESULT
@@ -34,7 +34,7 @@ BEGIN RESULT
   p = 1
 
  Other valuations with equivalent (discrete) run:
- 4 > p
+ 2 >= p
 & p >= 0
 
  Run nature: valid run
@@ -50,18 +50,20 @@ BEGIN RESULT
 			{
 			"state": {
 				"location": {
-					"specification": "l1"
+					"machine": "off", 
+					"user": "idle"
 				},
 				"discrete_variables": {
-					"a": "10";
 				},
 				"continuous_variables": {
 					"p": "1",
-					"x": "0",
+					"uTime": "0",
+					"wTime": "0",
 					"global_time": "0"
 				},
 				"flows": {
-					"x": "1", 
+					"uTime": "1", 
+					"wTime": "1", 
 					"global_time": "1"
 				}
 			}
@@ -70,14 +72,22 @@ BEGIN RESULT
 			"transition": {
 				"nature": "concrete",
 				"duration": "1",
-				"action": "a1",
+				"action": "turnOn",
 				"transitions": [
 					{
 					"transition": {
-						"PTA": "specification",
-						"guard": " 2 >= x AND x < 4 AND True",
+						"PTA": "machine",
+						"guard": "True",
 						"updates": {
-							"t_AVI": "0""AVIisIdle": "False"
+							"uTime": "0"
+						}
+					}
+					}, 
+					{
+					"transition": {
+						"PTA": "user",
+						"guard": "True",
+						"updates": {
 						}
 					}
 					}
@@ -87,17 +97,20 @@ BEGIN RESULT
 			{
 			"state": {
 				"location": {
-					"specification": "l2"
+					"machine": "on", 
+					"user": "useMachine"
 				},
 				"discrete_variables": {
 				},
 				"continuous_variables": {
 					"p": "1",
-					"x": "1",
+					"uTime": "0",
+					"wTime": "1",
 					"global_time": "1"
 				},
 				"flows": {
-					"x": "1", 
+					"uTime": "1", 
+					"wTime": "1", 
 					"global_time": "1"
 				}
 			}
@@ -106,12 +119,12 @@ BEGIN RESULT
 			"transition": {
 				"nature": "concrete",
 				"duration": "1",
-				"action": "a2",
+				"action": "xdd",
 				"transitions": [
 					{
 					"transition": {
-						"PTA": "specification",
-						"guard": " x > p",
+						"PTA": "machine",
+						"guard": " uTime >= p",
 						"updates": {
 						}
 					}
@@ -122,17 +135,58 @@ BEGIN RESULT
 			{
 			"state": {
 				"location": {
-					"specification": "lT"
+					"machine": "waitForInput", 
+					"user": "useMachine"
 				},
 				"discrete_variables": {
 				},
 				"continuous_variables": {
 					"p": "1",
-					"x": "2",
+					"uTime": "1",
+					"wTime": "2",
 					"global_time": "2"
 				},
 				"flows": {
-					"x": "1", 
+					"uTime": "1", 
+					"wTime": "1", 
+					"global_time": "1"
+				}
+			}
+			}, 
+			{
+			"transition": {
+				"nature": "concrete",
+				"duration": "0",
+				"action": "noInputRec",
+				"transitions": [
+					{
+					"transition": {
+						"PTA": "machine",
+						"guard": " wTime >= 2",
+						"updates": {
+						}
+					}
+					}
+				]
+			}
+			},
+			{
+			"state": {
+				"location": {
+					"machine": "errorState", 
+					"user": "useMachine"
+				},
+				"discrete_variables": {
+				},
+				"continuous_variables": {
+					"p": "1",
+					"uTime": "1",
+					"wTime": "2",
+					"global_time": "2"
+				},
+				"flows": {
+					"uTime": "1", 
+					"wTime": "1", 
 					"global_time": "1"
 				}
 			}
@@ -147,10 +201,11 @@ BEGIN RESULT
  Run #2
 
  Valuation:
-  p = 4
+  p = 5/2
 
  Other valuations with equivalent (discrete) run:
- p = 4
+ p > 2
+& 3 >= p
 
  Run nature: impossible run
 
@@ -159,23 +214,26 @@ BEGIN RESULT
 	"run": {
 		"nature": "negative",
 		"valuation": {
-			"p": "4"
+			"p": "5/2"
 			},
 		"steps": [
 			{
 			"state": {
 				"location": {
-					"specification": "l1"
+					"machine": "off", 
+					"user": "idle"
 				},
 				"discrete_variables": {
 				},
 				"continuous_variables": {
-					"p": "4",
-					"x": "0",
+					"p": "5/2",
+					"uTime": "0",
+					"wTime": "0",
 					"global_time": "0"
 				},
 				"flows": {
-					"x": "1", 
+					"uTime": "1", 
+					"wTime": "1", 
 					"global_time": "1"
 				}
 			}
@@ -183,13 +241,22 @@ BEGIN RESULT
 			{
 			"transition": {
 				"nature": "concrete",
-				"duration": "1",
-				"action": "a1",
+				"duration": "0",
+				"action": "turnOn",
 				"transitions": [
 					{
 					"transition": {
-						"PTA": "specification",
-						"guard": " 2 >= x",
+						"PTA": "machine",
+						"guard": "True",
+						"updates": {
+							"uTime": "0"
+						}
+					}
+					}, 
+					{
+					"transition": {
+						"PTA": "user",
+						"guard": "True",
 						"updates": {
 						}
 					}
@@ -200,17 +267,20 @@ BEGIN RESULT
 			{
 			"state": {
 				"location": {
-					"specification": "l2"
+					"machine": "on", 
+					"user": "useMachine"
 				},
 				"discrete_variables": {
 				},
 				"continuous_variables": {
-					"p": "4",
-					"x": "1",
-					"global_time": "1"
+					"p": "5/2",
+					"uTime": "0",
+					"wTime": "0",
+					"global_time": "0"
 				},
 				"flows": {
-					"x": "1", 
+					"uTime": "1", 
+					"wTime": "1", 
 					"global_time": "1"
 				}
 			}
@@ -219,23 +289,54 @@ BEGIN RESULT
 			"transition": {
 				"nature": "impossible",
 				"duration": "1",
-				"action": "a2"
+				"action": "xdd"
 			}
 			},
 			{
 			"state": {
 				"location": {
-					"specification": "lT"
+					"machine": "waitForInput", 
+					"user": "useMachine"
 				},
 				"discrete_variables": {
 				},
 				"continuous_variables": {
-					"p": "4",
-					"x": "2",
+					"p": "5/2",
+					"uTime": "1",
+					"wTime": "1",
+					"global_time": "1"
+				},
+				"flows": {
+					"uTime": "1", 
+					"wTime": "1", 
+					"global_time": "1"
+				}
+			}
+			}
+			{
+			"transition": {
+				"nature": "arbitrary",
+				"duration": "1",
+				"action": "noInputRec"
+			}
+			},
+			{
+			"state": {
+				"location": {
+					"machine": "errorState", 
+					"user": "useMachine"
+				},
+				"discrete_variables": {
+				},
+				"continuous_variables": {
+					"p": "5/2",
+					"uTime": "2",
+					"wTime": "2",
 					"global_time": "2"
 				},
 				"flows": {
-					"x": "1", 
+					"uTime": "1", 
+					"wTime": "1", 
 					"global_time": "1"
 				}
 			}
@@ -248,29 +349,29 @@ BEGIN RESULT
 END RESULT
 
 ------------------------------------------------------------
-Number of states                        : 3
-Number of transitions                   : 2
-Number of computed states               : 3
-Total computation time                  : 0.001 second
-States/second in state space            : 2460.9 (3/0.001 second)
-Computed states/second                  : 2460.9 (3/0.001 second)
-Estimated memory                        : 2.909 MiB (i.e., 381312 words of size 8)
+Number of states                        : 5
+Number of transitions                   : 5
+Number of computed states               : 6
+Total computation time                  : 0.009 second
+States/second in state space            : 502.4 (5/0.009 second)
+Computed states/second                  : 602.9 (6/0.009 second)
+Estimated memory                        : 3.245 MiB (i.e., 425353 words of size 8)
 ------------------------------------------------------------
 
 ------------------------------------------------------------
  Statistics: Algorithm counters
 ------------------------------------------------------------
-main algorithm + parsing                : 0.001 second
-main algorithm                          : 0.001 second
+main algorithm + parsing                : 0.011 second
+main algorithm                          : 0.009 second
 ------------------------------------------------------------
  Statistics: Parsing counters
 ------------------------------------------------------------
-model parsing and converting            : 0.000 second
+model parsing and converting            : 0.001 second
 ------------------------------------------------------------
  Statistics: State computation counters
 ------------------------------------------------------------
-number of constraints comparisons       : 0
-number of state comparisons             : 0
+number of constraints comparisons       : 2
+number of state comparisons             : 2
 number of new states <= old             : 0
 number of new states >= old             : 0
 StateSpace.merging attempts             : 0
@@ -284,5 +385,5 @@ state space drawing                     : 0.000 second
 ------------------------------------------------------------
  Statistics: Global counter
 ------------------------------------------------------------
-total                                   : 0.001 second
+total                                   : 0.012 second
 ------------------------------------------------------------

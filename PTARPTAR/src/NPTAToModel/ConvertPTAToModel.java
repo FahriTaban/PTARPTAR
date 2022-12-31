@@ -59,7 +59,7 @@ public class ConvertPTAToModel {
 		for(Constraint loc : locs) {
 			String pta = loc.getLhs().getVariables().get(0).getName();
 			String location = loc.getRhs().getVariables().get(0).getName();
-			decl += "loc[" + pta + "] " + loc.getOperator() + " " + location + ",\n";
+			decl += "loc[" + pta + "] := " + location + ",\n";
 		}
 		decl += ";";
 		return decl;

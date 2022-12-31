@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import ConstraintSystem.RepairComputation.VariationVariable;
 import NPTA.*;
 import Run.OuterTransition;
 import Run.State;
@@ -12,17 +13,26 @@ import Utility.Utility;
 
 public class ToSMT2 {
 	
-	public static List<String> declareBoundVariables(List<Clock> clocks, 
+	public static List<String> declareBoundVariables(List<Clock> clocks, List<Parameter> params,
 			int numberOfStates,int numberOfTransitions) {
 		List<String> res = new ArrayList<>();
-		res.addAll(declareClocks(clocks, numberOfStates,true));
+		res.addAll(declareVariables(clocks, numberOfStates,true));
+		res.addAll(declareVariables(params, 0, true));
 		res.addAll(declareDelays(numberOfTransitions,true));
 		return res;
+	}
+	
+	public static String concatWith(String op, String s) {
+		return par(op + " " + s);
 	}
 	
 	public static String declareConstraint(Constraint c) {
 		return par(c.getOperator()+" "+c.getLhs().toString() + " " + c.getRhs().toString());
 	}	
+	
+	public static String declareInt(String v) {
+		return par("declare-fun " + v + " " + par("") + " Int");
+	}
 	
 	public static String declareReal(String v) {
 		return par("declare-fun " + v + " " + par("") + " Real");
@@ -44,25 +54,48 @@ public class ToSMT2 {
 		}
 	}
 	
-	public static List<String> declareClocks(List<Clock> clocks, int numberOfStates, boolean bound) {
+	public static <T extends Variable> List<String> declareVariables(List<T> vars, 
+			int numberOfStates, boolean bound) {
 		List<String> s = new ArrayList<>();
- 		for(Clock c : clocks) {
-			for(int i = 0; i < numberOfStates; i++) {
-				String alias = c.getName()+Integer.toString(i);
-				if (!bound) {
+ 		for(T v : vars) {
+			String alias = v.getName();
+ 			if (v instanceof Clock) {
+				for(int i = 0; i < numberOfStates; i++) {
+					if (!bound) {
+						s.add(declareReal(alias+Integer.toString(i)));
+					} else {
+						s.add(declareBoundReal(alias+Integer.toString(i)));
+					}
+				}
+ 			} else {
+ 				if (!bound) {
 					s.add(declareReal(alias));
 				} else {
 					s.add(declareBoundReal(alias));
 				}
-			}
+ 			}
 		}
 		return s;
+	}
+	
+	public static List<String> constrainVariationVariables(List<VariationVariable> vvs, String upper,
+			String lower) {
+		List<String> strings = new ArrayList<>();
+		String uBound, lBound, and;
+		for(VariationVariable vv : vvs) {
+			String varName = vv.getName();
+			uBound = ToSMT2.formatSMT(varName, upper, "<=");
+			lBound = ToSMT2.formatSMT(varName, lower, ">=");
+			and = ToSMT2.formatSMT(uBound, lBound, "and");
+			strings.add(and);
+		}
+		return strings;
 	}
 	
 	public static List<String> declareVariationVariables(List<VariationVariable> vvs){
 		List<String> s = new ArrayList<>();
 		for(VariationVariable vv : vvs) {
-			s.add(declareReal(vv.getName()));
+			s.add(declareInt(vv.getName()));
 		}
 		return s;
 	}

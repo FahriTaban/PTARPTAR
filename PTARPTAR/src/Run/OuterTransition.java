@@ -38,6 +38,15 @@ public class OuterTransition {
 		return guards;
 	}
 	
+	public Transition getUpdatingTransition(Clock c) {
+		for(Transition t : this.transitions) {
+			if (t.getClockUpdate(c) != null) {
+				return t;
+			}
+		}
+		return null;
+	}
+	
 	public List<Update> getUpdates(){
 		List<Update> updates = new ArrayList<>();
 		for (Transition t : this.transitions) {

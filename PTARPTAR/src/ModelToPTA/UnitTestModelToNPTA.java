@@ -10,8 +10,8 @@ import Parsing.Model_Parser;
 
 public class UnitTestModelToNPTA {
 	public static void main(String[] args) {
-		String model_name = "testEFExemplify1Pneg.imi";
-		String new_model_name = "test";
+		String model_name = "example.imi";
+		String new_model_name = "example_model.txt";
 		Model_Lexer m_lex = new Model_Lexer(model_name);		
 		m_lex.findTokens();
 		Model_Parser parser = new Model_Parser();
@@ -27,6 +27,7 @@ public class UnitTestModelToNPTA {
 		}
 		List<Element> initLocs = parser.getInitLocations(model);
 		List<Element> initCons = parser.getInitConstraints(model);
+		npta.printInfo();
 //		testClocks(clocks);
 //		testParameter(parameter);
 //		testAutomata(automata);

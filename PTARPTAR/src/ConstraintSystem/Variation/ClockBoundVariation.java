@@ -5,9 +5,8 @@ import NPTA.*;
 import java.util.*;
 
 import ConstraintSystem.ToSMT2;
-import ConstraintSystem.VariationVariable;
 import ConstraintSystem.RepairComputation.*;
-import ConstraintSystem.VariationVariable.VarType;
+import ConstraintSystem.RepairComputation.VariationVariable.VarType;
 
 public class ClockBoundVariation {
 	

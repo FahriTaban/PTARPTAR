@@ -24,7 +24,8 @@
 var
 
 (* Clocks *)
- 	x,
+ 	uTime,
+	wTime,
  	global_time,
 		: clock;
 		
@@ -34,48 +35,41 @@ var
 
 
 (************************************************************)
-  automaton specification
+  automaton machine
 (************************************************************)
-synclabs: s1, s2;
+synclabs: turnOn, turnOff, xdd, input, noInputRec;
 
-loc l1: invariant x <= 2
-	when x <= 2 sync s1 goto l2;
+loc off: invariant True
+	when True sync turnOn do {uTime := 0} goto on;
 
-loc l2: invariant x <= 4
-	when x > p sync s2 goto lT;
-	when True sync s1 goto lT;	
+loc on: invariant uTime <= p
+	when True sync turnOff goto off;
+	when uTime >= p sync xdd goto waitForInput;
 
-loc lT: invariant True
+loc waitForInput: invariant wTime <= 2
+	when wTime >= 2 sync noInputRec goto errorState;
+	when wTime <= 2 sync input do {uTime := 0} goto on;
+
+loc errorState: invariant True
 
 end (* pta *)
 
-(************************************************************)
-  automaton specification2
-(************************************************************)
-synclabs: a1, a2;
+automaton user
+synclabs: turnOn,turnOff, input;
 
-loc sl1: invariant x >= 0
-	when x <= 2 sync a1 goto sl2;
+loc idle: invariant True
+	when True sync turnOn goto useMachine;
 
-loc sl2: invariant x < 4
-	when x <= p sync a2 do {x := 0} goto slT;
+loc useMachine: invariant True
+	when True sync turnOff goto idle;
 
-loc slT: invariant True
-
-end (* pta *)
-
-(************************************************************)
-(* Initial state *)
-(************************************************************)
+end
 
 init := {
 	
     discrete =
-		(*------------------------------------------------------------*)
-		(* Initial location *)
-		(*------------------------------------------------------------*)
-		loc[specification] := l1,
-		loc[specification2] := sl1,
+		loc[machine] := off,
+		loc[user] := idle,
 
     ;
 
@@ -84,13 +78,14 @@ init := {
 		(* Initial clock and signal constraints *)
 		(*------------------------------------------------------------*)
 		& global_time	= 0
-		& x				= 0
+		& uTime 	= 0
+		& wTime		= 0
 
 		(*------------------------------------------------------------*)
 		(* Parameter constraints *)
 		(*------------------------------------------------------------*)
 		& p >= 0
-		& p <= 5
+		& p <= 3
 	;
 }
 

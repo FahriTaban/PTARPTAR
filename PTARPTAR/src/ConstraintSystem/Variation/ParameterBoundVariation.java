@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ConstraintSystem.ToSMT2;
-import ConstraintSystem.VariationVariable;
-import ConstraintSystem.VariationVariable.VarType;
+import ConstraintSystem.RepairComputation.VariationVariable;
+import ConstraintSystem.RepairComputation.VariationVariable.VarType;
 
 public class ParameterBoundVariation {
 	
@@ -25,8 +25,8 @@ public class ParameterBoundVariation {
 			String param = p.getName();
 			VariationVariable pbl = new VariationVariable(varNameLower, VarType.ParameterBound);
 			VariationVariable pbu = new VariationVariable(varNameUpper, VarType.ParameterBound);
-			pbl.setNeutralRepairValue(param);
-			pbu.setNeutralRepairValue(param);
+			pbl.setNeutralRepairValue("0");
+			pbu.setNeutralRepairValue("10");
 			vvs.add(pbl);
 			vvs.add(pbu);
 			String l1 = ToSMT2.formatSMT(param, varNameLower, ">=");

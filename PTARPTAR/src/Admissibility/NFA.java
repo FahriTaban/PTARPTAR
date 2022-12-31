@@ -11,10 +11,19 @@ public class NFA {
 		this.setVertices(vertices);
 	}
 	
+	public Vertex getFirstVertex() {
+		for(Vertex v : this.vertices) {
+			if (v.getName().equals("s_0")) {
+				return v;
+			}
+		}
+		return null;
+	}
+	
 	public void genLanguage() {
 		words.clear();
 		visited.clear();
-		Vertex v = findFirst();
+		Vertex v = this.getFirstVertex();
 		DFS(v,"");
 	}
 	
@@ -25,7 +34,7 @@ public class NFA {
 		}
 		visited.add(v);
 		for(String action : v.getTransitions().keySet()) {
-			word += ":" + action;
+			word += action;
 			Vertex post = v.getTransitions().get(action);
 			DFS(post,word);
 		}
@@ -38,14 +47,15 @@ public class NFA {
 	public void setVertices(HashSet<Vertex> vertices) {
 		this.vertices = vertices;
 	}
-	
-	public Vertex findFirst() {
+
+	public void printInfo() {
 		for(Vertex v : this.vertices) {
-			if (v.isFirst()) {
-				return v;
-			}
+			v.printInfo();
 		}
-		return null;
+	}
+	
+	public HashSet<String> getLanguage() {
+		return this.words;
 	}
 	
 }

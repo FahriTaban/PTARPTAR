@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Vertex {
 	private String name;
-	private HashMap<String,Vertex> transitions;
+	private HashMap<String,Vertex> transitions = new HashMap<>();
 	private boolean first = false;
 	
 	public Vertex(String name){
@@ -17,6 +17,13 @@ public class Vertex {
 			neighbors.add(transitions.get(action));
 		}
 		return neighbors;
+	}
+	
+	public void printInfo() {
+		for(String action : transitions.keySet()) {
+			String poststate = transitions.get(action).getName();
+			System.out.println(this.name + "---- " + action + " ----> " + poststate);
+		}
 	}
 	
 	public Vertex traverseEdge(String action) {

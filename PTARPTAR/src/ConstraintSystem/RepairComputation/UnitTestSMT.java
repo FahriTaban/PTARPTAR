@@ -7,7 +7,8 @@ import java.util.*;
 
 import com.microsoft.z3.*;
 
-import ConstraintSystem.SMT2;
+import ConstraintSystem.SMT2Encoding;
+import ConstraintSystem.RepairComputation.VariationVariable.VarType;
 import ModelToPTA.ConvertModelToNPTA;
 import NPTA.Clock;
 import NPTA.Constraint;
@@ -26,29 +27,22 @@ public class UnitTestSMT {
 	public static void main(String[] args) {
 		PrintStream out = System.out;
 		System.setOut(new PrintStream(OutputStream.nullOutputStream()));
-		String testconvRes = "testConv.res";
-		String testconvModel = "testConv.imi";
-		Result_Lexer r_lex = new Result_Lexer(testconvRes);		
+		String resFile = "example.res";
+		String modelFile = "example.imi";
+		Result_Lexer r_lex = new Result_Lexer(resFile);		
 		r_lex.findTokens();
-		List<Element> result = r_lex.getTokens();
-		NetworkPTA npta = ConvertModelToNPTA.buildNetworkPTA(testconvModel);
-//		npta.printInfo();
-		Run run = ConvertResToRun.createRun(testconvRes,npta);
+		NetworkPTA npta = ConvertModelToNPTA.buildNetworkPTA(modelFile);
+		npta.printInfo();
+		Run run = ConvertResToRun.createRun(resFile,npta);
 		System.setOut(out);
-		
-		List<Clock> clocks = npta.getClocks();
-		List<Constraint> initCons = run.getInitialConstraints();
-		List<Parameter> parameters = npta.getParameter();
-		List<State> states = run.getStates();
-		List<List<Constraint>> invariants = run.getInvariants();
-		List<List<Constraint>> guards = run.getGuards();
-		List<OuterTransition> transitions = run.getTransitions();
-		List<List<Update>> updates = run.getUpdates();
-		List<List<Clock>> resetClocks = run.getAllResetClocks(clocks);
-		List<List<Clock>> nonResetClocks = run.getAllNonResetClocks(clocks);
-		int numberOfStates = states.size();
-		int numberOfTransitions = run.getTransitions().size();
-	
+		String smt2filePath= "UnitTestMaxSMT.txt";
+		List<VariationVariable> vvs = new ArrayList<>();
+		SMT2Encoding.createSMT2Encoding(run, npta, VarType.Operator, vvs, smt2filePath);
+//		for(VariationVariable vv : vvs) {
+//			vv.printRepairInfo();
+//		}
+//		System.out.println(MaxSMT.quantifierElimination(smt2filePath));
+		MaxSMT.repairValuesComputation(smt2filePath, vvs);
 	}
 	
 	@SuppressWarnings("serial")

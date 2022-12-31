@@ -99,7 +99,10 @@ public class ConvertResToRun {
 			Automaton a = findAutomaton(parser.getPTA(outerTransition).getContent());
 			String prelocation = prestate.findLocation(a).getName();
 			String postlocation = poststate.findLocation(a).getName();
-			transitions.add(findTransition(prelocation,postlocation,action,innerT));
+			Transition t = findTransition(prelocation,postlocation,action,innerT);
+			if (t != null) {
+				transitions.add(t);
+			}
 		}
 		return new OuterTransition(duration, action, transitions);
 	}

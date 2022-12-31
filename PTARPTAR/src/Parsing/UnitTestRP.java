@@ -9,7 +9,7 @@ import org.junit.Test;
 public class UnitTestRP {
 
 	public static void main(String[] args) {
-		String result_name = "testEFExemplify1Pneg.res";
+		String result_name = "example.res";
 		Result_Lexer r_lex = new Result_Lexer(result_name);		
 		r_lex.findTokens();
 		Result_Parser parser = new Result_Parser();
@@ -25,12 +25,12 @@ public class UnitTestRP {
 //			testContinuousVariables(parser,state);
 		}
 		List<List<Element>> ot = parser.getOuterTransitions(run);
-//		testTransitions(parser,run);
+		testTransitions(parser,run);
 		for(List<Element> transition: ot) {
 //			testDuration(parser, transition);
 //			testAction(parser, transition);
 			List<List<Element>> it = parser.getInnerTransitions(transition);
-//			testInnerTransitions(parser,transition);
+			testInnerTransitions(parser,transition);
 			for(List<Element> i : it) {
 				testPTA(parser,i);
 				testGuard(parser,i);
