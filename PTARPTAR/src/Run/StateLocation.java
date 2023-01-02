@@ -1,7 +1,7 @@
-package Run;
+package run;
 
-import NPTA.Automaton;
-import NPTA.Location;
+import npta.Automaton;
+import npta.Location;
 
 public class StateLocation {
 	private Automaton automaton;

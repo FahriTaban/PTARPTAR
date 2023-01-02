@@ -1,10 +1,10 @@
-package NPTA;
+package npta;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import Utility.Utility;
+import utility.Utility;
 
 public class Ex {
 	private List<Variable> variables;

@@ -1,4 +1,4 @@
-package NPTA;
+package npta;
 
 public class Parameter extends Variable {
 	

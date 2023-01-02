@@ -1,15 +1,15 @@
-package Run;
+package run;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import NPTA.Clock;
-import NPTA.Constraint;
-import NPTA.NetworkPTA;
-import NPTA.Transition;
-import NPTA.Update;
+import npta.Clock;
+import npta.Constraint;
+import npta.NPTA;
+import npta.Transition;
+import npta.Update;
 
 
 public class Run {
@@ -22,17 +22,29 @@ public class Run {
 		this.transitions = transitions;
 		this.initialConstraints = initCons;
 	}
-
+	
+	public List<String> getViolatingTrace(){
+		List<String> trace = new ArrayList<>();
+		for(OuterTransition ot : this.transitions) {
+			trace.add(ot.getAction());
+		}
+		return trace;
+	}
+	
 	public int numberOfStates() {
 		return this.states.size();
 	}
 	
-	public int numberOfTransitions() {
-		return this.transitions.size();
+	public int numberOfValidTransitions() {
+		return this.transitions.size()-1;
 	}
 	
 	public List<State> getStates() {
 		return states;
+	}
+	
+	public List<State> getValidStates() {
+		return states.subList(0, states.size()-1);
 	}
 	
 	public List<Constraint> getPropertyConstraints(){
@@ -47,6 +59,10 @@ public class Run {
 	public List<OuterTransition> getTransitions() {
 		return transitions;
 	}
+	
+	public List<OuterTransition> getValidTransitions() {
+		return transitions.subList(0, transitions.size()-1);
+	}
 
 	public List<Constraint> getInitialConstraints() {
 		return initialConstraints;
@@ -55,6 +71,14 @@ public class Run {
 	public List<List<Update>> getUpdates(){
 		List<List<Update>> updates = new ArrayList<>();
 		for(OuterTransition ot : this.transitions) {
+			updates.add(ot.getUpdates());
+		}
+		return updates;
+	}
+	
+	public List<List<Update>> getValidUpdates(){
+		List<List<Update>> updates = new ArrayList<>();
+		for(OuterTransition ot : this.getValidTransitions()) {
 			updates.add(ot.getUpdates());
 		}
 		return updates;
@@ -88,6 +112,14 @@ public class Run {
 		return invariants;
 	}
 	
+	public List<List<Constraint>> getValidInvariants() {
+		List<List<Constraint>> invariants = new ArrayList<>();
+		for(State s : this.getValidStates()) {
+			invariants.add(s.getInvariants());
+		}
+		return invariants;
+	}
+	
 	public List<List<Constraint>> getGuards() {
 		List<List<Constraint>> guards = new ArrayList<>();
 		for(OuterTransition ot : this.transitions) {
@@ -96,9 +128,28 @@ public class Run {
 		return guards;
 	}
 	
+	public List<List<Constraint>> getValidGuards() {
+		List<List<Constraint>> guards = new ArrayList<>();
+		for(OuterTransition ot : this.getValidTransitions()) {
+			guards.add(ot.getGuards());
+		}
+		return guards;
+	}
+	
 	public HashMap<Integer,State> getUrgentLocations(){
 		HashMap<Integer,State> urgLocs = new HashMap<>();
 		for(int i = 0; i < this.states.size(); i++) {
+			State s = this.states.get(i);
+			if (s.isUrgent()) {
+				urgLocs.put(i,s);
+			}
+		}
+		return urgLocs;
+	}
+	
+	public HashMap<Integer,State> getValidUrgentLocations(){
+		HashMap<Integer,State> urgLocs = new HashMap<>();
+		for(int i = 0; i < this.states.size()-1; i++) {
 			State s = this.states.get(i);
 			if (s.isUrgent()) {
 				urgLocs.put(i,s);
@@ -117,9 +168,29 @@ public class Run {
 		return resetClocks;
 	}
 	
+	public List<List<Clock>> getAllValidResetClocks(List<Clock> clocks){
+		List<List<Clock>> resetClocks = new ArrayList<>();
+		for(List<Update> us : this.getValidUpdates()) {
+			List<Clock> rClocks = new ArrayList<>();
+			rClocks.addAll(getResetClocks(us,clocks));
+			resetClocks.add(rClocks);
+		}
+		return resetClocks;
+	}
+	
 	public List<List<Clock>> getAllNonResetClocks(List<Clock> clocks){
 		List<List<Clock>> nonResetClockss = new ArrayList<>();
 		for(List<Clock> rcs : this.getAllResetClocks(clocks)) {
+			List<Clock> nonResetClocks = getNonResetClocks(rcs,clocks);
+			nonResetClocks.removeAll(rcs);
+			nonResetClockss.add(nonResetClocks);
+		}
+		return nonResetClockss;
+	}
+	
+	public List<List<Clock>> getAllValidNonResetClocks(List<Clock> clocks){
+		List<List<Clock>> nonResetClockss = new ArrayList<>();
+		for(List<Clock> rcs : this.getAllValidResetClocks(clocks)) {
 			List<Clock> nonResetClocks = getNonResetClocks(rcs,clocks);
 			nonResetClocks.removeAll(rcs);
 			nonResetClockss.add(nonResetClocks);

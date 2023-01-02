@@ -3,12 +3,12 @@
  * Version  : IMITATOR 3.4-beta "Cheese Durian" (build ?????/?????)
  * Model    : /imitator/fff/example.imi
  * Algorithm: Post*
- * Command  : /imitator/bin/imitator /imitator/fff/example.imi /imitator/fff/exampleProp.imiprop -mode statespace -states-description
- * Generated: Sat Dec 31, 2022 11:25:27
+ * Command  : /imitator/bin/imitator /imitator/fff/example.imi -mode statespace -states-description
+ * Generated: Sun Jan 1, 2023 16:37:36
  *
  * 5 states and 5 transitions
  *
- * IMITATOR terminated after 0.006 second
+ * IMITATOR terminated after 0.023 second
 ************************************************************/
 
   DESCRIPTION OF THE STATES
@@ -70,10 +70,9 @@
   STATE 4:
   machine: errorState, user: useMachine ==> 
 & p >= 0
-& 2*wTime >= 3
-& wTime >= uTime
-& uTime >= p
-& uTime + 2 >= p + wTime
+& global_time >= 2
+& global_time >= uTime
+& uTime + 2 >= p + global_time
 & wTime = global_time
 
   Projection onto the parameters:

@@ -1,13 +1,13 @@
-package NPTA;
+package npta;
 
 import java.util.ArrayList;
 
 import java.util.Collections;
 import java.util.List;
 
-import ConstraintSystem.ToSMT2;
-import Parsing.*;
-import Utility.Utility;
+import parse.*;
+import repair.tdtcs.ToSMT2;
+import utility.Utility;
 /**
  * Linear constraint on clock or parameter
  * @author 49173
@@ -74,6 +74,18 @@ public class Constraint {
 			return ToSMT2.formatSMT("0", "0", "=");
 		} else {
 		return ToSMT2.par(this.operator + " " + this.lhs.toSMTString()+id + " " + this.rhs.toSMTString());
+		}
+	}
+	
+	public String toSMTString(String id, boolean negateOp) {
+		String op = this.operator;
+		if (this.isBoolean) {
+			return ToSMT2.formatSMT("0", "0", "=");
+		} else {
+			if(negateOp) {
+				op = Utility.negateOperator(op);
+			}
+		return ToSMT2.par(op + " " + this.lhs.toSMTString()+id + " " + this.rhs.toSMTString());
 		}
 	}
 	

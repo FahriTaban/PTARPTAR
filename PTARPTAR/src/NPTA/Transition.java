@@ -1,9 +1,9 @@
-package NPTA;
+package npta;
 
 import java.util.List;
 import org.javatuples.Pair;
 
-import Parsing.Element;  
+import parse.Element;  
 
 /**
  * Transition from State to State

@@ -1,4 +1,4 @@
-package Admissibility;
+package admissibility;
 
 import java.util.*;
 

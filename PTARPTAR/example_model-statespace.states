@@ -4,11 +4,11 @@
  * Model    : /imitator/fff/example_model.imi
  * Algorithm: Post*
  * Command  : /imitator/bin/imitator /imitator/fff/example_model.imi -mode statespace -states-description
- * Generated: Sat Dec 31, 2022 13:13:28
+ * Generated: Mon Jan 2, 2023 10:56:42
  *
- * 5 states and 5 transitions
+ * 4 states and 4 transitions
  *
- * IMITATOR terminated after 0.005 second
+ * IMITATOR terminated after 0.017 second
 ************************************************************/
 
   DESCRIPTION OF THE STATES
@@ -59,24 +59,11 @@
 & p >= 0
 & wTime >= uTime
 & uTime >= p
-& 2 >= wTime
+& 2 > wTime
 & wTime = global_time
 
   Projection onto the parameters:
-   2 >= p
-& p >= 0
-
-  /************************************************************/
-  STATE 4:
-  machine: errorState, user: useMachine ==> 
-& p >= 0
-& global_time >= 2
-& global_time >= uTime
-& uTime + 2 >= p + global_time
-& wTime = global_time
-
-  Projection onto the parameters:
-   2 >= p
+   2 > p
 & p >= 0
 
   /************************************************************/
@@ -85,4 +72,3 @@
   s_1 -> s_2 via "turnOff"
   s_1 -> s_3 via "xdd"
   s_2 -> s_1 via "turnOn"
-  s_3 -> s_4 via "noInputRec"

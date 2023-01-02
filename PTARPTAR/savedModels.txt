@@ -1,11 +1,5 @@
 Valuation 1
-ovg0 = 1
-ovg1 = 4
-ovi0 = 3
-ovi1 = 3
-
-Valuation 2
-ovg0 = 1
-ovg1 = 1
-ovi0 = 0
-ovi1 = 3
+bvg0 = 0
+bvg1 = -2
+bvi0 = 0
+bvi1 = -1

@@ -1,14 +1,18 @@
-package Utility;
+package utility;
 
 import java.util.List;
 
-import NPTA.Transition;
-import Parsing.Element;
-import Parsing.Parser;
-import Parsing.Result_Parser;
+import npta.Transition;
+import parse.Element;
+import parse.Parser;
+import parse.Result_Parser;
 
 public class UnitTest {
-
+	
+	public static void main(String[] args) {
+		System.out.println(Utility.splitString("- 2343", "\\d+"));
+	}
+	
 	public static String resultTransitionElemToString(List<Element> transition,Result_Parser parser) {
 		String pta = parser.getPTA(transition).getContent();
 		StringBuilder string = new StringBuilder();

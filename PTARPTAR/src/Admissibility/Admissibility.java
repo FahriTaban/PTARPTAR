@@ -1,13 +1,13 @@
-package Admissibility;
+package admissibility;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import ConstraintSystem.RepairComputation.VariationVariable;
-import Parsing.Evaluation.Eval_Lexer;
-import Parsing.Evaluation.Eval_Parser;
-import SSToNFA.ConvertSSToNFA;
+import convert.statespaceToNFA.ConvertSSToNFA;
+import parse.Evaluation.Eval_Lexer;
+import parse.Evaluation.Eval_Parser;
+import repair.repairComputation.VariationVariable;
 
 public class Admissibility {
 	
@@ -17,7 +17,7 @@ public class Admissibility {
 		unrepaired.genLanguage();
 		repaired.genLanguage();
 		HashSet<String> unrepairedL = unrepaired.getLanguage();
-		unrepairedL.remove(violatingTrace);
+		System.out.println("Violating trace removed: "+unrepairedL.remove(violatingTrace));
 		HashSet<String> repairedL = repaired.getLanguage();
 		boolean equal = true;
 		for(String word : unrepairedL) {

@@ -13,7 +13,7 @@ loc on: invariant uTime <= p
 when True sync turnOff goto off;
 when uTime >= p sync xdd goto waitForInput;
 
-loc waitForInput: invariant wTime <= 2 
+loc waitForInput: invariant wTime <= 2 - 1 
 when wTime >= 2 sync noInputRec goto errorState;
 when wTime <= 2 sync input do {uTime := 0} goto on;
 

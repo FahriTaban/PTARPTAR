@@ -1,6 +1,8 @@
-package Utility;
+package utility;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,9 +12,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ConstraintSystem.ToSMT2;
-import Parsing.Element;
-import Parsing.Result_Parser;
+import parse.Element;
+import parse.Result_Parser;
+import repair.tdtcs.ToSMT2;
 
 public class Utility {
 	public static StringBuilder readFile(String path) {
@@ -126,6 +128,19 @@ public class Utility {
 		System.out.println(s);
 	}
 	
+	public static boolean isFileEmpty(String filePath) {
+		boolean isEmpty = false;
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(filePath));     
+			if (br.readLine() == null) {
+			    isEmpty = true;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return isEmpty;
+	}
+	
 	public static List<Element> reverseList(List<Element> elems){
 		List<Element> reversed = new ArrayList<>();
 		for(int i = elems.size()-1;i >= 0;i--) {
@@ -145,13 +160,13 @@ public class Utility {
 			case "=":
 				return "=";
 			case ">=":
-				return "<=";
-			case "<=":
-				return ">=";
-			case ">":
 				return "<";
-			case "<":
+			case "<=":
 				return ">";
+			case ">":
+				return "<=";
+			case "<":
+				return ">=";
 			default:
 				return operator;
 		}

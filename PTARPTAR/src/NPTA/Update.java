@@ -1,7 +1,8 @@
-package NPTA;
+package npta;
 
 import java.util.List;
-import Parsing.*;
+
+import parse.*;
 
 public class Update {
 	private String variable;
@@ -48,6 +49,8 @@ public class Update {
 	}
 	
 	public boolean updatesClock(Clock c){
+		printInfo();
+		System.out.println(c.getName());
 		return this.variable.equals(c.getName());
 	}
 }

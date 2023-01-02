@@ -1,11 +1,11 @@
-package Utility;
-import Parsing.*;
+package utility;
+import npta.*;
+import parse.*;
 
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
-import NPTA.*;
 public class Tes {
 	
 	public static void main(String[] args) {

@@ -1,10 +1,10 @@
-package Run;
+package run;
 
 import java.util.ArrayList;
 
 import java.util.List;
 
-import NPTA.*;
+import npta.*;
 /**
  * Representing a state in a run
  * @author 49173

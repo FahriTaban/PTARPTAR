@@ -1,25 +1,41 @@
-package Admissibility;
+package admissibility;
 
 import java.util.HashSet;
 
-import SSToNFA.ConvertSSToNFA;
+import convert.modelToNPTA.ConvertModelToNPTA;
+import convert.resToRun.ConvertResToRun;
+import convert.statespaceToNFA.ConvertSSToNFA;
+import npta.NPTA;
+import parse.Result_Lexer;
+import parse.Result_Parser;
+import run.Run;
 
 public class UnitTest_ADM {
 	public static void main(String[] args) {
-		String fp = "example_model-statespace.states";
-		String fp2 = "example-statespace.states";
-		NFA nfa = ConvertSSToNFA.createNFA(fp);
+		String repairedFile = "example_model";
+		NPTA npta = ConvertModelToNPTA.createNPTA(repairedFile+".imi");
+		Run run = ConvertResToRun.createRun(repairedFile+".res", npta);
+		String statespaceFile = repairedFile+"-statespace.states";
+		String unrepairedFile = "example-statespace.states";
+		NFA nfa = ConvertSSToNFA.createNFA(statespaceFile);
+		nfa.printInfo();
 		nfa.genLanguage();
-		NFA nfa2 = ConvertSSToNFA.createNFA(fp2);
+		NFA nfa2 = ConvertSSToNFA.createNFA(unrepairedFile);
+		nfa2.printInfo();
 		nfa2.genLanguage();
-		System.out.println(Admissibility.checkLanguageEquivalence(fp, fp2, ""));
+		String violatingTrace = ConvertSSToNFA.renameTrace(run.getViolatingTrace());
+		System.out.println("Violating Trace: "+violatingTrace);
+		System.out.println(Admissibility.checkLanguageEquivalence(statespaceFile, unrepairedFile, violatingTrace));
 		printSet(nfa.getLanguage());
-		printSet(nfa.getLanguage());
+		printSet(nfa2.getLanguage());
 	}
 	
 	
 	public static void printSet(HashSet<String> language) {
 		for(String word : language) {
+			if(word.contains(" ")) {
+				System.out.println(word + " has blank");
+			}
 			System.out.println(word);
 		}
 	}

@@ -1,4 +1,4 @@
-package NPTA;
+package npta;
 
 import java.util.List;
 

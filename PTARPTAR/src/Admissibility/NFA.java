@@ -1,4 +1,4 @@
-package Admissibility;
+package admissibility;
 
 import java.util.HashSet;
 
@@ -34,9 +34,9 @@ public class NFA {
 		}
 		visited.add(v);
 		for(String action : v.getTransitions().keySet()) {
-			word += action;
+			String tempWord = word+action;
 			Vertex post = v.getTransitions().get(action);
-			DFS(post,word);
+			DFS(post,tempWord);
 		}
 	}
 

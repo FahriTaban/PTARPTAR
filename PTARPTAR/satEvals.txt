@@ -1,0 +1,4 @@
+Valuation 1
+bvg0 = 0
+bvi0 = 0
+bvi1 = -1

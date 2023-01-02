@@ -1,4 +1,4 @@
-package NPTA;
+package npta;
 
 /**
  * Parent class of Clock and Parameter

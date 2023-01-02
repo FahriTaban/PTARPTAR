@@ -1,13 +1,13 @@
-package NPTA;
+package npta;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ModelToPTA.ConvertModelToNPTA;
-import Parsing.Element;
-import Parsing.Model_Lexer;
-import Parsing.Model_Parser;
-import Utility.UnitTest;
+import convert.modelToNPTA.ConvertModelToNPTA;
+import parse.Element;
+import parse.Model_Lexer;
+import parse.Model_Parser;
+import utility.UnitTest;
 public class UnitTestNPTA extends UnitTest{
 
 	public static void main(String[] args) {
@@ -20,7 +20,7 @@ public class UnitTestNPTA extends UnitTest{
 		Model_Parser parser = new Model_Parser();
 		List<Element> model = m_lex.getTokens();
 		List<Element> model2 = m_lex2.getTokens();
-		NetworkPTA npta = ConvertModelToNPTA.buildNetworkPTA(model_name2);
+		NPTA npta = ConvertModelToNPTA.createNPTA(model_name2);
 		List<List<Element>> automata_elems = parser.getAutomata(model);
 		List<Automaton> automata = npta.getAutomata();
 		List<List<Element>> location_elems = null;

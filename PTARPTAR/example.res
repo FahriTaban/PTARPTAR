@@ -1,7 +1,7 @@
 (************************************************************
  * Result by: IMITATOR 3.4-beta "Cheese Durian" (build ?????/?????)
  * Model    : '/imitator/fff/example.imi'
- * Generated: Fri Dec 30, 2022 11:58:32
+ * Generated: Sun Jan 1, 2023 16:37:38
  * Command  : /imitator/bin/imitator /imitator/fff/example.imi /imitator/fff/exampleProp.imiprop -comparison equality -merge none
  ************************************************************)
 
@@ -352,21 +352,21 @@ END RESULT
 Number of states                        : 5
 Number of transitions                   : 5
 Number of computed states               : 6
-Total computation time                  : 0.012 second
-States/second in state space            : 402.1 (5/0.012 second)
-Computed states/second                  : 482.6 (6/0.012 second)
+Total computation time                  : 0.014 second
+States/second in state space            : 345.3 (5/0.014 second)
+Computed states/second                  : 414.4 (6/0.014 second)
 Estimated memory                        : 3.303 MiB (i.e., 433061 words of size 8)
 ------------------------------------------------------------
 
 ------------------------------------------------------------
  Statistics: Algorithm counters
 ------------------------------------------------------------
-main algorithm + parsing                : 0.020 second
-main algorithm                          : 0.012 second
+main algorithm + parsing                : 0.016 second
+main algorithm                          : 0.014 second
 ------------------------------------------------------------
  Statistics: Parsing counters
 ------------------------------------------------------------
-model parsing and converting            : 0.006 second
+model parsing and converting            : 0.001 second
 ------------------------------------------------------------
  Statistics: State computation counters
 ------------------------------------------------------------
@@ -385,5 +385,5 @@ state space drawing                     : 0.000 second
 ------------------------------------------------------------
  Statistics: Global counter
 ------------------------------------------------------------
-total                                   : 0.020 second
+total                                   : 0.017 second
 ------------------------------------------------------------

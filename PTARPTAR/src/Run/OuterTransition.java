@@ -1,9 +1,9 @@
-package Run;
+package run;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import NPTA.*;
+import npta.*;
 
 public class OuterTransition {
 	private State prestate;
