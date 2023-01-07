@@ -1,0 +1,257 @@
+(************************************************************
+ *                         IMITATOR
+ *
+ * Model of a pacemaker
+ *
+ * "Modeling and Verification of a Dual Chamber Implantable Pacemaker"
+ * Zhihao Jiang, Miroslav Pajic, Salar Moarref, Rajeev Alur, Rahul Mangharam
+ * TACAS 2014
+ *
+ * Author          : Étienne André
+ * Created         : 2015/02/11
+ * Last modified   : 2021/10/07
+ * IMITATOR version: 3.1
+ ************************************************************)
+
+var
+	(* local clocks *)
+	t_AVI, t_LRI, t_PVARP, t_VRP, t_5a, t_5b
+	(* global clocks *)
+	clk, x, x_urgent
+		: clock;
+
+	TAVI,
+	TLRI,
+	TPVARP,
+	TVRP,
+	TURI,
+	TPVAB,
+	Aminwait,(* (random value)*)
+	Amaxwait,(* (random value)*)
+
+		: parameter;
+
+
+
+(************************************************************)
+  automaton LRI
+(************************************************************)
+synclabs: AP, AS, VP, VS;
+
+loc LRI: invariant t_LRI <= TLRI - TAVI
+	when True sync VP do {t_LRI := 0} goto LRI;
+	when True sync VS do {t_LRI := 0} goto LRI;
+	when t_LRI >= TLRI - TAVI sync AP do {t_LRI := 0} goto LRI;
+	when True sync AS goto ASed;
+
+loc ASed: invariant True
+	when True sync VP do {t_LRI := 0} goto LRI;
+	when True sync VS do {t_LRI := 0} goto LRI;
+
+end (*LRI*)
+
+
+
+(************************************************************)
+  automaton AVI
+(************************************************************)
+synclabs: AP, AS, VP, VS, AVI_ac;
+
+loc Idle: invariant True
+	when True sync AP do {t_AVI := 0} goto AVI;
+	when True sync AS do {t_AVI := 0} goto AVI;
+
+loc AVI: invariant t_AVI <= TAVI
+	when True sync VS goto Idle;
+	when t_AVI >= TAVI & clk >= TURI sync VP goto Idle;
+	when t_AVI >= TAVI & clk < TURI sync AVI_ac goto WaitURI;
+
+loc WaitURI: invariant clk <= TURI
+	when True sync VS goto Idle;
+	when clk >= TURI sync VP goto Idle;
+
+
+end (*AVI*)
+
+
+
+(************************************************************)
+  automaton URI
+(************************************************************)
+synclabs: VP, VS;
+
+loc URI: invariant True
+	when True sync VP do {clk := 0} goto URI;
+	when True sync VS do {clk := 0} goto URI;
+
+end (*URI*)
+
+
+
+(************************************************************)
+  automaton PVARP
+(**************************************************)
+synclabs: AR, AS, Aget, VP, VS, PVARPbacktoIdle, PVARP_ac;
+
+loc Idle: invariant True
+	when True sync VP do {t_PVARP := 0} goto PVAB;
+	when True sync VS do {t_PVARP := 0} goto PVAB;
+	when True sync Aget goto inter;
+
+
+loc inter: invariant True
+	when True sync AS goto Idle;
+
+loc PVAB: invariant t_PVARP <= TPVAB
+	when t_PVARP >= TPVAB sync PVARP_ac goto PVARP;
+
+loc PVARP: invariant t_PVARP <= TPVARP
+	when True sync Aget goto inter1;
+	when t_PVARP >= TPVARP sync PVARPbacktoIdle goto Idle;
+
+loc inter1: invariant True
+	when True sync AR goto PVARP;
+
+
+end (*PVARP*)
+
+
+
+(************************************************************)
+  automaton VRP
+(************************************************************)
+synclabs: AP, AS, Aget, Vget, VP, VS, PVARPbacktoIdle, VRP_ac;
+
+loc Idle: invariant True
+	when True sync Vget goto inter;
+	when True sync VP do {t_VRP := 0} goto VRP;
+
+loc inter: invariant True
+	when True sync VS do {t_VRP := 0} goto VRP;
+
+loc VRP: invariant t_VRP <= TVRP
+	when t_VRP >= TVRP sync VRP_ac goto Idle;
+
+end (*VRP*)
+
+
+
+(************************************************************)
+  automaton RHM
+(************************************************************)
+synclabs: Aget, AP;
+
+loc AReady: invariant x < Amaxwait
+	when True sync AP do {x := 0} goto AReady;
+	when x > Aminwait sync Aget do {x := 0} goto AReady;
+
+end (*RHM*)
+
+
+(************************************************************)
+  automaton monitor5a
+(*  figure 5a of the paper  *)
+(************************************************************)
+synclabs: VP, VS, 5a_ac, 5a_error;
+
+loc wait_1st: invariant True
+	when True sync VP do {t_5a := 0} goto wait_2nd;
+	when True sync VS do {t_5a := 0} goto wait_2nd;
+
+loc wait_2nd: invariant True
+	when True sync VP do {x_urgent := 0} goto two_a;
+	when True sync VS do {x_urgent := 0} goto two_a;
+
+loc two_a: invariant x_urgent = 0
+	when t_5a > TLRI sync 5a_error goto error;
+	when True sync 5a_ac do {t_5a := 0} goto wait_2nd;
+
+loc error: invariant True
+
+end (* monitor5a *)
+
+
+(************************************************************)
+  automaton monitor5b
+(*  figure 5b of the paper  *)
+(************************************************************)
+synclabs: VP, VS, 5b_ac, 5b_error;
+
+loc wait_v: invariant True
+	when True sync VP do {t_5b := 0} goto wait_vp;
+	when True sync VS do {t_5b := 0} goto wait_vp;
+
+loc wait_vp: invariant True
+	when True sync VP do {x_urgent := 0} goto interval;
+	when True sync VS do {t_5b := 0} goto wait_vp;
+
+loc interval: invariant x_urgent = 0
+	when t_5b < TURI sync 5b_error goto error;
+	when True sync 5b_ac do {t_5b := 0} goto wait_2nd;
+
+loc error: invariant True
+
+end (* monitor5b *)
+
+
+(************************************************************)
+(* Initial state *)
+(************************************************************)
+
+init := {
+	discrete =
+		(*------------------------------------------------------------
+		   INITIAL LOCATION
+		  ------------------------------------------------------------*)
+		loc[LRI]			:= LRI,
+		loc[AVI]			:= Idle,
+		loc[URI]			:= URI,
+		loc[PVARP]			:= Idle,
+		loc[VRP]			:= Idle,
+		loc[RHM]			:= AReady,
+		loc[monitor5a]			:= wait_1st,
+		loc[monitor5b]			:= wait_v,
+	;
+
+	continuous =
+		(*------------------------------------------------------------
+		   INITIAL CLOCKS
+		  ------------------------------------------------------------*)
+		& clk		= 0
+		& x		= 0
+		& x_urgent	= 0
+		& t_AVI		= 0
+		& t_LRI		= 0
+		& t_PVARP	= 0
+		& t_VRP		= 0
+		& t_5a		= 0
+		& t_5b		= 0
+
+
+		(*------------------------------------------------------------
+		   PARAMETER CONSTRAINTS
+		  ------------------------------------------------------------*)
+		& TAVI		>= 0
+		& TLRI		>= 0
+		& TPVARP	>= 0
+		& TVRP		>= 0
+		& TURI		>= 0
+		& TPVAB		>= 0
+		& Aminwait	>= 0
+		& Amaxwait	>= 0
+		& Aminwait 	<= Amaxwait
+
+
+		(*------------------------------------------------------------
+		   PARAMETER VALUATION
+		  ------------------------------------------------------------*)
+		& TAVI		= 150
+		& TLRI		= 1000
+		& TPVARP	= 100
+		& TVRP		= 150
+		& TURI		= 400
+		& TPVAB		= 50
+		& Aminwait 	= 0
+		& Amaxwait	= 1000
+	;
+}

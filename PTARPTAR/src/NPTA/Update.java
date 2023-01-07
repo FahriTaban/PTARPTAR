@@ -9,8 +9,8 @@ public class Update {
 	private String setToValue;
 	
 	public Update(String var, String val) {
-		this.variable = var;
-		this.setToValue = val;
+		this.variable = var.strip();
+		this.setToValue = val.strip();
 	}
 	
 	public String getVariable() {
@@ -18,26 +18,20 @@ public class Update {
 	}
 
 	public void setVariable(String variable) {
-		this.variable = variable;
+		this.variable = variable.strip();
 	}
 
 	public String getSetToValue() {
-		return setToValue;
+		return setToValue.strip();
 	}
 
 	public void setSetToValue(String setToValue) {
-		this.setToValue = setToValue;
+		this.setToValue = setToValue.strip();
 	}
 	
-	public boolean updateEquals(List<Element> update) {
-		int count = 0;
-		for(Element u : update) {
-			if(this.variable.equals(u.getContent()) || this.setToValue.equals(u.getContent())) {
-				count++;
-			}
-		}
-		return count == update.size();
-}
+	public boolean updateEquals(Element update) {
+		return this.variable.equals(update.getContent());
+	}
 	
 	public void printInfo() {
 		System.out.println("Update");
@@ -49,8 +43,6 @@ public class Update {
 	}
 	
 	public boolean updatesClock(Clock c){
-		printInfo();
-		System.out.println(c.getName());
 		return this.variable.equals(c.getName());
 	}
 }

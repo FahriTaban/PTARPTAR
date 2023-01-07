@@ -5,7 +5,7 @@ import java.util.List;
 import npta.Transition;
 import parse.Element;
 import parse.Parser;
-import parse.Result_Parser;
+import parse.result.Result_Parser;
 
 public class UnitTest {
 	
@@ -20,8 +20,8 @@ public class UnitTest {
 		for(Element g: parser.getGuards(transition)) {
 			string.append(g.getContent()+",");
 		}
-		for(List<Element> u: parser.getUpdates(transition)) {
-			string.append(elemsToString(u)+",");
+		for(Element u: parser.getUpdates(transition)) {
+			string.append(u.toString()+",");
 		}
 		return string.toString();
 	} 

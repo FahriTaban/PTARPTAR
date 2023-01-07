@@ -13,14 +13,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import parse.Element;
-import parse.Result_Parser;
+import parse.result.Result_Parser;
 import repair.tdtcs.ToSMT2;
 
 public class Utility {
-	public static StringBuilder readFile(String path) {
+	public static String readFile(String path) {
 		try {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
-  		return new StringBuilder(new String(encoded));
+  		return new String(encoded);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -72,8 +72,8 @@ public class Utility {
 		for(Element g: parser.getGuards(transition)) {
 			string.append(g.getContent()+",");
 		}
-		for(List<Element> u: parser.getUpdates(transition)) {
-			string.append(elemToString(u)+",");
+		for(Element u: parser.getUpdates(transition)) {
+			string.append(u.getContent()+",");
 		}
 		return string.toString();
 	} 
@@ -108,7 +108,7 @@ public class Utility {
 	
 	public static void printStructures(List<List<Element>> structures) {
 		for (List<Element> s : structures) {
-			System.out.println("*".repeat(1000) + "\n NEW STRUCTURE \n " + "*".repeat(1000));
+			System.out.println("*".repeat(55) + "\n NEW STRUCTURE \n " + "*".repeat(55));
 			for (Element e : s) {
 				e.elemInfo();
 			}
@@ -155,6 +155,23 @@ public class Utility {
 		return reversed;
 	}
 	
+	public static String mirrorOperator(String operator) {
+		switch(operator) {
+			case "=":
+				return "=";
+			case ">=":
+				return "=<";
+			case "<=":
+				return ">=";
+			case ">":
+				return "<";
+			case "<":
+				return ">";
+			default:
+				return operator;
+		}
+	}
+	
 	public static String negateOperator(String operator) {
 		switch(operator) {
 			case "=":
@@ -167,13 +184,16 @@ public class Utility {
 				return "<=";
 			case "<":
 				return ">=";
+			case "+":
+				return "-";
+			case "-":
+				return "+";
 			default:
 				return operator;
 		}
 	}
 	
 	public static List<String> splitString(String s, String delim){
-		System.out.println(s);
 		Pattern p = Pattern.compile(delim);
 		Matcher m = p.matcher(s);
 		if (m.find()) {
@@ -197,10 +217,27 @@ public class Utility {
 		return false;
 	}
 	
+	public static boolean isCompOperator(String s) {
+		Pattern p = Pattern.compile("[><=]+");
+		Matcher m = p.matcher(s);
+		if(m.find() && s.length() == 1) {
+			return true;
+		} 
+		return false;
+	}
+	
 	public static String concatStrings(List<String> ss) {
 		StringBuilder sb = new StringBuilder();
 		for(String s : ss) {
 			sb.append(s+"\n\t");
+		}
+		return sb.toString().strip();
+	}
+	
+	public static String concatStringsOhne(List<String> ss) {
+		StringBuilder sb = new StringBuilder();
+		for(String s : ss) {
+			sb.append(s+" ");
 		}
 		return sb.toString().strip();
 	}
@@ -244,4 +281,7 @@ public class Utility {
 		s.append(")");
 		return s.toString();
 	}
+	
+	
+	
 }

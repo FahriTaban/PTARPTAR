@@ -6,8 +6,8 @@ import convert.modelToNPTA.ConvertModelToNPTA;
 import convert.resToRun.ConvertResToRun;
 import convert.statespaceToNFA.ConvertSSToNFA;
 import npta.NPTA;
-import parse.Result_Lexer;
-import parse.Result_Parser;
+import parse.result.Result_Lexer;
+import parse.result.Result_Parser;
 import run.Run;
 
 public class UnitTest_ADM {

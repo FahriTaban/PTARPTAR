@@ -13,14 +13,16 @@ import npta.Update;
 
 
 public class Run {
+	private NPTA npta;
 	private List<Constraint> initialConstraints;
 	private List<State> states;
 	private List<OuterTransition> transitions;
 	
-	public Run(List<Constraint> initCons, List<State> states, List<OuterTransition> transitions) {
+	public Run(List<Constraint> initCons, List<State> states, List<OuterTransition> transitions, NPTA npta) {
 		this.states = states;
 		this.transitions = transitions;
 		this.initialConstraints = initCons;
+		this.npta = npta;
 	}
 	
 	public List<String> getViolatingTrace(){
@@ -52,6 +54,9 @@ public class Run {
 		OuterTransition lastTrans = this.getTransitions().get(this.getTransitions().size()-1);
 		for(Transition t : lastTrans.getTransitions()) {
 			cons.addAll(t.getGuards());
+		}
+		for(Constraint c : cons) {
+			c.setDoNotModify(true);
 		}
 		return cons;
 	}
@@ -158,7 +163,8 @@ public class Run {
 		return urgLocs;
 	}
 	
-	public List<List<Clock>> getAllResetClocks(List<Clock> clocks){
+	public List<List<Clock>> getAllResetClocks(){
+		List<Clock> clocks = this.npta.getClocks();
 		List<List<Clock>> resetClocks = new ArrayList<>();
 		for(List<Update> us : this.getUpdates()) {
 			List<Clock> rClocks = new ArrayList<>();
@@ -168,7 +174,8 @@ public class Run {
 		return resetClocks;
 	}
 	
-	public List<List<Clock>> getAllValidResetClocks(List<Clock> clocks){
+	public List<List<Clock>> getAllValidResetClocks(){
+		List<Clock> clocks = this.npta.getClocks();
 		List<List<Clock>> resetClocks = new ArrayList<>();
 		for(List<Update> us : this.getValidUpdates()) {
 			List<Clock> rClocks = new ArrayList<>();
@@ -178,27 +185,28 @@ public class Run {
 		return resetClocks;
 	}
 	
-	public List<List<Clock>> getAllNonResetClocks(List<Clock> clocks){
+	public List<List<Clock>> getAllNonResetClocks(){
 		List<List<Clock>> nonResetClockss = new ArrayList<>();
-		for(List<Clock> rcs : this.getAllResetClocks(clocks)) {
-			List<Clock> nonResetClocks = getNonResetClocks(rcs,clocks);
+		for(List<Clock> rcs : this.getAllResetClocks()) {
+			List<Clock> nonResetClocks = getNonResetClocks(rcs);
 			nonResetClocks.removeAll(rcs);
 			nonResetClockss.add(nonResetClocks);
 		}
 		return nonResetClockss;
 	}
 	
-	public List<List<Clock>> getAllValidNonResetClocks(List<Clock> clocks){
+	public List<List<Clock>> getAllValidNonResetClocks(){
 		List<List<Clock>> nonResetClockss = new ArrayList<>();
-		for(List<Clock> rcs : this.getAllValidResetClocks(clocks)) {
-			List<Clock> nonResetClocks = getNonResetClocks(rcs,clocks);
+		for(List<Clock> rcs : this.getAllValidResetClocks()) {
+			List<Clock> nonResetClocks = getNonResetClocks(rcs);
 			nonResetClocks.removeAll(rcs);
 			nonResetClockss.add(nonResetClocks);
 		}
 		return nonResetClockss;
 	}
 	
-	public List<Clock> getNonResetClocks(List<Clock> resetClocks, List<Clock> clocks){
+	public List<Clock> getNonResetClocks(List<Clock> resetClocks){
+		List<Clock> clocks = this.npta.getClocks();
 		List<Clock> nonResetClocks = new ArrayList<>();
 		for(Clock c : clocks) {
 			boolean in = false;
@@ -242,6 +250,10 @@ public class Run {
 		}
 		System.out.println("Failed to find variable " + varName);
 		return null;
+	}
+
+	public NPTA getNPTA() {
+		return this.npta;
 	}
 	
 }

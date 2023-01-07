@@ -10,6 +10,17 @@ public class StateLocation {
 	public StateLocation(Automaton a, Location l) {
 		this.setAutomaton(a);
 		this.setLocation(l);
+		try {
+		if(l == null || a == null) {
+			throw new Exception("AUTOMATON IS NULL: " + Boolean.toString(a==null)+
+					"; LOCATION IS NULL: " + Boolean.toString(l == null));
+		}}
+		
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		
 	}
 
 	public Automaton getAutomaton() {

@@ -1,7 +1,7 @@
 (************************************************************
  * Result by: IMITATOR 3.4-beta "Cheese Durian" (build ?????/?????)
  * Model    : '/imitator/fff/example_model.imi'
- * Generated: Mon Jan 2, 2023 10:56:44
+ * Generated: Tue Jan 3, 2023 00:39:34
  * Command  : /imitator/bin/imitator /imitator/fff/example_model.imi /imitator/fff/exampleProp.imiprop -comparison equality -merge none
  ************************************************************)
 
@@ -33,21 +33,21 @@ END RESULT
 Number of states                        : 4
 Number of transitions                   : 4
 Number of computed states               : 5
-Total computation time                  : 0.003 second
-States/second in state space            : 1136.9 (4/0.003 second)
-Computed states/second                  : 1421.2 (5/0.003 second)
-Estimated memory                        : 2.601 MiB (i.e., 340964 words of size 8)
+Total computation time                  : 0.001 second
+States/second in state space            : 3791.4 (4/0.001 second)
+Computed states/second                  : 4739.3 (5/0.001 second)
+Estimated memory                        : 2.601 MiB (i.e., 340994 words of size 8)
 ------------------------------------------------------------
 
 ------------------------------------------------------------
  Statistics: Algorithm counters
 ------------------------------------------------------------
-main algorithm + parsing                : 0.012 second
-main algorithm                          : 0.003 second
+main algorithm + parsing                : 0.002 second
+main algorithm                          : 0.001 second
 ------------------------------------------------------------
  Statistics: Parsing counters
 ------------------------------------------------------------
-model parsing and converting            : 0.007 second
+model parsing and converting            : 0.001 second
 ------------------------------------------------------------
  Statistics: State computation counters
 ------------------------------------------------------------
@@ -66,5 +66,5 @@ state space drawing                     : 0.000 second
 ------------------------------------------------------------
  Statistics: Global counter
 ------------------------------------------------------------
-total                                   : 0.013 second
+total                                   : 0.002 second
 ------------------------------------------------------------

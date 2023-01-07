@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import convert.statespaceToNFA.ConvertSSToNFA;
-import parse.Evaluation.Eval_Lexer;
-import parse.Evaluation.Eval_Parser;
+import parse.evaluation.Eval_Lexer;
+import parse.evaluation.Eval_Parser;
 import repair.repairComputation.VariationVariable;
 
 public class Admissibility {

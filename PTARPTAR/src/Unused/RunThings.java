@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import parse.Element;
-import parse.Model_Lexer;
-import parse.Model_Parser;
-import parse.Result_Lexer;
+import parse.model.Model_Lexer;
+import parse.model.Model_Parser;
+import parse.result.Result_Lexer;
 
 public class RunThings {
 

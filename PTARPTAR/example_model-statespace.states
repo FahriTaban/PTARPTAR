@@ -4,11 +4,11 @@
  * Model    : /imitator/fff/example_model.imi
  * Algorithm: Post*
  * Command  : /imitator/bin/imitator /imitator/fff/example_model.imi -mode statespace -states-description
- * Generated: Mon Jan 2, 2023 10:56:42
+ * Generated: Tue Jan 3, 2023 00:39:33
  *
  * 4 states and 4 transitions
  *
- * IMITATOR terminated after 0.017 second
+ * IMITATOR terminated after 0.018 second
 ************************************************************/
 
   DESCRIPTION OF THE STATES

@@ -23,10 +23,6 @@ public class Variable {
 			this.setName("False");	
 		}
 	}
-
-	public boolean isConstant() {
-		return this.name.matches("\\w+");
-	}
 	
 	public boolean variableEquals(String s) {
 		return (this.name.equals(s));
@@ -54,8 +50,14 @@ public class Variable {
 	
 	
 	public void printInfo() {
-		if (this.name != null) {
+		if (this instanceof Clock) {
+			System.out.println("Clock "+ " " + this.name);
+		} else if (this instanceof Parameter) {
+			((Parameter) this).printParam();
+		}
+		else {
 			System.out.println("Variable "+ " " + this.name);
+
 		}
 	}
 }

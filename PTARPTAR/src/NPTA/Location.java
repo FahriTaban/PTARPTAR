@@ -1,4 +1,5 @@
 package npta;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.javatuples.Pair;  
@@ -37,6 +38,28 @@ public class Location {
 		this.invariants = inv;
 	}
 
+	public List<Constraint> getModifiableInvariants(){
+		List<Constraint> cons = new ArrayList<>();
+		for(Constraint c : this.invariants) {
+			if(!c.isDoNotModify()) {
+				cons.add(c);
+			}
+		}
+		return cons;
+	}
+	
+	public List<Constraint> getModifiableGuards(){
+		List<Constraint> cons = new ArrayList<>();
+		for(Transition t : this.getTransitions()) {
+			for(Constraint c : t.getGuards()) {
+				if(!c.isDoNotModify()) {
+					cons.add(c);
+				}
+			}
+		}
+		return cons;
+	}
+	
 	public String getName() {
 		return name;
 	}

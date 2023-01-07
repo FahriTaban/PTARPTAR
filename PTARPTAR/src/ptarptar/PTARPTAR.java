@@ -18,15 +18,16 @@ import run.Run;
 public class PTARPTAR {
 	
 	public static void main(String[] args) {
-		String repairedFile = "example_model";
-		String unrepairedFile = "example";
+		long startTime = System.currentTimeMillis();
+		String unrepairedFile = "files/pacemaker_JPMAM12";
+		String repairedFile = unrepairedFile + "_repaired";
 		String repairedModelFilePath = repairedFile+".imi";
 		String unrepairedModelFilePath = unrepairedFile+".imi";
 		String resultFile = unrepairedFile+".res";
 		String repairedStatespaceFile = repairedFile+"-statespace.states";
 		String unrepairedStatespaceFile = unrepairedFile+"-statespace.states";
-		String smt2libFilePath = "tdtcs.txt";
-		String evalFilePath = "satEvals.txt";
+		String smt2libFilePath = "files/tdtcs.txt";
+		String evalFilePath = "files/satEvals.txt";
 		int evalSetNr = 1;
 		NPTA unrepaired = ConvertModelToNPTA.createNPTA(unrepairedModelFilePath);
 		Run run = ConvertResToRun.createRun(resultFile, unrepaired);
@@ -36,13 +37,14 @@ public class PTARPTAR {
 		for(VariationVariable vv : vvs) {
 			vv.printRepairInfo();
 		}
+		long endTime = System.currentTimeMillis();
+		System.out.println("TOTAL COMPUTATION TIME: " + Long.toString(endTime - startTime));
 	}
 	
 	public static void repairModel(Run run, NPTA npta, VarType vType, 
 			List<VariationVariable> vvs, String smt2libFilePath, String evalFilePath, int evalSetNr
 			, String repairedModelFilePath) {
-		RepairProcess.conductRepair(run, npta, vType, vvs, smt2libFilePath, evalFilePath, evalSetNr);
-		ConvertNPTAToModel.nptaToModel(npta, repairedModelFilePath);
+		RepairProcess.conductRepair(run, npta, vType, vvs, smt2libFilePath, evalFilePath, repairedModelFilePath);
 	}
 
 }

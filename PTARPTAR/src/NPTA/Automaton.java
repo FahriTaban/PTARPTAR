@@ -3,6 +3,8 @@ package npta;
 import java.util.ArrayList;
 import java.util.List;
 
+import convert.nptaToModel.ConvertNPTAToModel;
+
 public class Automaton {
 	private String name;
 	private List<Action> actions;
@@ -16,6 +18,11 @@ public class Automaton {
 	
 	public Automaton(String name) {
 		this.name = name;
+	}
+	
+	@Override
+	public String toString() {
+		return ConvertNPTAToModel.declareAutomaton(this);
 	}
 	
 	public String getName() {

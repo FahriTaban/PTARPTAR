@@ -12,8 +12,7 @@ public class OuterTransition {
 	List<Transition> transitions;
 	private State poststate;
 	
-	public OuterTransition(int dur, String a, List<Transition> t) {
-		this.duration = dur;
+	public OuterTransition(String a, List<Transition> t) {
 		this.action = a;
 		this.transitions = t;
 	}

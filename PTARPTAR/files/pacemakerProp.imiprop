@@ -1,0 +1,1 @@
+property := #exemplify EF(loc[monitor_5a] = error OR loc[monitor_5b] = error);

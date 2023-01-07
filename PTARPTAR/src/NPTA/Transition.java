@@ -75,7 +75,7 @@ public class Transition {
 		StringBuilder trans = new StringBuilder();
 		trans.append(this.preloc);
 		for(Constraint g : this.guards) {
-			trans.append("," + g.toString());
+			trans.append("," + g.toModelString());
 		}
 		trans.append("---" + this.action + "---> " );
 		for(Update u : this.updateRules) {
@@ -90,7 +90,7 @@ public class Transition {
 		StringBuilder guards = new StringBuilder();
 		StringBuilder updates = new StringBuilder();
 		for(Constraint g : this.guards) {
-			guards.append("{" + g.toString() + "},");
+			guards.append("{" + g.toModelString() + "},");
 		}
 		for(Update u : this.updateRules) {
 			updates.append("{" + u.getVariable() + " := " + u.getSetToValue() + "},");
@@ -108,19 +108,13 @@ public class Transition {
 	 * @return
 	 */
 	public boolean transitionEquals(String preloc, List<Element> guard_elems
-			, String action, List<List<Element>> update_elems, String postloc) {
+			, String action, List<Element> update_elems, String postloc) {
 		boolean prel = false, a = false, ub = false,gb = false, postl = false;
 		int countGuard = 0;
 		int countUpdate = 0;
-		if(this.preloc.equals(preloc)) {
-			prel = true;
-		}
-		if(this.action.equals(action)) {
-			a = true;
-		}
-		if(this.postloc.equals(postloc)) {
-			postl = true;
-		}
+		prel = this.preloc.equals(preloc);
+		a = this.action.equals(action);
+		postl = this.postloc.equals(postloc);
 		for(Element guard_elem : guard_elems) {
 			for(Constraint g : this.guards) {
 				if(g.constraintEquals(guard_elem)) {
@@ -129,21 +123,17 @@ public class Transition {
 				}
 			}
 		}
-		for(List<Element> update_elem : update_elems) {
+		for(Element update_elem : update_elems) {
 			for(Update update : this.updateRules) {
 				if(update.updateEquals(update_elem)) {
 					countUpdate++;
 				}
 			}
 		}
-		gb = (countGuard == this.guards.size());
-		ub = (countUpdate == this.updateRules.size());
+		gb = countGuard == this.guards.size();
+		ub = countUpdate == this.updateRules.size();
 		if (!(prel && a && postl && gb && ub)) {
-		System.out.print(prel);
-		System.out.print(gb);
-		System.out.print(a);
-		System.out.print(ub);
-		System.out.println(postl);
+		System.out.println(this.transitionToString());
 		}
 		return prel && a && postl && gb && ub;
 	}
