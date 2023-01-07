@@ -10,14 +10,14 @@ import parse.model.Model_Parser;
 
 public class UnitTestModelToNPTA {
 	public static void main(String[] args) {
-		String model_name = "files/pacemaker_JPMAM12.imi";
+		String model_name = "files/abc.imi";
 		String new_model_name = "PM_JPMAM12_new.imi";
 		Model_Lexer m_lex = new Model_Lexer(model_name);		
 		m_lex.findTokens();
 		Model_Parser parser = new Model_Parser();
 		List<Element> model = m_lex.getTokens();
 		NPTA npta = ConvertModelToNPTA.createNPTA(model_name);
-//		npta.printInfo();
+		npta.printInfo();
 		ConvertNPTAToModel.nptaToModel(npta, new_model_name);
 		List<Element> clocks = parser.getClocks(model);
 		List<Element> parameter = parser.getParameters(model);

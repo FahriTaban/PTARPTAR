@@ -19,7 +19,7 @@ public class PTARPTAR {
 	
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
-		String unrepairedFile = "files/pacemaker_JPMAM12";
+		String unrepairedFile = "files/example";
 		String repairedFile = unrepairedFile + "_repaired";
 		String repairedModelFilePath = repairedFile+".imi";
 		String unrepairedModelFilePath = unrepairedFile+".imi";

@@ -11,7 +11,7 @@ import utility.UnitTest;
 public class UnitTestMP extends UnitTest{
 
 	public static void main(String[] args) {
-		String model_name = "files/pacemaker_JPMAM12.imi";
+		String model_name = "files/fisch93.imi";
 		Model_Lexer m_lex = new Model_Lexer(model_name);		
 		m_lex.findTokens();
 		Model_Parser parser = new Model_Parser();

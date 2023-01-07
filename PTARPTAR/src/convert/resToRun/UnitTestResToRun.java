@@ -17,9 +17,9 @@ public class UnitTestResToRun extends UnitTest{
 
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
-		String result_name = "files/pacemaker_JPMAM12.res";
-		String testconvRes = "files/pacemaker_JPMAM12.res";
-		String testconvModel = "files/pacemaker_JPMAM12.imi";
+		String result_name = "files/example.res";
+		String testconvRes = "files/fisch93.res";
+		String testconvModel = "files/fisch93.imi";
 		Result_Lexer r_lex = new Result_Lexer(testconvRes);		
 //		r_lex.findTokens();
 //		List<Element> result = r_lex.getTokens();

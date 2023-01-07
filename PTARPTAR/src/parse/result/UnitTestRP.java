@@ -12,7 +12,7 @@ import utility.Utility;
 public class UnitTestRP {
 
 	public static void main(String[] args) {
-		String result_name = "files/pacemaker_JPMAM12.res";
+		String result_name = "files/fisch93.res";
 		Result_Lexer r_lex = new Result_Lexer(result_name);		
 		r_lex.findTokens();
 		Result_Parser parser = new Result_Parser();
